@@ -6,10 +6,10 @@
 
 (defn home-routes [endpoint]
   (routes
-   (GET "/" _
+   (resources "/")
+   (GET "*" _
      (-> "public/index.html"
          io/resource
          io/input-stream
          response
-         (assoc :headers {"Content-Type" "text/html; charset=utf-8"})))
-   (resources "/")))
+         (assoc :headers {"Content-Type" "text/html; charset=utf-8"})))))

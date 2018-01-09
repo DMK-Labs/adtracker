@@ -1,12 +1,23 @@
 (ns trendtracker.core
-  (:require [reagent.core :as reagent :refer [atom]]))
+  (:require [keechma.app-state :as app-state]
+            [trendtracker.app :as app]))
 
-(enable-console-print!)
+(defonce running-app (clojure.core/atom nil))
 
-(defonce app-state (atom {:text "Hello Chestnut!"}))
+(defn start-app! []
+  (reset! running-app (app-state/start! app/definition)))
 
-(defn greeting []
-  [:h1 (:text @app-state)])
+(defn dev-setup []
+  (when ^boolean js/goog.DEBUG
+    (enable-console-print!)
+    (println "dev mode")))
 
-(defn render []
-  (reagent/render [greeting] (js/document.getElementById "app")))
+(defn reload []
+  (let [current @running-app]
+    (if current
+      (app-state/stop! current start-app!)
+      (start-app!))))
+
+(defn ^:export main []
+  (dev-setup)
+  (start-app!))

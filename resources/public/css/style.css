@@ -1,0 +1,46 @@
+.ant-layout-header {
+  padding: 0 24px;
+  background-color: #fff;
+  position: relative;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.04), 0 5px 10px rgba(0, 0, 0, 0.08);
+  line-height: 56px;
+  height: 56px;
+}
+.content-header {
+  margin: 0 !important;
+  padding: 16px 24px;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.04);
+}
+.content {
+  margin: 16px;
+}
+/* Colors fix */
+.ant-layout,
+.ant-layout-footer {
+  background-color: #f7f7f7;
+}
+.ant-layout-sider,
+.ant-layout-sider-trigger,
+.ant-layout-sider .ant-menu {
+  background-color: #3f3f3f;
+}
+.ant-layout-sider .ant-menu .ant-menu-sub,
+.ant-menu-sub.ant-menu-vertical {
+  background-color: #343434;
+}
+.ant-layout-footer {
+  text-align: center;
+}
+.ant-layout-footer p {
+  color: #999;
+  font-height: 8px;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+.ant-card-body {
+  padding: 16px !important;
+}
+.ant-card-head {
+  padding: 0 16px !important;
+}

@@ -14,7 +14,8 @@
   (assoc (trendtracker.application/app-system (config))
     :figwheel-system (fw-sys/figwheel-system (fw-config/fetch-config))
     :css-watcher (fw-sys/css-watcher {:watch-paths ["resources/public/css"]})
-    :less (shell-component "lein" "less" "auto")))
+    ;; :less (shell-component "lein" "less" "auto")
+    ))
 
 (set-refresh-dirs "src" "dev")
 (reloaded.repl/set-init! #(dev-system))

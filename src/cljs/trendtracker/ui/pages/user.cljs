@@ -3,15 +3,20 @@
             [keechma.ui-component :as ui]
             [reagent.core :as r]))
 
-(defn render [ctx]
+(defn render-current-user
+  "Renders the user info based on loaded data."
+  [ctx current-user]
   [:div.content
    [ant/card
-    {:title (r/as-element
-             [:span [ant/icon {:type "setting" :style {:margin-right 8}}]
-              "사용자 설정"])}
-    [:p "사용자 ID: dashcrab"]
-    [:p "회사명: Nine Bridge, Inc."]
-    [:p "연락처: 010-1212-3434"]]])
+    {:title "사용자 정보"}
+    [:p "사용자 ID: " (:login-id current-user)]
+    [:p "회사명: " (:company-name current-user)]
+    [:p "연락처: " (:email current-user)]]])
+
+(defn render [ctx]
+  (render-current-user ctx {:login-id "dashcrab"
+                            :company-name "Nine Bridge, Inc."
+                            :email "test@test.com"}))
 
 (def component
   (ui/constructor

@@ -3,7 +3,7 @@
             [keechma.ui-component :as ui]))
 
 (defn render [ctx]
-  [:div {:style {:max-width 500
+  [:div {:style {:max-width 550
                  :margin "128px"}}
    [ant/card
     [:h1 "Search Ad Management has never been easier"]

@@ -18,21 +18,25 @@
     margin: 16px;
 }
 
-/* Colors fix */
+// Layout Colors fix
 .ant-layout,
 .ant-layout-footer
 {
     background-color: rgba(247, 247, 247, 1.00);
 }
 
-.ant-layout-sider, .ant-layout-sider-trigger, .ant-layout-sider .ant-menu {
+.ant-layout-sider, .ant-layout-sider .ant-menu {
     background-color: #444;
 }
 
 .ant-layout-sider .ant-menu .ant-menu-sub,
+.ant-layout-sider-trigger,
 .ant-menu-sub.ant-menu-vertical {
-    background-color: #343434;
+    background-color: #393939;
 }
+// Layout Colors fix
+
+
 
 .ant-layout-footer {
     text-align: center;
@@ -52,3 +56,16 @@
 .ant-card-head {
     padding: 0 16px !important;
 }
+
+// Sider collapsed width
+.ant-layout-sider .ant-menu-inline-collapsed {
+    width: 64px;
+}
+
+.ant-layout-sider .ant-menu-inline-collapsed>.ant-menu-item,
+.ant-layout-sider .ant-menu-inline-collapsed>.ant-menu-item-group>.ant-menu-item-group-list>.ant-menu-item,
+.ant-layout-sider .ant-menu-inline-collapsed>.ant-menu-submenu>.ant-menu-submenu-title
+{
+    padding: 0 24px !important;
+}
+// Sider collapsed width

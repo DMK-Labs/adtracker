@@ -5,8 +5,9 @@
 
 (defn render [ctx]
   [ant/layout-sider {:collapsible true
-                     :breakpoint "lg"}
-   [ant/affix {:offset-top 64}
+                     :breakpoint "lg"
+                     :collapsed-width 64}
+   [ant/affix
     [ant/menu {:theme :dark
                :style {:border-right 0}
                :mode "inline"

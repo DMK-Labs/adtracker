@@ -5,11 +5,13 @@
             [system.components.endpoint :refer [new-endpoint]]
             [system.components.handler :refer [new-handler]]
             [system.components.middleware :refer [new-middleware]]
+            [system.components.postgres :refer [new-postgres-database]]
             [trendtracker.config :refer [config]]
             [trendtracker.routes :as routes]))
 
 (defn app-system [config]
   (component/system-map
+   :postgres (new-postgres-database (:db-spec config))
    :middleware (new-middleware {:middleware (:middleware config)})
    :api-routes (new-endpoint routes/api-routes)
    :app-routes (-> (new-endpoint routes/app-routes)

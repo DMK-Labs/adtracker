@@ -7,13 +7,18 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.9.946" :scope "provided"]
 
-                 [aleph "0.4.4"]
+                 ;; frontend
                  [metosin/compojure-api "2.0.0-alpha17"]
                  [reagent "0.7.0"]
                  [keechma "0.3.1" :exclusions [cljsjs/react-with-addons]]
                  [keechma/toolbox "0.1.6"]
                  [antizer "0.2.4-SNAPSHOT"]
                  [reacharts "0.1.0-SNAPSHOT"]
+                 ;; backend
+                 [aleph "0.4.4"]
+                 [org.clojure/java.jdbc "0.7.4"]
+                 [org.postgresql/postgresql "42.1.4"]
+                 [specql "0.7.0-alpha11"]
 
                  ;; added by chestnut
                  [com.cognitect/transit-clj "0.8.300"]

@@ -7,6 +7,7 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.9.946" :scope "provided"]
 
+                 [aleph "0.4.4"]
                  [reagent "0.7.0"]
                  [keechma "0.3.1" :exclusions [cljsjs/react-with-addons]]
                  [keechma/toolbox "0.1.6"]
@@ -18,13 +19,11 @@
                  [ring "1.6.3"]
                  [ring/ring-defaults "0.3.1"]
                  [bk/ring-gzip "0.2.1"]
-                 [radicalzephyr/ring.middleware.logger "0.6.0"]
                  [compojure "1.6.0"]
                  [environ "1.1.0"]
                  [com.stuartsierra/component "0.3.2"]
                  [org.danielsz/system "0.4.1"]
-                 [org.clojure/tools.namespace "0.2.11"]
-                 [aleph "0.4.4"]]
+                 [org.clojure/tools.namespace "0.2.11"]]
 
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-environ "1.1.0"]

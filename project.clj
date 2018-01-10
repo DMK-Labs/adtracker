@@ -24,7 +24,7 @@
                  [com.stuartsierra/component "0.3.2"]
                  [org.danielsz/system "0.4.1"]
                  [org.clojure/tools.namespace "0.2.11"]
-                 [http-kit "2.2.0"]]
+                 [aleph "0.4.4"]]
 
   :plugins [[lein-cljsbuild "1.1.6"]
             [lein-environ "1.1.0"]

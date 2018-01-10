@@ -1,10 +1,10 @@
 (ns trendtracker.application
   (:gen-class)
   (:require [com.stuartsierra.component :as component]
+            [system.components.aleph :refer [new-web-server]]
             [system.components.endpoint :refer [new-endpoint]]
             [system.components.handler :refer [new-handler]]
             [system.components.middleware :refer [new-middleware]]
-            [system.components.http-kit :refer [new-web-server]]
             [trendtracker.config :refer [config]]
             [trendtracker.routes :refer [home-routes]]))
 

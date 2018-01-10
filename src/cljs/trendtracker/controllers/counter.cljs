@@ -9,7 +9,9 @@
 
 (def controller
   (pl-controller/constructor
-   (fn [_] true)
+   (fn [route-params]
+     (when (= (get-in route-params [:data :page]) "counter")
+       true))
    {:start (pipeline! [value app-db]
              (pl/commit! (assoc-in app-db [:kv :counter] 0)))
     :update (pipeline! [value app-db]

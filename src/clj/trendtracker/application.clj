@@ -6,16 +6,18 @@
             [system.components.handler :refer [new-handler]]
             [system.components.middleware :refer [new-middleware]]
             [trendtracker.config :refer [config]]
-            [trendtracker.routes :refer [home-routes]]))
+            [trendtracker.routes :as routes]))
 
 (defn app-system [config]
   (component/system-map
-   :routes     (new-endpoint home-routes)
    :middleware (new-middleware {:middleware (:middleware config)})
-   :handler    (-> (new-handler)
-                   (component/using [:routes :middleware]))
-   :http       (-> (new-web-server (:http-port config))
-                   (component/using [:handler]))))
+   :api-routes (new-endpoint routes/api-routes)
+   :app-routes (-> (new-endpoint routes/app-routes)
+                   (component/using [:middleware]))
+   :handler (-> (new-handler)
+                (component/using [:api-routes :app-routes]))
+   :http (-> (new-web-server (:http-port config))
+             (component/using [:handler]))))
 
 (defn -main [& _]
   (let [config (config)]

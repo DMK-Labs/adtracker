@@ -8,6 +8,7 @@
                  [org.clojure/clojurescript "1.9.946" :scope "provided"]
 
                  [aleph "0.4.4"]
+                 [metosin/compojure-api "2.0.0-alpha17"]
                  [reagent "0.7.0"]
                  [keechma "0.3.1" :exclusions [cljsjs/react-with-addons]]
                  [keechma/toolbox "0.1.6"]

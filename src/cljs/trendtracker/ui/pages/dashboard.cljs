@@ -14,10 +14,20 @@
        [ant/icon {:type "filter" :style {:margin-right 8}}]
        [ant/cascader]]]
      [ant/col
-      [(ui/component ctx :date-range-picker)]]]]])
+      [(ui/component ctx :date-range-picker)]]]]
+
+   [:div.content
+    [ant/row {:gutter 16}
+     [ant/col {:md 8 :sm 12}
+      [(ui/component ctx :kpi-snapshot) "비용" :cost "#fa541c"]]
+     [ant/col {:md 8 :sm 12}
+      [(ui/component ctx :kpi-snapshot) "매출" :revenue "#52c41a"]]
+     [ant/col {:md 8 :sm 12}
+      [(ui/component ctx :kpi-snapshot) "ROAS" :roas "#B5A1DE"]]]]])
 
 (def component
   (ui/constructor
    {:renderer render
     :component-deps [:date-range-picker
-                     :breadcrumbs]}))
+                     :breadcrumbs
+                     :kpi-snapshot]}))

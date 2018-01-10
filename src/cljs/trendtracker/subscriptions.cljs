@@ -11,4 +11,5 @@
 
 (def subscriptions
   (merge (dataloader/make-subscriptions datasources edb-schema)
-         {:counter (get-kv :counter)}))
+         {:counter      (get-kv :counter)
+          :initialized? (get-kv :initialized?)}))

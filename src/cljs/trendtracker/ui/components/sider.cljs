@@ -7,7 +7,7 @@
   [ant/layout-sider {:collapsible true
                      :breakpoint "lg"
                      :collapsed-width 64}
-   [ant/affix
+   [ant/affix {:offset 56}
     [ant/menu {:theme :dark
                :style {:border-right 0}
                :mode "inline"
@@ -28,7 +28,7 @@
       [ant/icon {:type "tool"}]
       [:span "키워드 도구"]]
 
-     [ant/menu-item {:key "manage" :disabled true}
+     [ant/menu-item {:key "manage"}
       [ant/icon {:type "profile"}]
       [:span "광고 관리"]]]]])
 

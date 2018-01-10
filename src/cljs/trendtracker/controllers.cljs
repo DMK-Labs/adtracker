@@ -1,4 +1,4 @@
-(ns trendtracker.controllers.core
+(ns trendtracker.controllers
   (:require [trendtracker.controllers.counter :as counter]))
 
 (def controllers

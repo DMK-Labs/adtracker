@@ -1,4 +1,4 @@
-(ns trendtracker.ui.core
+(ns trendtracker.ui
   (:require [trendtracker.ui.components.breadcrumbs :as breadcrumbs]
             [trendtracker.ui.components.counter :as counter]
             [trendtracker.ui.components.date-range :as date-range]

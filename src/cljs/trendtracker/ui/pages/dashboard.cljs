@@ -1,6 +1,7 @@
 (ns trendtracker.ui.pages.dashboard
   (:require [antizer.reagent :as ant]
-            [keechma.ui-component :as ui]))
+            [keechma.ui-component :as ui]
+            [reacharts.recharts :as recharts]))
 
 (defn render [ctx]
   [:div

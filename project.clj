@@ -12,7 +12,7 @@
                  [keechma "0.3.1" :exclusions [cljsjs/react-with-addons]]
                  [keechma/toolbox "0.1.6"]
                  [antizer "0.2.4-SNAPSHOT"]
-                 [cljsjs/recharts "1.0.0-beta.7-0"]
+                 [reacharts "0.1.0-SNAPSHOT"]
 
                  ;; added by chestnut
                  [com.cognitect/transit-clj "0.8.300"]

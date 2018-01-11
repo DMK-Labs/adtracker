@@ -1,15 +1,18 @@
 (ns trendtracker.application
   (:gen-class)
   (:require [com.stuartsierra.component :as component]
-            [system.components.aleph :refer [new-web-server]]
             [system.components.endpoint :refer [new-endpoint]]
             [system.components.handler :refer [new-handler]]
+            [system.components.immutant-web :refer [new-immutant-web]]
             [system.components.middleware :refer [new-middleware]]
             [system.components.postgres :refer [new-postgres-database]]
+            [system.components.repl-server :refer [new-repl-server]]
+            [system.repl :refer [set-init! start]]
             [trendtracker.config :refer [config]]
             [trendtracker.routes :as routes]))
 
-(defn app-system [config]
+(defn dev-system
+  []
   (component/system-map
    :postgres (new-postgres-database (:db-spec config))
    :middleware (new-middleware {:middleware (:middleware config)})
@@ -18,12 +21,17 @@
                    (component/using [:middleware]))
    :handler (-> (new-handler)
                 (component/using [:api-routes :app-routes]))
-   :http (-> (new-web-server (:http-port config))
-             (component/using [:handler]))))
+   :immutant (-> (new-immutant-web :port (:http-port config))
+                 (component/using [:handler]))))
 
-(defn -main [& _]
-  (let [config (config)]
-    (-> config
-        app-system
-        component/start)
-    (println "Started trendtracker on" (str "http://localhost:" (:http-port config)))))
+(defn prod-system
+  []
+  (merge
+   (dev-system)
+   (component/system-map
+    :repl-server (new-repl-server 5602))))
+
+(defn -main
+  [& _]
+  (set-init! #'prod-system)
+  (start))

@@ -7,7 +7,7 @@
  :dependencies '[[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.9.946"]
 
-                 ;; boot deps
+                 ;; boot tasks
                  [adzerk/boot-cljs "2.1.3" :scope "test"]
                  [powerlaces/boot-figreload "0.5.13" :scope "test"]
                  [deraen/boot-less "0.6.2" :scope "test"]
@@ -32,7 +32,9 @@
                  [org.immutant/web "2.1.9"]
                  [org.clojure/java.jdbc "0.7.4"]
                  [org.postgresql/postgresql "42.1.4"]
-                 [specql "0.7.0-alpha11"]
+                 [com.layerware/hugsql "0.4.8"]
+                 [ring-middleware-format "0.7.2"]
+                 [clojure.java-time "0.3.1"]
 
                  ;; added by chestnut
                  [com.cognitect/transit-clj "0.8.300"]

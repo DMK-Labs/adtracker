@@ -19,7 +19,6 @@
      [:div
       [:span
        [:span {:display "block"} "이전 동일 기간 대비"]
-       [:br]
        [ant/row
         [:h2 {:style {:margin-bottom 0}}
          (if (= :roas k)

@@ -4,26 +4,26 @@
             [reacharts.recharts :as recharts]))
 
 (defn render [ctx]
-  [:div
-   [:div.content-header
-    [(ui/component ctx :breadcrumbs)]
-    [:h2 "검색광고 대쉬보드"]
-    [ant/row {:gutter 16 :type "flex" :justify "space-between"}
-     [ant/col
-      [:div
-       [ant/icon {:type "filter" :style {:margin-right 8}}]
-       [ant/cascader]]]
-     [ant/col
-      [(ui/component ctx :date-range-picker)]]]]
+  (let [snapshot (ui/component ctx :kpi-snapshot)
+        date-range-picker (ui/component ctx :date-range-picker)
+        breadcrumbs (ui/component ctx :breadcrumbs)]
+    [:div
+     [:div.content-header
+      [breadcrumbs]
+      [:h2 "검색광고 대쉬보드"]
+      [ant/row {:gutter 16 :type "flex" :justify "space-between"}
+       [ant/col
+        [:div
+         [ant/icon {:type "filter" :style {:margin-right 8}}]
+         [ant/cascader]]]
+       [ant/col
+        [date-range-picker]]]]
 
-   [:div.content
-    [ant/row {:gutter 16}
-     [ant/col {:md 8 :sm 12}
-      [(ui/component ctx :kpi-snapshot) "비용" :cost "#fa541c"]]
-     [ant/col {:md 8 :sm 12}
-      [(ui/component ctx :kpi-snapshot) "매출" :revenue "#52c41a"]]
-     [ant/col {:md 8 :sm 12}
-      [(ui/component ctx :kpi-snapshot) "ROAS" :roas "#B5A1DE"]]]]])
+     [:div.content
+      [ant/row {:gutter 16}
+       [ant/col {:md 8 :sm 12} [snapshot "비용" :cost "#fa541c"]]
+       [ant/col {:md 8 :sm 12} [snapshot "매출" :revenue "#52c41a"]]
+       [ant/col {:md 8 :sm 12} [snapshot "ROAS" :roas "#B5A1DE"]]]]]))
 
 (def component
   (ui/constructor

@@ -14,15 +14,13 @@
 (defn dev-system
   []
   (component/system-map
-   :postgres (new-postgres-database (:db-spec config))
+   :db (new-postgres-database (:db-spec config))
    :middleware (new-middleware {:middleware (:middleware config)})
-   :api-routes (new-endpoint routes/api-routes)
-   :app-routes (-> (new-endpoint routes/app-routes)
-                   (component/using [:middleware]))
-   :handler (-> (new-handler)
-                (component/using [:api-routes :app-routes]))
-   :immutant (-> (new-immutant-web :port (:http-port config))
-                 (component/using [:handler]))))
+   :api-middleware (new-middleware {:middleware (:api-middleware config)})
+   :api-routes (component/using (new-endpoint routes/api-routes) [:db :api-middleware])
+   :app-routes (component/using (new-endpoint routes/app-routes) [:middleware])
+   :handler (component/using (new-handler) [:api-routes :app-routes])
+   :http (component/using (new-immutant-web :port (:http-port config)) [:handler])))
 
 (defn prod-system
   []

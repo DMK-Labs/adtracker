@@ -5,14 +5,16 @@
 (def ignore-datasource :keechma.toolbox.dataloader.core/ignore)
 
 (def stats-datasource
-  {:target [:edb/collection :stats/list]
-   :params (fn [prev {:keys [page]} deps]
-             (when (#{"dashboard" "manage" "optimize"} page) true))
+  {:target [:kv :stats]
+   :params (fn [prev route-data deps]
+             (when (#{"dashboard"} (:page route-data))
+               (:dates route-data)))
    :loader (map-loader
             (fn [req]
               (when (:params req)
-                (print "loading stats...")
-                (ajax/GET "/api/stats"))))})
+                (ajax/GET "/api/stats"
+                          {:params
+                           {:dates (-> req :app-db :route :data :dates)}}))))})
 
 (def datasources
   {:stats stats-datasource})

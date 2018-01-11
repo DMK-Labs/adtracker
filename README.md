@@ -12,5 +12,5 @@ When running the jar, select desired port with `PORT` env var, or `java
 ## Development
 
 `boot dev` will start a dev system repl in the `user` namespace. `(in-ns
-'boot.user)` and then `(cljs-repl)` will connect to the browser repl (to be
+'boot.user)` and then `(start-repl)` will connect to the browser repl (to be
 improved).

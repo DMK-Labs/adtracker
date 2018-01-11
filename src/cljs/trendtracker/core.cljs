@@ -10,7 +10,8 @@
    :subscriptions subscriptions
    :html-element  (.getElementById js/document "app")
    :routes        [["" {:page "login"}]
-                   ":page"]})
+                   ":page"]
+   :router        :history})
 
 (defonce running-app (clojure.core/atom nil))
 

@@ -40,7 +40,7 @@
    [ant/layout-header
     [:a {:href (ui/url ctx {:page "dashboard"})}
      [:img {:src "/img/logo/tt-logo.png"
-            :style {:height 28 :width 128}}]]
+            :style {:height 35 :width 160}}]]
     [:div {:style {:float "right"}}
      "NineBridge, Inc."
      [ant/divider {:type "vertical"}]

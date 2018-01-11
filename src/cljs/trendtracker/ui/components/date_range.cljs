@@ -1,7 +1,9 @@
 (ns trendtracker.ui.components.date-range
   (:require [antizer.reagent :as ant]
             [keechma.ui-component :as ui]
-            [trendtracker.utils :as u]))
+            [trendtracker.utils :as u]
+            [keechma.toolbox.ui :refer [<cmd]]
+            [clojure.string :as string]))
 
 (defn render [ctx]
   [:div
@@ -11,13 +13,14 @@
      :format "YYYY-MM-DD"
      :allow-clear false
      :disabled-date (constantly false) ;; FIXME
-     :on-change #(ui/redirect
-                  ctx
-                  (merge (:data @(ui/current-route ctx))
-                         {:dates %2}))
-     ;; :ranges []
-     }]
+     :on-change #(<cmd ctx :update %2)
+     :value (map js/moment (-> @(ui/current-route ctx)
+                               :data
+                               :dates
+                               (string/split #",")))}]
    [:a [ant/icon {:type "right"}]]])
 
 (def component
-  (ui/constructor {:renderer render}))
+  (ui/constructor
+   {:renderer render
+    :topic :date-range}))

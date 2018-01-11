@@ -1,7 +1,8 @@
 (ns trendtracker.utils
   (:require #?(:cljs goog.string.format)
             #?(:cljs [cljs.pprint :refer [cl-format]]
-               :clj [clojure.pprint :refer [cl-format]])))
+               :clj [clojure.pprint :refer [cl-format]])
+            #?(:clj [java-time :as time])))
 
 (defn sum [k df]
   (apply + (map k df)))
@@ -32,5 +33,12 @@
   [n decimal]
   #?(:cljs (goog.string.format (str "%." n "f%") (* 100 decimal))))
 
-(defn human-dttm [moment]
-  (.format moment "YYYY-MM-DD HH:MMZ"))
+(defn fmt-dt
+  ([moment]
+   (.format moment "YYYY-MM-DD"))
+  ([moment format-str]
+   (.format moment format-str)))
+
+#?(:clj
+   (defn iso-date [dt]
+     (time/format :iso-date (time/local-date dt))))

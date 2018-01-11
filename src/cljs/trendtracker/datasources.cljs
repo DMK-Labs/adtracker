@@ -12,6 +12,7 @@
    :loader (map-loader
             (fn [req]
               (when (:params req)
+                ;; (cljs.pprint/pprint req)
                 (ajax/GET "/api/stats"
                           {:params
                            {:dates (-> req :app-db :route :data :dates)}}))))})

@@ -2,4 +2,5 @@
  :init-fns         [trendtracker.core/main]
  :compiler-options {:main           trendtracker.core
                     :asset-path     "js/trendtracker.out"
-                    :parallel-build true}}
+                    :parallel-build true
+                    :source-map true}}

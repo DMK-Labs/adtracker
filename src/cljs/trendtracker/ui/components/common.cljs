@@ -10,10 +10,10 @@
    (if (zero? d)
      [:div "--"]
      [:div
-      {:class (if down-is-good?
-                (if (pos? d) "red" "green")
-                (if (pos? d) "green" "red"))
-       :style {:min-width 90}}
+      {:style {:min-width 90
+               :color (if down-is-good?
+                        (if (pos? d) "#ff4d4f" "#52c41a")
+                        (if (pos? d) "#52c41a" "#ff4d4f"))}}
       [:span (u/pct-fmt 2 d)]
       [ant/icon {:type (if (pos? d)
                          "arrow-up"

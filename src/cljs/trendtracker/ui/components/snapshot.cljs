@@ -52,7 +52,7 @@
                     (u/sum :cost (:prev stats)))
         delta (u/delta prev-sum sum)
         color "#B5A1DE"]
-    (pure-draw "ROAS" (u/pct-fmt sum) delta current kpi color true)))
+    (pure-draw "ROAS" (u/pct-fmt sum) delta current kpi color false)))
 
 (defmethod snapshot :default [kpi title stats]
   [:div "default"])

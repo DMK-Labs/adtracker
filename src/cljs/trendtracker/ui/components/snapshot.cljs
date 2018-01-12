@@ -26,26 +26,25 @@
         :stroke color
         :fill color}]]]]])
 
-(defmulti snapshot {:arglists '([kpi title stats])}
-  (fn [kpi _ _] kpi))
+(defmulti snapshot (fn [kpi _] kpi))
 
-(defmethod snapshot :cost [kpi title stats]
+(defmethod snapshot :cost [kpi stats]
   (let [current (:curr stats)
         sum (u/sum kpi current)
         prev-sum (u/sum kpi (:prev stats))
         delta (u/delta prev-sum sum)
         color "#fa541c"]
-    (pure-draw title (u/int-fmt sum) delta current kpi color false)))
+    (pure-draw "비용" (u/int-fmt sum) delta current kpi color false)))
 
-(defmethod snapshot :revenue [kpi title stats]
+(defmethod snapshot :revenue [kpi stats]
   (let [current (:curr stats)
         sum (u/sum kpi current)
         prev-sum (u/sum kpi (:prev stats))
         delta (u/delta prev-sum sum)
         color "#52c41a"]
-    (pure-draw title (u/int-fmt sum) delta current kpi color false)))
+    (pure-draw "매출" (u/int-fmt sum) delta current kpi color false)))
 
-(defmethod snapshot :roas [kpi title stats]
+(defmethod snapshot :roas [kpi stats]
   (let [current (:curr stats)
         sum (/ (u/sum :revenue current)
                (u/sum :cost current))
@@ -53,14 +52,14 @@
                     (u/sum :cost (:prev stats)))
         delta (u/delta prev-sum sum)
         color "#B5A1DE"]
-    (pure-draw title (u/pct-fmt sum) delta current kpi color true)))
+    (pure-draw "ROAS" (u/pct-fmt sum) delta current kpi color true)))
 
 (defmethod snapshot :default [kpi title stats]
   [:div "default"])
 
-(defn render [ctx data-key title]
+(defn render [ctx data-key]
   (let [stats (sub> ctx :stats)]
-    [snapshot data-key title stats]))
+    [snapshot data-key stats]))
 
 (def component
   (ui/constructor

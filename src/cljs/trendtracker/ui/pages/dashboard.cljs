@@ -22,9 +22,9 @@
 
      [:div.content
       [ant/row {:gutter 16}
-       [ant/col {:md 8 :sm 12} [snapshot :cost "비용"]]
-       [ant/col {:md 8 :sm 12} [snapshot :revenue "매출"]]
-       [ant/col {:md 8 :sm 12} [snapshot :roas "ROAS" ]]]
+       [ant/col {:md 8 :sm 12} [snapshot :cost]]
+       [ant/col {:md 8 :sm 12} [snapshot :revenue]]
+       [ant/col {:md 8 :sm 12} [snapshot :roas]]]
       [ant/row [tabbed-charts]]]]))
 
 (def component

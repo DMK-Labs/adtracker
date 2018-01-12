@@ -1,10 +1,11 @@
 (ns trendtracker.ui
-  (:require [trendtracker.ui.components.breadcrumbs :as breadcrumbs]
+  (:require [trendtracker.ui.components.tabbed-charts :as tabbed-charts]
+            [trendtracker.ui.components.breadcrumbs :as breadcrumbs]
             [trendtracker.ui.components.counter :as counter]
             [trendtracker.ui.components.date-range :as date-range]
             [trendtracker.ui.components.footer :as footer]
             [trendtracker.ui.components.header :as header]
-            [trendtracker.ui.components.kpi-snapshot :as kpi-snapshot]
+            [trendtracker.ui.components.snapshot :as snapshot]
             [trendtracker.ui.components.sider :as sider]
             [trendtracker.ui.pages.dashboard :as dashboard]
             [trendtracker.ui.pages.keyword-tool :as keyword-tool]
@@ -26,4 +27,5 @@
    :optimize-page     optimize/component
    :counter           counter/component
    :breadcrumbs       breadcrumbs/component
-   :kpi-snapshot      kpi-snapshot/component})
+   :snapshot          snapshot/component
+   :tabbed-charts     tabbed-charts/component})

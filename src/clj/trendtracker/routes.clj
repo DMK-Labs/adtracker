@@ -7,7 +7,7 @@
             [schema.coerce :as coerce]
             [schema.core :as s]
             [trendtracker.db :as db]
-            [clojure.string :as string]))
+            [trendtracker.utils :as u]))
 
 (defn app-routes [endpoint]
   (sweet/routes
@@ -22,15 +22,15 @@
 (s/defschema Perf
   {:impressions s/Int
    :revenue s/Int
-   :roas s/Num
-   :during s/Inst
+   :roas Double
+   :during s/Str
    :clicks s/Int
-   :profit s/Num
+   :profit Double
    :conversions s/Int
    :ad_rank_sum s/Int
    :cost s/Int
-   :cvr s/Num
-   :ctr s/Num
+   :cvr Double
+   :ctr Double
    :customer_id s/Int})
 
 (def coerce-perf
@@ -56,7 +56,7 @@
        :summary "Customer's stats"
        :query-params [low :- String high :- String]
        :return [Perf]
-       (ok (map coerce-perf
-                (db/total-perf-by-date
-                 db
-                 {:id 777309 :low low :high high})))))))
+       (ok (into [] (comp
+                     (map (fn [m] (update m :during u/iso-date)))
+                     (map coerce-perf))
+                 (db/total-perf-by-date db {:id 777309 :low low :high high})))))))

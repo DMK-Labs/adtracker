@@ -28,18 +28,17 @@
    :params (fn [_ _ deps] (select-keys deps [:date-range]))
    :loader (map-loader
             (fn [req]
-              (when-let [{:keys [curr prev]} (-> req :params :date-range)]
-                (let [[low high] prev
-                      [l2 h2] curr
-                      res (p/all [(ajax/GET "/api/stats"
-                                            {:params {:low (u/fmt-dt low)
-                                                      :high (u/fmt-dt high)}})
-                                  (ajax/GET "/api/stats"
-                                            {:params {:low (u/fmt-dt l2)
-                                                      :high (u/fmt-dt h2)}})])]
-                  (p/then res (fn [[r1 r2]]
-                                {:prev r1
-                                 :curr r2}))))))})
+              (when-let [{:keys [curr prev]} (get-in req [:params :date-range])]
+                ;; FIXME: for some reason this is run twice on page reload
+                (print "Responding to changed filter, loading stats...")
+                (let [parse-range #(->> %
+                                        (map u/fmt-dt)
+                                        (zipmap [:low :high]))]
+                  (-> [(ajax/GET "/api/stats" {:params (parse-range curr)})
+                       (ajax/GET "/api/stats" {:params (parse-range prev)})]
+                      p/all
+                      (p/then
+                       #(zipmap [:curr :prev] %)))))))})
 
 (def datasources
   {:date-range date-range-datasource

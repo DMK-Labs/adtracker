@@ -24,7 +24,7 @@
 (def controller
   (pl-controller/constructor
    (constantly true)
-   {:start (pipeline! [_ app-db]
+   {:start (pipeline! [_ _]
              (pl/execute! :set (preset 90)))
     :set (pipeline! [value app-db]
            (pl/commit!

@@ -4,6 +4,16 @@
                :clj [clojure.pprint :refer [cl-format]])
             #?(:clj [java-time :as time])))
 
+
+;;* Maps and keys
+
+(defn prefix-keys [m s]
+  (into {} (map (fn [[k v]]
+                  [(keyword (str s (name k))) v])
+                m)))
+
+;;* Math
+
 (defn sum [k df]
   (apply + (map k df)))
 

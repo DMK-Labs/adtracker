@@ -1,4 +1,4 @@
-(ns trendtracker.ui.components.kpi-snapshot
+(ns trendtracker.ui.components.snapshot
   (:require [antizer.reagent :as ant]
             [keechma.toolbox.ui :refer [sub>]]
             [keechma.ui-component :as ui]
@@ -19,7 +19,7 @@
     [ant/card {:title (common/title-w-info title)}
      [:div
       [:span
-       [:span {:display "block"} "이전 동일 기간 대비"]
+       [:span {:display "block"} "이전 기간 대비"]
        [ant/row
         [:h2 {:style {:margin-bottom 0}}
          (if (= :roas k)

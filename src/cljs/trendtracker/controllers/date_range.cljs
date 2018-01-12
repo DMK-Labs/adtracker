@@ -1,15 +1,12 @@
 (ns trendtracker.controllers.date-range
-  (:require [keechma.toolbox.pipeline.controller :as pl-controller]
-            [keechma.toolbox.pipeline.core :as pl :refer-macros [pipeline!]]
-            [trendtracker.utils :as u]
-            [clojure.string :as string]))
+  (:require [keechma.toolbox.dataloader.controller :as dataloader-controller]
+            [keechma.toolbox.pipeline.controller :as pl-controller]
+            [keechma.toolbox.pipeline.core :as pl :refer-macros [pipeline!]]))
 
 (defn preset
   [count]
-  (string/join
-   ","
-   (map u/fmt-dt [(.subtract (js/moment) count "d")
-                  (.subtract (js/moment) 1 "d")])))
+  [(.startOf (.subtract (js/moment) count "d") "d")
+   (.startOf (.subtract (js/moment) 1 "d") "d")])
 
 (defn presets []
   {:last-7-days (preset 7)
@@ -19,16 +16,19 @@
    :last-month [(.startOf (.subtract (js/moment) 1 "M") "M")
                 (.endOf (.subtract (js/moment) 1 "M") "M")]})
 
+(defn prev-range [[low high]]
+  (let [num-days (inc (.diff high low "days"))]
+    [(.subtract (js/moment low) num-days "d")
+     (.subtract (js/moment low) 1 "d")]))
+
 (def controller
   (pl-controller/constructor
-   (fn [route-params]
-     (when (= (get-in route-params [:data :page]) "dashboard")
-       true))
-   {:start (pipeline! [value app-db]
-             (pl/redirect!
-              (merge (-> app-db :route :data)
-                     {:dates (preset 90)})))
-    :update (pipeline! [value app-db]
-              (pl/redirect!
-               (merge (-> app-db :route :data)
-                      {:dates value})))}))
+   (constantly true)
+   {:start (pipeline! [_ app-db]
+             (pl/execute! :set (preset 90)))
+    :set (pipeline! [value app-db]
+           (pl/commit!
+            (assoc-in app-db [:kv :date-range]
+                      {:curr value
+                       :prev (prev-range value)}))
+           (dataloader-controller/run-dataloader!))}))

@@ -1,5 +1,6 @@
 (ns trendtracker.ui.components.kpi-snapshot
   (:require [antizer.reagent :as ant]
+            [keechma.toolbox.ui :refer [sub>]]
             [keechma.ui-component :as ui]
             [reacharts.recharts :as recharts]
             [trendtracker.ui.components.common :as common]
@@ -40,8 +41,8 @@
           :fill color}]]]]]))
 
 (defn render [ctx title data-key color]
-  (let [stats (ui/subscription ctx :stats)]
-    [snapshot @stats @stats title data-key color]))
+  (let [stats (sub> ctx :stats)]
+    [snapshot (:curr stats) (:prev stats) title data-key color]))
 
 (def component
   (ui/constructor

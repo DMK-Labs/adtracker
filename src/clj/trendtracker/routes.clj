@@ -54,11 +54,9 @@
 
      (sweet/GET "/stats" []
        :summary "Customer's stats"
-       :query-params [dates :- String]
+       :query-params [low :- String high :- String]
        :return [Perf]
-       (let [[low high] (string/split dates #",")]
-         (ok (map
-              coerce-perf
-              (db/total-perf-by-date
-               db
-               {:id 777309 :low low :high high}))))))))
+       (ok (map coerce-perf
+                (db/total-perf-by-date
+                 db
+                 {:id 777309 :low low :high high})))))))

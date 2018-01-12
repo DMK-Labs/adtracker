@@ -34,8 +34,8 @@
                 (let [parse-range #(->> %
                                         (map u/fmt-dt)
                                         (zipmap [:low :high]))]
-                  (-> [(ajax/GET "/api/stats" {:params (parse-range curr)})
-                       (ajax/GET "/api/stats" {:params (parse-range prev)})]
+                  (-> [(ajax/GET "/api/performance" {:params (parse-range curr)})
+                       (ajax/GET "/api/performance" {:params (parse-range prev)})]
                       p/all
                       (p/then
                        #(zipmap [:curr :prev] %)))))))})

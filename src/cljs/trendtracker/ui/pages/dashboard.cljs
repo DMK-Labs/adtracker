@@ -22,12 +22,10 @@
 
      [:div.content
       [ant/row {:gutter 16}
-       [ant/col {:md 8 :sm 12} [snapshot "비용" :cost "#fa541c"]]
-       [ant/col {:md 8 :sm 12} [snapshot "매출" :revenue "#52c41a"]]
-       [ant/col {:md 8 :sm 12} [snapshot "ROAS" :roas "#B5A1DE"]]]
-      [ant/row [tabbed-charts]]
-      [ant/row {:gutter 16}
-       ]]]))
+       [ant/col {:md 8 :sm 12} [snapshot :cost "비용"]]
+       [ant/col {:md 8 :sm 12} [snapshot :revenue "매출"]]
+       [ant/col {:md 8 :sm 12} [snapshot :roas "ROAS" ]]]
+      [ant/row [tabbed-charts]]]]))
 
 (def component
   (ui/constructor

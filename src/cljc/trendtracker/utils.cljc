@@ -38,10 +38,12 @@
 (defn dec-fmt [decimals num]
   #?(:cljs (goog.string.format (str "%." decimals "f") num)))
 
-(defn pct-fmt
-  "Formats `decimal` as a %, to the `n`th place. 0.1234 => 12.34%"
-  [n decimal]
-  #?(:cljs (goog.string.format (str "%." n "f%") (* 100 decimal))))
+#?(:cljs (defn pct-fmt
+           "Formats `decimal` as a %, to the `n`th place. 0.1234 => 12.34%"
+           ([decimal]
+            (pct-fmt 2 decimal))
+           ([n decimal]
+            (goog.string.format (str "%." n "f%") (* 100 decimal)))))
 
 (defn fmt-dt
   ([moment]

@@ -4,6 +4,9 @@
             [keechma.ui-component :as ui]
             [trendtracker.controllers.date-range :as date-range-ctrl]))
 
+(defn today-or-after? [d]
+  (>= d (.startOf (js/moment) "day")))
+
 (defn render [ctx]
   [:div
    ;; TODO: impl left/right buttons
@@ -13,7 +16,7 @@
     {:style {:margin "0 8px" :width 272}
      :format "YYYY-MM-DD"
      :allow-clear false
-     :disabled-date (constantly false) ;; FIXME
+     :disabled-date today-or-after?
      :value (:curr (sub> ctx :date-range))
      :on-change #(<cmd ctx :set %)
      :ranges (date-range-ctrl/presets)}]

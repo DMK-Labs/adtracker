@@ -20,7 +20,6 @@
             "dashboard"    [(ui/component ctx :dashboard-page)]
             "optimize"     [(ui/component ctx :optimize-page)]
             "keyword-tool" [(ui/component ctx :keyword-tool-page)]
-            "counter"      [(ui/component ctx :counter)]
             [:div.content "404: page not found"])]
          [(ui/component ctx :footer)]]]])))
 
@@ -30,7 +29,6 @@
     :component-deps [:header
                      :sider
                      :footer
-                     :counter
                      :login-page
                      :dashboard-page
                      :optimize-page

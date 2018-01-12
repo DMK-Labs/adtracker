@@ -31,7 +31,9 @@
    :cost s/Int
    :cvr Double
    :ctr Double
-   :customer_id s/Int})
+   :customer_id s/Int
+   (s/optional-key :campaign_id) s/Str
+   (s/optional-key :campaign) s/Str})
 
 (def coerce-perf
   (coerce/coercer Perf coerce/json-coercion-matcher))
@@ -52,11 +54,24 @@
        :query-params [x :- Long y :- Long]
        (ok {:result (+ x y)}))
 
-     (sweet/GET "/stats" []
-       :summary "Customer's stats"
+     (sweet/GET "/performance" []
+       :summary "Total performance"
        :query-params [low :- String high :- String]
+       :return [Perf]
+       (ok (into []
+                 (comp
+                  (map (fn [m] (update m :during u/iso-date)))
+                  (map coerce-perf))
+                 (db/total-perf-by-date db {:customer-id 777309 :low low :high high}))))
+
+     (sweet/GET "/performance/campaign" []
+       :summary "Campaign performance"
+       :query-params [low :- String high :- String id :- String]
        :return [Perf]
        (ok (into [] (comp
                      (map (fn [m] (update m :during u/iso-date)))
                      (map coerce-perf))
-                 (db/total-perf-by-date db {:id 777309 :low low :high high})))))))
+                 (db/cmp-perf-by-id-date db {:customer-id 777309
+                                             :id id
+                                             :low low
+                                             :high high})))))))

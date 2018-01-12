@@ -10,11 +10,11 @@
 
 (defn presets []
   {"지난 7일" (preset 7)
-   "지난 14일" (preset 14)
+   ;; "지난 14일" (preset 14)
    "지난 28일" (preset 28)
    "지난 90일" (preset 90)
    "지난 달" [(.startOf (.subtract (js/moment) 1 "M") "M")
-                (.endOf (.subtract (js/moment) 1 "M") "M")]})
+              (.endOf (.subtract (js/moment) 1 "M") "M")]})
 
 (defn prev-range [[low high]]
   (let [num-days (inc (.diff high low "days"))]

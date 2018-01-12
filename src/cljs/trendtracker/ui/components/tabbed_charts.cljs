@@ -12,7 +12,7 @@
   (r/as-element
    [:div
     [:h3 {:style {:margin-bottom 0 :color "#666"}} title]
-    [:h1 {:style {:margin-bottom 0}}
+    [:h2 {:style {:margin-bottom 0}}
      (if (integer? int-or-pct)
        (u/int-fmt int-or-pct)
        (u/pct-fmt 2 int-or-pct))]
@@ -22,7 +22,6 @@
   (let [line-opts {:type "monotone" :stroke "#1890ff" :dot nil}]
     [recharts/responsive-container {:height 300}
      [recharts/composed-chart {:data data}
-      [recharts/legend {:vertical-align "bottom"}]
       [recharts/x-axis {:dataKey :during}]
       [recharts/y-axis]
       [recharts/line (merge line-opts {:dataKey data-key})]

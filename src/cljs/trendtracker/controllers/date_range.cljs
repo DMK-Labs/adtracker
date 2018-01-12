@@ -9,11 +9,11 @@
    (.startOf (.subtract (js/moment) 1 "d") "d")])
 
 (defn presets []
-  {:last-7-days (preset 7)
-   :last-14-days (preset 14)
-   :last-28-days (preset 28)
-   :last-90-days (preset 90)
-   :last-month [(.startOf (.subtract (js/moment) 1 "M") "M")
+  {"지난 7일" (preset 7)
+   "지난 14일" (preset 14)
+   "지난 28일" (preset 28)
+   "지난 90일" (preset 90)
+   "지난 달" [(.startOf (.subtract (js/moment) 1 "M") "M")
                 (.endOf (.subtract (js/moment) 1 "M") "M")]})
 
 (defn prev-range [[low high]]

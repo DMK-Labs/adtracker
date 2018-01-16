@@ -2,7 +2,8 @@
   (:require [keechma.toolbox.ajax :as ajax]
             [keechma.toolbox.dataloader.subscriptions :refer [map-loader]]
             [promesa.core :as p]
-            [trendtracker.utils :as u]))
+            [trendtracker.utils :as u]
+            [cljs.core.match :refer-macros [match]]))
 
 (def default-request-config
   {:response-format :json
@@ -20,26 +21,67 @@
    :params (fn [prev _ _] (:data prev))
    :loader pass-through-params})
 
+(def cascader-datasource
+  {:target [:kv :cascader]
+   :params (fn [prev _ _] (:data prev))
+   :loader pass-through-params})
+
+(defn parse-date-range
+  "`dates` are a vector pair of js/moments
+  [moment moment] => {:low str :high str}"
+  [dates]
+  (->> dates
+       (map u/fmt-dt)
+       (zipmap [:low :high])))
+
+(defn total-perf
+  [range]
+  (-> [(ajax/GET "/api/performance" {:params (parse-date-range (:curr range))})
+       (ajax/GET "/api/performance" {:params (parse-date-range (:prev range))})]
+      p/all
+      (p/then
+       #(zipmap [:curr :prev] %))))
+
+(defn campaign-perf
+  [id range]
+  (-> [(ajax/GET "/api/performance/campaign"
+                 {:params (assoc (parse-date-range (:curr range)) :id id)})
+       (ajax/GET "/api/performance/campaign"
+                 {:params (assoc (parse-date-range (:prev range)) :id id)})]
+      p/all
+      (p/then
+       #(zipmap [:curr :prev] %))))
+
+(defn campaign-type-perf
+  [type range]
+  (-> [(ajax/GET "/api/performance/type"
+                 {:params (assoc (parse-date-range (:curr range)) :type type)})
+       (ajax/GET "/api/performance/type"
+                 {:params (assoc (parse-date-range (:prev range)) :type type)})]
+      p/all
+      (p/then
+       #(zipmap [:curr :prev] %))))
+
 (def stats-datasource
   "Stats depend on the date-range, so it will be reloaded whenever date-range
   changes."
   {:target [:kv :stats]
-   :deps [:date-range]
-   :params (fn [_ _ deps] (select-keys deps [:date-range]))
+   :deps [:date-range :cascader]
+   :params (fn [prev _ {:keys [date-range cascader]}]
+             {:date-range date-range
+              :cascader cascader})
    :loader (map-loader
             (fn [req]
-              (when-let [{:keys [curr prev]} (get-in req [:params :date-range])]
-                ;; FIXME: for some reason this is run twice on page reload
-                (print "Responding to changed filter, loading stats...")
-                (let [parse-range #(->> %
-                                        (map u/fmt-dt)
-                                        (zipmap [:low :high]))]
-                  (-> [(ajax/GET "/api/performance" {:params (parse-range curr)})
-                       (ajax/GET "/api/performance" {:params (parse-range prev)})]
-                      p/all
-                      (p/then
-                       #(zipmap [:curr :prev] %)))))))})
+              (when-let [range (get-in req [:params :date-range])]
+                ;; FIXME: for some reason this is run twice on page reload.
+                ;; Maybe to do with mutability of momentjs?
+                (print "loading data..." range)
+                (match (get-in req [:params :cascader])
+                  ["total"] (total-perf range)
+                  [type] (campaign-type-perf type range)
+                  [type cmp-id] (campaign-perf cmp-id range)))))})
 
 (def datasources
   {:date-range date-range-datasource
+   :cascader cascader-datasource
    :stats stats-datasource})

@@ -34,7 +34,7 @@
         prev-sum (u/sum kpi (:prev stats))
         delta (u/delta prev-sum sum)
         color "#fa541c"]
-    (pure-draw "비용" (u/int-fmt sum) delta current kpi color false)))
+    (pure-draw "비용" (u/krw sum) delta current kpi color false)))
 
 (defmethod snapshot :revenue [kpi stats]
   (let [current (:curr stats)
@@ -42,7 +42,7 @@
         prev-sum (u/sum kpi (:prev stats))
         delta (u/delta prev-sum sum)
         color "#52c41a"]
-    (pure-draw "매출" (u/int-fmt sum) delta current kpi color false)))
+    (pure-draw "매출" (u/krw sum) delta current kpi color false)))
 
 (defmethod snapshot :roas [kpi stats]
   (let [current (:curr stats)
@@ -55,11 +55,13 @@
     (pure-draw "ROAS" (u/pct-fmt sum) delta current kpi color false)))
 
 (defmethod snapshot :default [kpi title stats]
-  [:div "default"])
+  [ant/card
+   "No render function defined for this key"])
 
 (defn render [ctx data-key]
-  (let [stats (sub> ctx :stats)]
-    [snapshot data-key stats]))
+  (if-let [stats (sub> ctx :stats)]
+    [snapshot data-key stats]
+    [ant/card [ant/icon {:type "loading"}]]))
 
 (def component
   (ui/constructor

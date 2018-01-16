@@ -20,20 +20,22 @@
          (assoc :headers {"Content-Type" "text/html; charset=utf-8"})))))
 
 (s/defschema Perf
-  {:impressions s/Int
-   :revenue s/Int
-   :roas Double
-   :during s/Str
-   :clicks s/Int
-   :profit Double
-   :conversions s/Int
-   :ad_rank_sum s/Int
-   :cost s/Int
-   :cvr Double
-   :ctr Double
-   :customer_id s/Int
+  {(s/optional-key :impressions) s/Int
+   (s/optional-key :revenue) s/Int
+   (s/optional-key :roas) Double
+   (s/optional-key :during) s/Str
+   (s/optional-key :clicks) s/Int
+   (s/optional-key :profit) Double
+   (s/optional-key :conversions) s/Int
+   (s/optional-key :ad_rank_sum) s/Int
+   (s/optional-key :cost) s/Int
+   (s/optional-key :cvr) Double
+   (s/optional-key :ctr) Double
+   (s/optional-key :customer_id) s/Int
    (s/optional-key :campaign_id) s/Str
-   (s/optional-key :campaign) s/Str})
+   (s/optional-key :campaign) s/Str
+   (s/optional-key :campaign_type_id) s/Int
+   (s/optional-key :campaign_type) s/Str})
 
 (def coerce-perf
   (coerce/coercer Perf coerce/json-coercion-matcher))
@@ -58,10 +60,9 @@
        :summary "Total performance"
        :query-params [low :- String high :- String]
        :return [Perf]
-       (ok (into []
-                 (comp
-                  (map (fn [m] (update m :during u/iso-date)))
-                  (map coerce-perf))
+       (ok (into [] (comp
+                     (map (fn [m] (update m :during u/iso-date)))
+                     (map coerce-perf))
                  (db/total-perf-by-date db {:customer-id 777309 :low low :high high}))))
 
      (sweet/GET "/performance/campaign" []
@@ -74,4 +75,16 @@
                  (db/cmp-perf-by-id-date db {:customer-id 777309
                                              :id id
                                              :low low
-                                             :high high})))))))
+                                             :high high}))))
+
+     (sweet/GET "/performance/type" []
+       :summary "Campaign type performance"
+       :query-params [low :- String high :- String type :- String]
+       :return [Perf]
+       (ok (into [] (comp
+                     (map (fn [m] (update m :during u/iso-date)))
+                     (map coerce-perf))
+                 (db/cmp-type-perf db {:customer-id 777309
+                                       :type type
+                                       :low low
+                                       :high high})))))))

@@ -3,20 +3,19 @@
             [keechma.ui-component :as ui]))
 
 (defn render [ctx]
-  (let [breadcrumbs (ui/component ctx :breadcrumbs)
+  (let [breadcrumbs       (ui/component ctx :breadcrumbs)
         date-range-picker (ui/component ctx :date-range-picker)
-        snapshot (ui/component ctx :snapshot)
-        tabbed-charts (ui/component ctx :tabbed-charts)]
+        snapshot          (ui/component ctx :snapshot)
+        tabbed-charts     (ui/component ctx :tabbed-charts)
+        cascader          (ui/component ctx :cascader)]
     [:div
      [:div.content-header
       [breadcrumbs]
       [ant/row
-       [:h2 "검색광고 대쉬보드"]]
+       [:h1 "검색광고 대쉬보드"]]
       [ant/row {:gutter 16 :type "flex" :justify "space-between"}
        [ant/col
-        [:div
-         [ant/icon {:type "filter" :style {:margin-right 8}}]
-         [ant/cascader]]]
+        [cascader]]
        [ant/col
         [date-range-picker]]]]
 
@@ -33,4 +32,5 @@
     :component-deps [:date-range-picker
                      :breadcrumbs
                      :snapshot
-                     :tabbed-charts]}))
+                     :tabbed-charts
+                     :cascader]}))

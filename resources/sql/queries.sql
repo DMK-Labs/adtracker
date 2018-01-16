@@ -7,7 +7,7 @@ select * from adgroup_performance
 where customer_id = :customer-id
 and ad_group_id = :id
 and during between :low::date and :high::date
-
+order by during asc
 
 -- :name cmp-perf-by-id-date :? :*
 -- :doc Selects daily campaign perfs by date and id filters.
@@ -15,9 +15,19 @@ select * from campaign_performance
 where customer_id = :customer-id
 and campaign_id = :id
 and during between :low::date and :high::date
+order by during asc
 
 -- :name total-perf-by-date :? :*
 -- :doc Selects daily total perfs by date.
 select * from total_performance
 where customer_id = :customer-id
 and during between :low::date and :high::date
+order by during asc
+
+-- :name cmp-type-perf :? :*
+-- :doc Selects daily campaign-type perfs by date and name filters.
+select * from campaign_type_performance
+where customer_id = :customer-id
+and campaign_type = :type
+and during between :low::date and :high::date
+order by during asc

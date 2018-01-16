@@ -12,9 +12,7 @@
                :style {:border-right 0}
                :mode "inline"
                :selected-keys [(:page (route> ctx))]
-               :on-click #(ui/redirect
-                           ctx
-                           {:page (:key (js->clj % :keywordize-keys true))})}
+               :on-click #(ui/redirect ctx {:page (:key (js->clj % :keywordize-keys true))})}
 
      [ant/menu-item {:key "dashboard"}
       [ant/icon {:type "dashboard"}]

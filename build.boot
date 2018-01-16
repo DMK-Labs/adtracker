@@ -6,6 +6,7 @@
  :resource-paths #{"resources"}
  :dependencies '[[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.9.946"]
+                 [org.clojure/core.match "0.3.0-alpha5"]
 
                  ;; boot tasks
                  [adzerk/boot-cljs "2.1.3" :scope "test"]
@@ -25,7 +26,7 @@
                  [reagent "0.7.0"]
                  [keechma "0.3.1" :exclusions [cljsjs/react-with-addons]]
                  [keechma/toolbox "0.1.6"]
-                 [antizer "0.2.4-SNAPSHOT"]
+                 [sooheon/antizer "0.2.4-SNAPSHOT"]
                  [reacharts "0.1.0-SNAPSHOT"]
 
                  ;; backend

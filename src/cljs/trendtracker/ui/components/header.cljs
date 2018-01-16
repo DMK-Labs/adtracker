@@ -25,7 +25,8 @@
     :title "알림사항"
     :content (r/as-element
               [ant/list
-               {:dataSource ["최적화 실시: 2018-01-01"]
+               {:dataSource [(str "최적화 실시: " (js/moment))
+                             (str "최적화 실시: " (.subtract (js/moment) 1 "w"))]
                 :renderItem (fn [item]
                               (r/as-element
                                [ant/list-item

@@ -5,8 +5,10 @@
 
 (defn render [ctx]
   [ant/breadcrumb {:style {:margin-bottom 8}}
+   ;; [ant/breadcrumb-item
+   ;;  [:a {:href "http://www.trendtracker.co.kr/"} "TrendTracker"]]
    [ant/breadcrumb-item
-    [:a {:href (ui/url ctx {:page "dashboard"})} "Ad Tracker"]]
+    [:a {:href (ui/url ctx {:page ""})} "Ad Tracker"]]
    [ant/breadcrumb-item
     {:style {:text-transform "capitalize"}}
     (:page (route> ctx))]])

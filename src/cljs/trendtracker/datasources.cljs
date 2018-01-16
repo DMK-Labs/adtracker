@@ -67,19 +67,20 @@
   changes."
   {:target [:kv :stats]
    :deps [:date-range :cascader]
-   :params (fn [prev _ {:keys [date-range cascader]}]
-             {:date-range date-range
-              :cascader cascader})
+   :params (fn [_ _ deps]
+             (select-keys deps [:date-range :cascader]))
    :loader (map-loader
             (fn [req]
-              (when-let [range (get-in req [:params :date-range])]
-                ;; FIXME: for some reason this is run twice on page reload.
-                ;; Maybe to do with mutability of momentjs?
-                (print "loading data..." range)
-                (match (get-in req [:params :cascader])
-                  ["total"] (total-perf range)
-                  [type] (campaign-type-perf type range)
-                  [type cmp-id] (campaign-perf cmp-id range)))))})
+              (let [range (get-in req [:params :date-range])
+                    casc (get-in req [:params :cascader])]
+                (when (and (seq range) (seq casc))
+                  ;; FIXME: for some reason this is run twice on page reload.
+                  ;; Maybe to do with mutability of momentjs?
+                  (print "loading data..." range casc)
+                  (match casc
+                    ["total"] (total-perf range)
+                    [type] (campaign-type-perf type range)
+                    [type cmp-id] (campaign-perf cmp-id range))))))})
 
 (def datasources
   {:date-range date-range-datasource

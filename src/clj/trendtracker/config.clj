@@ -18,4 +18,7 @@
                                   "/"
                                   (env :db-name))
                 :user        (env :db-user)
-                :password    (env :db-password)}})
+                :password    (env :db-password)}
+   :naver-creds {:customer-id 719425
+                 :access-key (env :x-api-key)
+                 :private-key (env :x-private-key)}})

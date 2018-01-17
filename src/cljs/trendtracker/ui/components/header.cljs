@@ -39,11 +39,11 @@
 (defn render [ctx]
   [ant/affix {:style {:height "56px"}}
    [ant/layout-header
-    [:a {:href (ui/url ctx {:page "dashboard"})}
+    [:a {:href "http://trendtracker.co.kr"}
      [:img {:src "/img/logo/tt-logo.png"
-            :style {:height 35 :width 160}}]]
+            :style {:height 34 :width 152}}]]
     [:div {:style {:float "right"}}
-     "NineBridge, Inc."
+     [:span "NineBridge, Inc."]
      [ant/divider {:type "vertical"}]
      [user ctx]
      [notifications ctx]]]])

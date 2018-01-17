@@ -7,7 +7,8 @@
         date-range-picker (ui/component ctx :date-range-picker)
         snapshot          (ui/component ctx :snapshot)
         tabbed-charts     (ui/component ctx :tabbed-charts)
-        cascader          (ui/component ctx :cascader)]
+        cascader          (ui/component ctx :cascader)
+        scatter-chart     (ui/component ctx :scatter-chart)]
     [:div
      [:div.content-header
       [breadcrumbs]
@@ -24,7 +25,8 @@
        [ant/col {:md 8 :sm 12} [snapshot :cost]]
        [ant/col {:md 8 :sm 12} [snapshot :revenue]]
        [ant/col {:md 8 :sm 12} [snapshot :roas]]]
-      [ant/row [tabbed-charts]]]]))
+      [ant/row [tabbed-charts]]
+      [ant/row [scatter-chart]]]]))
 
 (def component
   (ui/constructor
@@ -33,4 +35,5 @@
                      :breadcrumbs
                      :snapshot
                      :tabbed-charts
-                     :cascader]}))
+                     :cascader
+                     :scatter-chart]}))

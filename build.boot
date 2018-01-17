@@ -26,6 +26,7 @@
                  [reagent "0.7.0"]
                  [keechma "0.3.1" :exclusions [cljsjs/react-with-addons]]
                  [keechma/toolbox "0.1.7"]
+                 [keechma/forms "0.1.3"]
                  [sooheon/antizer "0.2.4-SNAPSHOT"]
                  [reacharts "0.1.0-SNAPSHOT"]
 
@@ -36,6 +37,7 @@
                  [com.layerware/hugsql "0.4.8"]
                  [ring-middleware-format "0.7.2"]
                  [clojure.java-time "0.3.1"]
+                 [naver-searchad "0.1.0-SNAPSHOT"]
 
                  ;; added by chestnut
                  [com.cognitect/transit-clj "0.8.300"]

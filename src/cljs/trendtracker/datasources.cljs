@@ -52,10 +52,10 @@
       (p/then
        #(zipmap [:curr :prev] %))))
 
-(def stats-datasource
+(def daily-stats-datasource
   "Stats depend on the date-range, so it will be reloaded whenever date-range
   changes."
-  {:target [:kv :stats]
+  {:target [:kv :daily-stats]
    :deps [:date-range :cascader]
    :params (fn [_ _ deps]
              (select-keys deps [:date-range :cascader]))
@@ -69,6 +69,14 @@
                     [type] (campaign-type-perf type range)
                     [type cmp-id] (campaign-perf cmp-id range))))))})
 
+(def aggregate-stats-datasource
+  {:target [:kv :aggregate-stats]
+   :params (constantly true)
+   :loader (map-loader
+            (fn [req]
+              (let [date-range-param (get-in req [:params :date-range])]
+                (ajax/GET "/api/stats/aggregate-segmented"))))})
+
 (def datasources
   {:date-range {:target [:kv :date-range]
                 :params (fn [prev _ _]
@@ -78,4 +86,5 @@
               :params (fn [prev _ _]
                         (:data prev))
               :loader pass-through-params}
-   :stats stats-datasource})
+   :daily-stats daily-stats-datasource
+   :aggregate-stats aggregate-stats-datasource})

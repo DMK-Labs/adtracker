@@ -59,11 +59,11 @@
    "No render function defined for this key"])
 
 (defn render [ctx data-key]
-  (if-let [stats (sub> ctx :stats)]
-    [snapshot data-key stats]
-    [ant/card [ant/icon {:type "loading"}]]))
+  (let [stats (sub> ctx :daily-stats)]
+    [ant/spin {:spinning (empty? stats)}
+     [snapshot data-key stats]]))
 
 (def component
   (ui/constructor
-   {:renderer render
-    :subscription-deps [:stats]}))
+    {:renderer render
+    :subscription-deps [:daily-stats]}))

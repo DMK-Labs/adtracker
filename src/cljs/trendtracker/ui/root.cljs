@@ -4,7 +4,8 @@
             [keechma.ui-component :as ui]))
 
 (defn render [ctx]
-  (let [current-page (:page (route> ctx))]
+  (let [current-page (:page (route> ctx))
+        subpage (:subpage (route> ctx))]
     (if (= "login" current-page)
       [(ui/component ctx :login-page)]
       [ant/layout {:style {:min-height "calc(100vh)"}}
@@ -16,7 +17,9 @@
           (case current-page
             "user"         [(ui/component ctx :user-page)]
             "dashboard"    [(ui/component ctx :dashboard-page)]
-            "optimize"     [(ui/component ctx :optimize-page)]
+            "optimize"     (if subpage
+                             [(ui/component ctx :optimize-new-page)]
+                             [(ui/component ctx :optimize-page)])
             "keyword-tool" [(ui/component ctx :keyword-tool-page)]
             "overview"     [(ui/component ctx :overview-page)]
             [:div.content "404: page not found"])]
@@ -31,6 +34,7 @@
                      :login-page
                      :dashboard-page
                      :optimize-page
+                     :optimize-new-page
                      :user-page
                      :keyword-tool-page
                      :overview-page]}))

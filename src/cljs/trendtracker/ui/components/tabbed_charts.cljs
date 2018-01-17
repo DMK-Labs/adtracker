@@ -20,7 +20,7 @@
 
 (defn chart [data data-key]
   (let [line-opts {:type "monotone" :stroke "#1890ff" :dot nil}]
-    [recharts/responsive-container {:height 252}
+    [recharts/responsive-container {:height 240}
      [recharts/composed-chart {:data data}
       [recharts/x-axis {:dataKey :during}]
       [recharts/y-axis]
@@ -30,7 +30,7 @@
       [recharts/tooltip]]]))
 
 (defn tabbed-charts [ctx]
-  (let [stats (sub> ctx :stats)
+  (let [stats (sub> ctx :daily-stats)
         data (:curr stats)
         prev-data (:prev stats)
 
@@ -49,27 +49,26 @@
         joined (map merge
                     data
                     (map #(u/prefix-keys % "prev-") prev-data))]
-    [ant/card
-     (if stats
-       [ant/tabs
-        [ant/tabs-tab-pane
-         {:key "1" :tab (tab-title "노출수" impressions (u/delta pimpressions impressions))}
-         [chart joined :impressions]]
-        [ant/tabs-tab-pane
-         {:key "2" :tab (tab-title "클릭률 (CTR)" ctr (u/delta pctr ctr))}
-         [chart joined :ctr]]
-        [ant/tabs-tab-pane
-         {:key "3" :tab (tab-title "클릭수" clicks (u/delta pclicks clicks))}
-         [chart joined :clicks]]
-        [ant/tabs-tab-pane
-         {:key "4" :tab (tab-title "전환률 (CVR)" cvr (u/delta pcvr cvr))}
-         [chart joined :cvr]]
-        [ant/tabs-tab-pane
-         {:key "5" :tab (tab-title "전환수" conversions (u/delta pconversions conversions))}
-         [chart joined :conversions]]]
-       [ant/icon {:type "loading"}])]))
+    [ant/spin {:spinning (empty? stats)}
+     [ant/card
+      [ant/tabs
+       [ant/tabs-tab-pane
+        {:key "1" :tab (tab-title "노출수" impressions (u/delta pimpressions impressions))}
+        [chart joined :impressions]]
+       [ant/tabs-tab-pane
+        {:key "2" :tab (tab-title "클릭률 (CTR)" ctr (u/delta pctr ctr))}
+        [chart joined :ctr]]
+       [ant/tabs-tab-pane
+        {:key "3" :tab (tab-title "클릭수" clicks (u/delta pclicks clicks))}
+        [chart joined :clicks]]
+       [ant/tabs-tab-pane
+        {:key "4" :tab (tab-title "전환률 (CVR)" cvr (u/delta pcvr cvr))}
+        [chart joined :cvr]]
+       [ant/tabs-tab-pane
+        {:key "5" :tab (tab-title "전환수" conversions (u/delta pconversions conversions))}
+        [chart joined :conversions]]]]]))
 
 (def component
   (ui/constructor
-   {:renderer tabbed-charts
-    :subscription-deps [:stats]}))
+    {:renderer tabbed-charts
+    :subscription-deps [:daily-stats]}))

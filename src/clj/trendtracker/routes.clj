@@ -2,10 +2,13 @@
   (:require [clojure.java.io :as io]
             [compojure.api.sweet :as sweet]
             [compojure.route :refer [resources]]
+            [naver-searchad.api.adgroup :as naver-adgroup]
+            [naver-searchad.api.stats :as naver-stats]
             [ring.util.http-response :refer [ok]]
             [ring.util.response :refer [response]]
             [schema.coerce :as coerce]
             [schema.core :as s]
+            [trendtracker.config :refer [config]]
             [trendtracker.db :as db]
             [trendtracker.utils :as u]))
 
@@ -87,4 +90,31 @@
                  (db/cmp-type-perf db {:customer-id 777309
                                        :type type
                                        :low low
-                                       :high high})))))))
+                                       :high high}))))
+
+     ;; Aggregate
+     (sweet/GET "/stats/aggregate-segmented" []
+       :summary "Forwards to Naver API"
+       (ok
+        (let [creds (assoc (:naver-creds config)
+                           :customer-id 777309)
+              ids (->> (naver-adgroup/all creds)
+                       (filter #(= "ELIGIBLE" (:status %)))
+                       (map :nccAdgroupId))]
+          (naver-stats/by-id
+           creds
+           {:ids ids
+            :fields naver-stats/default-fields
+            :date-preset :last30days})))))))
+
+(comment
+  (let [creds (assoc (:naver-creds config)
+                     :customer-id 777309)
+        ids (->> (naver-adgroup/all creds)
+                 (filter #(= "ELIGIBLE" (:status %)))
+                 (map :nccAdgroupId))]
+    (naver-stats/by-id
+     creds
+     {:ids ids
+      :fields naver-stats/default-fields
+      :date-preset :last30days})))

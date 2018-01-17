@@ -11,4 +11,4 @@
 
 (def subscriptions
   (merge (dataloader/make-subscriptions datasources edb-schema)
-         {:initialized? (get-kv :initialized?)}))
+         {}))

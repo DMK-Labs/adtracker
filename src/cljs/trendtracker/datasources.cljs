@@ -16,16 +16,6 @@
   (map-loader
    (fn [req] (:params req))))
 
-(def date-range-datasource
-  {:target [:kv :date-range]
-   :params (fn [prev _ _] (:data prev))
-   :loader pass-through-params})
-
-(def cascader-datasource
-  {:target [:kv :cascader]
-   :params (fn [prev _ _] (:data prev))
-   :loader pass-through-params})
-
 (defn parse-date-range
   "`dates` are a vector pair of js/moments
   [moment moment] => {:low str :high str}"
@@ -74,15 +64,18 @@
               (let [range (get-in req [:params :date-range])
                     casc (get-in req [:params :cascader])]
                 (when (and (seq range) (seq casc))
-                  ;; FIXME: for some reason this is run twice on page reload.
-                  ;; Maybe to do with mutability of momentjs?
-                  (print "loading data..." range casc)
                   (match casc
                     ["total"] (total-perf range)
                     [type] (campaign-type-perf type range)
                     [type cmp-id] (campaign-perf cmp-id range))))))})
 
 (def datasources
-  {:date-range date-range-datasource
-   :cascader cascader-datasource
+  {:date-range {:target [:kv :date-range]
+                :params (fn [prev _ _]
+                          (:data prev))
+                :loader pass-through-params}
+   :cascader {:target [:kv :cascader]
+              :params (fn [prev _ _]
+                        (:data prev))
+              :loader pass-through-params}
    :stats stats-datasource})

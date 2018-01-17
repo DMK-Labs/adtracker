@@ -3,12 +3,14 @@
             [keechma.toolbox.pipeline.controller :as pl-controller]
             [keechma.toolbox.pipeline.core :as pl :refer-macros [pipeline!]]))
 
+(defn set-cascader [app-db value]
+  (assoc-in app-db [:kv :cascader] value))
+
 (def controller
   (pl-controller/constructor
-   (constantly true)
-   {:start (pipeline! [_ _]
-             (pl/execute! :set ["total"]))
-    :set (pipeline! [value app-db]
-           (pl/commit!
-            (assoc-in app-db [:kv :cascader] value))
-           (dataloader-controller/run-dataloader!))}))
+    {:params (constantly true)
+     :start (fn [_ _ app-db]
+              (set-cascader app-db ["total"]))}
+    {:set (pipeline! [value app-db]
+            (pl/commit! (set-cascader app-db value))
+            (dataloader-controller/run-dataloader!))}))

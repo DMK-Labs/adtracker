@@ -14,21 +14,23 @@
    "지난 28일" (preset 28)
    "지난 90일" (preset 90)
    "지난 달" [(.startOf (.subtract (js/moment) 1 "M") "M")
-              (.endOf (.subtract (js/moment) 1 "M") "M")]})
+           (.endOf (.subtract (js/moment) 1 "M") "M")]})
 
 (defn prev-range [[low high]]
   (let [num-days (inc (.diff high low "days"))]
     [(.subtract (js/moment low) num-days "d")
      (.subtract (js/moment low) 1 "d")]))
 
+(defn set-ranges [app-db curr]
+  (assoc-in app-db [:kv :date-range]
+            {:curr curr
+             :prev (prev-range curr)}))
+
 (def controller
   (pl-controller/constructor
-   (constantly true)
-   {:start (pipeline! [_ _]
-             (pl/execute! :set (preset 90)))
-    :set (pipeline! [value app-db]
-           (pl/commit!
-            (assoc-in app-db [:kv :date-range]
-                      {:curr value
-                       :prev (prev-range value)}))
-           (dataloader-controller/run-dataloader!))}))
+    {:params (constantly true)
+     :start (fn [_ _ app-db]
+              (set-ranges app-db (preset 90)))}
+    {:set (pipeline! [value app-db]
+            (pl/commit! (set-ranges app-db value))
+            (dataloader-controller/run-dataloader!))}))

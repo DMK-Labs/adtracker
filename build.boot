@@ -25,7 +25,7 @@
                  [metosin/compojure-api "2.0.0-alpha17"]
                  [reagent "0.7.0"]
                  [keechma "0.3.1" :exclusions [cljsjs/react-with-addons]]
-                 [keechma/toolbox "0.1.6"]
+                 [keechma/toolbox "0.1.7"]
                  [sooheon/antizer "0.2.4-SNAPSHOT"]
                  [reacharts "0.1.0-SNAPSHOT"]
 
@@ -75,7 +75,6 @@
 (deftask dev
   "This is the main development entry point."
   []
-  (set-env! :source-paths #(conj % "dev"))
   ;; Needed by tools.namespace to know where the source files are
   (apply clojure.tools.namespace.repl/set-refresh-dirs (get-env :directories))
   (require 'trendtracker.application)
@@ -89,7 +88,8 @@
    ;; this is also the server repl!
    (cljs-repl :nrepl-opts {:client false
                            :port repl-port
-                           :init-ns 'user})
+                           ;; :init-ns 'user
+                           })
    (cljs :optimizations :none)
    (target)))
 
@@ -110,4 +110,4 @@
    (pom)
    (uber)
    (jar)
-   (target)))
+   (target :no-clean true)))

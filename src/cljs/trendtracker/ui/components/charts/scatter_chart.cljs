@@ -1,4 +1,4 @@
-(ns trendtracker.ui.components.scatter-chart
+(ns trendtracker.ui.components.charts.scatter-chart
   (:require [antizer.reagent :as ant]
             [keechma.ui-component :as ui]
             [reacharts.recharts :as recharts]
@@ -19,7 +19,7 @@
          [recharts/label {:value "Impressions" :position "insideLeft" :offset 0 :angle -90}]]
         [recharts/z-axis {:dataKey :salesAmt :range [30 600]}]
         [recharts/scatter
-         { ;; :isAnimationActive false
+         {:isAnimationActive true
           :data data
           :stroke "#1890ff" :fill "#bae7ff"}]]]]]))
 

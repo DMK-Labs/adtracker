@@ -3,51 +3,33 @@
             [keechma.toolbox.dataloader.subscriptions :refer [map-loader]]
             [promesa.core :as p]
             [trendtracker.utils :as u]
-            [cljs.core.match :refer-macros [match]]))
-
-(def default-request-config
-  {:response-format :json
-   :keywords? true
-   :format :json})
-
-(def ignore-datasource :keechma.toolbox.dataloader.core/ignore)
+            [cljs.core.match :refer-macros [match]]
+            [trendtracker.api :as api]))
 
 (def pass-through-params
   (map-loader
    (fn [req] (:params req))))
 
-(defn parse-date-range
-  "`dates` are a vector pair of js/moments
-  [moment moment] => {:low str :high str}"
-  [dates]
-  (->> dates
-       (map u/fmt-dt)
-       (zipmap [:low :high])))
-
 (defn total-perf
   [range]
-  (-> [(ajax/GET "/api/performance" {:params (parse-date-range (:curr range))})
-       (ajax/GET "/api/performance" {:params (parse-date-range (:prev range))})]
+  (-> [(api/total-performance (:curr range))
+       (api/total-performance (:prev range))]
       p/all
       (p/then
        #(zipmap [:curr :prev] %))))
 
 (defn campaign-perf
   [id range]
-  (-> [(ajax/GET "/api/performance/campaign"
-                 {:params (assoc (parse-date-range (:curr range)) :id id)})
-       (ajax/GET "/api/performance/campaign"
-                 {:params (assoc (parse-date-range (:prev range)) :id id)})]
+  (-> [(api/campaign-performance (:curr range) id)
+       (api/campaign-performance (:prev range) id)]
       p/all
       (p/then
        #(zipmap [:curr :prev] %))))
 
 (defn campaign-type-perf
   [type range]
-  (-> [(ajax/GET "/api/performance/type"
-                 {:params (assoc (parse-date-range (:curr range)) :type type)})
-       (ajax/GET "/api/performance/type"
-                 {:params (assoc (parse-date-range (:prev range)) :type type)})]
+  (-> [(api/campaign-type-performance (:curr range) type)
+       (api/campaign-type-performance (:prev range) type)]
       p/all
       (p/then
        #(zipmap [:curr :prev] %))))
@@ -73,9 +55,8 @@
   {:target [:kv :aggregate-stats]
    :params (constantly true)
    :loader (map-loader
-            (fn [req]
-              (let [date-range-param (get-in req [:params :date-range])]
-                (ajax/GET "/api/stats/aggregate-segmented"))))})
+             (fn [req]
+               (ajax/GET "/api/stats/aggregate-segmented")))})
 
 (def datasources
   {:date-range {:target [:kv :date-range]

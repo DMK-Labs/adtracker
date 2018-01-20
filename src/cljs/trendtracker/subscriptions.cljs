@@ -1,6 +1,7 @@
 (ns trendtracker.subscriptions
   (:require [keechma.toolbox.dataloader.subscriptions :as dataloader]
             [trendtracker.datasources :refer [datasources]]
+            [keechma.toolbox.forms.helpers :as forms-helpers]
             [trendtracker.edb :refer [edb-schema]])
   (:require-macros [reagent.ratom :refer [reaction]]))
 
@@ -10,5 +11,6 @@
      (get-in @app-db-atom (flatten [:kv key])))))
 
 (def subscriptions
-  (merge (dataloader/make-subscriptions datasources edb-schema)
-         {}))
+  (merge {:form-state forms-helpers/form-state-sub
+          :keyword-tool (get-kv :keyword-tool)}
+         (dataloader/make-subscriptions datasources edb-schema)))

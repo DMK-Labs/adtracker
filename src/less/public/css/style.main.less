@@ -1,5 +1,5 @@
 .ant-layout-header {
-    padding: 0 24px 0 32px;
+    padding: 0 24px 0 24px;
     background-color: #fff;
     position: relative;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.04), 0 5px 10px rgba(0, 0, 0, 0.08);
@@ -73,4 +73,27 @@
 // vertical margin between cards in content
 .content .ant-row .ant-card {
     margin-bottom: 16px;
+}
+
+
+// New Optimization Step 2
+.totals {
+    display: flex;
+    flex-direction: row;
+    padding: 16px 32px 16px;
+    justify-content: center;
+    list-style: none;
+    margin: 0;
+}
+
+.total {
+    padding: 0 20px;
+    margin: 0;
+    text-align: center;
+    flex: 1 1 50%;
+    display: list-item;
+}
+
+.total p {
+    margin-bottom: 0;
 }

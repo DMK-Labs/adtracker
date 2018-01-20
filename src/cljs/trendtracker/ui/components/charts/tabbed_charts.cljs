@@ -1,4 +1,4 @@
-(ns trendtracker.ui.components.tabbed-charts
+(ns trendtracker.ui.components.charts.tabbed-charts
   (:require [antizer.reagent :as ant]
             [keechma.toolbox.ui :refer [sub>]]
             [keechma.ui-component :as ui]

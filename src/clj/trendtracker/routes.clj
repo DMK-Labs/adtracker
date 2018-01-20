@@ -10,7 +10,8 @@
             [schema.core :as s]
             [trendtracker.config :refer [config]]
             [trendtracker.db :as db]
-            [trendtracker.utils :as u]))
+            [trendtracker.utils :as u]
+            [trendtracker.ad.keyword-tool :as keyword-tool]))
 
 (defn app-routes [endpoint]
   (sweet/routes
@@ -105,16 +106,10 @@
            creds
            {:ids ids
             :fields naver-stats/default-fields
-            :date-preset :last30days})))))))
+            :date-preset :last30days}))))
 
-(comment
-  (let [creds (assoc (:naver-creds config)
-                     :customer-id 777309)
-        ids (->> (naver-adgroup/all creds)
-                 (filter #(= "ELIGIBLE" (:status %)))
-                 (map :nccAdgroupId))]
-    (naver-stats/by-id
-     creds
-     {:ids ids
-      :fields naver-stats/default-fields
-      :date-preset :last30days})))
+     ;; Keyword-tool
+     (sweet/POST "/keyword-tool" []
+       :body [keywords [s/Str]]
+       (ok
+        (keyword-tool/fp keywords))))))

@@ -4,10 +4,10 @@
             [trendtracker.ui.components.date-range :as date-range]
             [trendtracker.ui.components.footer :as footer]
             [trendtracker.ui.components.header :as header]
-            [trendtracker.ui.components.scatter-chart :as scatter-chart]
+            [trendtracker.ui.components.charts.scatter-chart :as scatter-chart]
             [trendtracker.ui.components.sider :as sider]
             [trendtracker.ui.components.snapshot :as snapshot]
-            [trendtracker.ui.components.tabbed-charts :as tabbed-charts]
+            [trendtracker.ui.components.charts.tabbed-charts :as tabbed-charts]
             [trendtracker.ui.pages.dashboard :as dashboard]
             [trendtracker.ui.pages.keyword-tool :as keyword-tool]
             [trendtracker.ui.pages.login :as login]
@@ -15,7 +15,12 @@
             [trendtracker.ui.pages.optimize-new :as optimize-new]
             [trendtracker.ui.pages.overview :as overview]
             [trendtracker.ui.pages.user :as user]
-            [trendtracker.ui.root :as root]))
+            [trendtracker.ui.root :as root]
+            [trendtracker.ui.components.optimize.budgeting :as budgeting]
+            [trendtracker.ui.components.optimize.objective :as objective]
+            [trendtracker.ui.components.optimize.detail :as detail]
+            [trendtracker.ui.components.optimize.portfolio :as portfolio]
+            [trendtracker.ui.components.charts.conversion-funnel :as conversion-funnel]))
 
 (def ui
   {
@@ -32,6 +37,11 @@
    :tabbed-charts tabbed-charts/component
    :cascader cascader/component
    :scatter-chart scatter-chart/component
+   :conversion-funnel conversion-funnel/component
+   :budgeting budgeting/component
+   :objective objective/component
+   :detail detail/component
+   :portfolio portfolio/component
 
    ;; Pages
    :login-page login/component

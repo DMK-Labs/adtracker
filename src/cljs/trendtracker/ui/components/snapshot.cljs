@@ -17,7 +17,7 @@
     [recharts/responsive-container {:height 42}
      [recharts/composed-chart {:data data}
       [recharts/tooltip]
-      [(if (> (count data) 14) recharts/area recharts/bar)
+      [(if (> (count data) 12) recharts/area recharts/bar)
        {:type :monotone
         :dataKey k
         :dot nil

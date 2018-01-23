@@ -30,7 +30,7 @@
   (pl-controller/constructor
     {:params (constantly true)
      :start (fn [_ _ app-db]
-              (set-ranges app-db (preset 90)))}
+              (set-ranges app-db (preset 14)))}
     {:set (pipeline! [value app-db]
             (pl/commit! (set-ranges app-db value))
             (dataloader-controller/run-dataloader!))}))

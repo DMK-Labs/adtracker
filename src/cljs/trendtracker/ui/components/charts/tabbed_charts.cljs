@@ -7,7 +7,7 @@
             [trendtracker.ui.components.common :as common]
             [trendtracker.utils :as u]))
 
-(defn tab-title
+(defn title
   [title int-or-pct delta]
   (r/as-element
    [:div
@@ -53,19 +53,23 @@
      [ant/card
       [ant/tabs
        [ant/tabs-tab-pane
-        {:key "1" :tab (tab-title "노출수" impressions (u/delta pimpressions impressions))}
+        {:key "1" :tab (title "노출수" impressions (u/delta pimpressions impressions))}
         [chart joined :impressions]]
+
        [ant/tabs-tab-pane
-        {:key "2" :tab (tab-title "클릭률 (CTR)" ctr (u/delta pctr ctr))}
+        {:key "2" :tab (title "클릭률 (CTR)" ctr (u/delta pctr ctr))}
         [chart joined :ctr]]
+
        [ant/tabs-tab-pane
-        {:key "3" :tab (tab-title "클릭수" clicks (u/delta pclicks clicks))}
+        {:key "3" :tab (title "클릭수" clicks (u/delta pclicks clicks))}
         [chart joined :clicks]]
+
        [ant/tabs-tab-pane
-        {:key "4" :tab (tab-title "전환률 (CVR)" cvr (u/delta pcvr cvr))}
+        {:key "4" :tab (title "전환률 (CVR)" cvr (u/delta pcvr cvr))}
         [chart joined :cvr]]
+
        [ant/tabs-tab-pane
-        {:key "5" :tab (tab-title "전환수" conversions (u/delta pconversions conversions))}
+        {:key "5" :tab (title "전환수" conversions (u/delta pconversions conversions))}
         [chart joined :conversions]]]]]))
 
 (def component

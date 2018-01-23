@@ -28,8 +28,8 @@
 
 (defn campaign-type-perf
   [type range]
-  (-> [(api/campaign-type-performance (:curr range) type)
-       (api/campaign-type-performance (:prev range) type)]
+  (-> [(api/campaign-type-performance type (:curr range))
+       (api/campaign-type-performance type (:prev range))]
       p/all
       (p/then
        #(zipmap [:curr :prev] %))))
@@ -56,7 +56,8 @@
    :params (constantly true)
    :loader (map-loader
              (fn [req]
-               (ajax/GET "/api/stats/aggregate-segmented")))})
+               ;; (ajax/GET "/api/stats/aggregate-segmented")
+               ))})
 
 (def datasources
   {:date-range {:target [:kv :date-range]

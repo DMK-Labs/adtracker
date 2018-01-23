@@ -29,7 +29,8 @@
              :value (sub> ctx :cascader)
              :changeOnSelect true
              :onChange #(<cmd ctx :set (js->clj %))
-             :options portfolio-tree}
+             :options portfolio-tree
+             :allowClear false}
             opts)]]))
 
 (def component

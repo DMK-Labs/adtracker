@@ -11,7 +11,8 @@
             [trendtracker.config :refer [config]]
             [trendtracker.db :as db]
             [trendtracker.utils :as u]
-            [trendtracker.ad.keyword-tool :as keyword-tool]))
+            [trendtracker.ad.keyword-tool :as keyword-tool]
+            [clojure.set :as set]))
 
 (defn app-routes [endpoint]
   (sweet/routes
@@ -46,21 +47,21 @@
 
 (defn api-routes [{db :db}]
   (sweet/api
-   {:swagger
+    {:swagger
     {:ui "/api-docs"
      :spec "/swagger.json"
      :data {:info {:title "Trend Tracker API"
                    :description "Use it or lose it."}}}}
 
-   (sweet/context "/api" []
-     :tags ["api"]
+    (sweet/context "/api" []
+      :tags ["api"]
 
-     (sweet/GET "/plus" []
+      (sweet/GET "/plus" []
        :summary "adding two numbers"
        :query-params [x :- Long y :- Long]
        (ok {:result (+ x y)}))
 
-     (sweet/GET "/performance" []
+      (sweet/GET "/performance" []
        :summary "Total performance"
        :query-params [low :- String high :- String]
        :return [Perf]
@@ -69,7 +70,7 @@
                      (map coerce-perf))
                  (db/total-perf-by-date db {:customer-id 777309 :low low :high high}))))
 
-     (sweet/GET "/performance/campaign" []
+      (sweet/GET "/performance/campaign" []
        :summary "Campaign performance"
        :query-params [low :- String high :- String id :- String]
        :return [Perf]
@@ -81,7 +82,7 @@
                                              :low low
                                              :high high}))))
 
-     (sweet/GET "/performance/type" []
+      (sweet/GET "/performance/type" []
        :summary "Campaign type performance"
        :query-params [low :- String high :- String type :- String]
        :return [Perf]
@@ -93,8 +94,8 @@
                                        :low low
                                        :high high}))))
 
-     ;; Aggregate
-     (sweet/GET "/stats/aggregate-segmented" []
+      ;; Aggregate
+      (sweet/GET "/stats/aggregate-segmented" []
        :summary "Forwards to Naver API"
        (ok
         (let [creds (assoc (:naver-creds config)
@@ -108,8 +109,11 @@
             :fields naver-stats/default-fields
             :date-preset :last30days}))))
 
-     ;; Keyword-tool
-     (sweet/POST "/keyword-tool" []
-       :body [keywords [s/Str]]
-       (ok
-        (keyword-tool/fp keywords))))))
+      ;; Keyword-tool
+      (sweet/POST "/keyword-tool" []
+        :return s/Any
+        :body-params [keywords]
+        (ok (set/join (keyword-tool/first-place keywords)
+                      (keyword-tool/fifth-place keywords)
+                      {:keyword :keyword
+                       :device :device}))))))

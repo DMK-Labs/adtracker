@@ -17,4 +17,5 @@
 
 (def component
   (ui/constructor
-   {:renderer render}))
+   {:renderer render
+    :subscription-deps [:form-state]}))

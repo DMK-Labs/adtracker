@@ -40,15 +40,15 @@
     true))
 
 (def types
-  {:not-empty {:message "Value can't be empty"
+  {:not-empty {:message "공백이면 안됩니다."
                :validator not-empty?}
-   :bool {:message "Value must be true or false"
+   :bool {:message "True 또는 False를 선택하셔야 합니다."
           :validator bool?}
-   :url {:message "Value is not a valid URL"
+   :url {:message "정상적인 URL이 아닙니다."
          :validator url?}
-   :email {:message "Value is not a valid email"
+   :email {:message "정상적인 Email이 아닙니다."
            :validator email?}
-   :email-confirmation {:message "Email doesn't match email confirmation"
+   :email-confirmation {:message "Email 주소가 일치하지 않습니다."
                         :validator (fn [_ data _]
                                      (let [email (:email data)
                                            email-confirmation (:email-confirmation data)]

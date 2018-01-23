@@ -18,14 +18,14 @@
 
 (defn campaign-performance [dates id]
   (ajax/GET "/api/performance/campaign"
-            {:params (parse-date-range dates)
-             :id id}))
+            {:params (assoc (parse-date-range dates)
+                            :id id)}))
 
-(defn campaign-type-performance [dates type]
+(defn campaign-type-performance [type dates]
   (ajax/GET "/api/performance/type"
-            {:params (parse-date-range dates)
-             :type type}))
+            {:params (assoc (parse-date-range dates)
+                            :type type)}))
 
 (defn first-place-stats [keywords]
   (ajax/POST "/api/keyword-tool"
-             {:body keywords}))
+             {:params {:keywords keywords}}))

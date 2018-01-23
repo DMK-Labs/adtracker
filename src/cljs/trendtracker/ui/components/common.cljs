@@ -12,14 +12,17 @@
      [:div
       {:style {:min-width 90
                :color (if down-is-good?
-                        (if (pos? d) "#ff4d4f" "#52c41a")
-                        (if (pos? d) "#52c41a" "#ff4d4f"))}}
+                        (if (pos? d) "#f5222d" "#389e0d")
+                        (if (pos? d) "#389e0d" "#f5222d"))
+               :margin-bottom 3}}
       [:span (u/pct-fmt 2 d)]
       [ant/icon {:type (if (pos? d)
                          "arrow-up"
                          "arrow-down")}]])))
 
-(defn title-w-info [title]
+(defn title-w-info [title info]
   (r/as-element
-    [:div title [ant/icon {:type "info-circle-o"
-                           :style {:margin-left 8}}]]))
+   [:div title
+    [ant/tooltip {:title info}
+     [ant/icon {:type "info-circle-o"
+                :style {:margin-left 8}}]]]))

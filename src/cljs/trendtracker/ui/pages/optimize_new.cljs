@@ -6,40 +6,11 @@
             [trendtracker.utils :as u]
             [reacharts.recharts :as recharts]))
 
-(defn request-optimization [ctx _]
-  (do
-    (ui/redirect ctx {:page "optimize"})
-    (ant/notification-success
-      {:message "최적화 실시"
-       :description "AdTracker는 고객님의 입찰 광고 캠페인의 효율을 극대화 하기 위한 최적화를 실시하고 있습니다."})))
-
-(defn button-row [ctx route step]
-  [ant/row
-   [ant/button-group
-    (if (zero? step)
-      [ant/button
-       {:on-click #(ui/redirect ctx {:page "optimize"})
-        :type "danger"}
-       "취소"]
-      [ant/button
-       {:on-click #(ui/redirect ctx (update route :step (comp dec js/parseInt)))
-        :icon "left"}
-       "이전"])
-    (when (< step 2)
-      [ant/button
-       {:on-click #(ui/redirect ctx (update route :step (comp inc js/parseInt)))
-        :type "primary"}
-       "다음" [ant/icon {:type "right"}]])
-    (when (= step 2)
-      [ant/button
-       {:on-click #(request-optimization ctx %)
-        :type "primary"
-        :icon "rocket"}
-       "자동 최적화 실시"])]])
-
 (defn render [ctx]
   (let [route (route> ctx)
         step (dec (js/parseInt (:step route)))
+
+        breadcrumbs (ui/component ctx :breadcrumbs)
         objective (ui/component ctx :objective)
         budgeting (ui/component ctx :budgeting)
         detail (ui/component ctx :detail)
@@ -48,22 +19,25 @@
                {:title "세부 지표 확인" :content [detail]}]]
     [:div
      [:div.content-header
+      [breadcrumbs]
       [ant/row [:h1 "네이버 검색광고 입찰 최적화"]]
-      [ant/row [:p "최적화를 진행합니다. 원하시는 월 예산 한도와 최대화 하고 싶은 지표를 고시오."]]
+      [ant/row
+       (case step
+         0 [:p "최적화를 진행할 목표 지표와, 대상 캠페인을 선택하십시오."]
+         1 [:p "Slider를 움직이면 예측되는 30일간 예산과 해당 (예측) 성과 지표들을 확인할 수 있습니다."]
+         2 [:p "각 키워드, 광고별 변경 사항을 확인하신 후 \"자동 최적화 실시\" 버튼을 누르십시오. 앞으로는 설정하신 캠페인, 목표 지표 대상으로 상시 최적화를 진행합니다."])]
       [ant/steps {:current step}
        (map (fn [{title :title}]
               [ant/steps-step {:key title :title title}])
             steps)]]
      [:div.content
-      [ant/card
-       [:div
-        (:content (get steps step))
-        [button-row ctx route step]]]]]))
+      (:content (get steps step))]]))
 
 (def component
   (ui/constructor
     {:renderer render
      :component-deps [:budgeting
                       :objective
-                      :detail]}))
+                      :detail
+                      :breadcrumbs]}))
 

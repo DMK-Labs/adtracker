@@ -26,7 +26,12 @@
        [ant/col {:md 8 :sm 12} [snapshot :revenue]]
        [ant/col {:md 8 :sm 12} [snapshot :roas]]]
       [ant/row [tabbed-charts]]
-      [ant/row [scatter-chart]]]]))
+      ;; [ant/row [scatter-chart]]
+      [ant/row {:gutter 16}
+       [ant/col {:md 8 :sm 12} [snapshot :cpc]]
+       [ant/col {:md 8 :sm 12} [snapshot :cpm]]
+       [ant/col {:md 8 :sm 12} [snapshot :cpa]]]
+      ]]))
 
 (def component
   (ui/constructor

@@ -9,13 +9,11 @@
                  [org.clojure/core.match "0.3.0-alpha5"]
 
                  ;; boot tasks
-                 [adzerk/boot-cljs "2.1.3" :scope "test"]
-                 [powerlaces/boot-figreload "0.5.13" :scope "test"]
+                 [adzerk/boot-cljs "2.1.4" :scope "test"]
+                 [powerlaces/boot-figreload "0.5.14" :scope "test"]
                  [deraen/boot-less "0.6.2" :scope "test"]
                  [org.clojure/tools.namespace "0.3.0-alpha4" :scope "test"]
-                 [onetom/boot-lein-generate "0.1.3"]
-
-                 ;; cljs-repl deps
+                 [onetom/boot-lein-generate "0.1.3" :scope "test"]
                  [adzerk/boot-cljs-repl "0.3.3" :scope "test"]
                  [com.cemerick/piggieback "0.2.2" :scope "test"]
                  [weasel "0.7.0" :scope "test"]
@@ -31,13 +29,14 @@
                  [reacharts "0.1.0-SNAPSHOT"]
 
                  ;; backend
-                 [org.immutant/web "2.1.9"]
-                 [org.clojure/java.jdbc "0.7.4"]
-                 [org.postgresql/postgresql "42.1.4"]
+                 [org.immutant/web "2.1.10"]
+                 [org.clojure/java.jdbc "0.7.5"]
+                 [org.postgresql/postgresql "42.2.0"]
                  [com.layerware/hugsql "0.4.8"]
                  [ring-middleware-format "0.7.2"]
                  [clojure.java-time "0.3.1"]
                  [naver-searchad "0.1.0-SNAPSHOT"]
+                 [com.taoensso/nippy "2.14.0"]
 
                  ;; added by chestnut
                  [com.cognitect/transit-clj "0.8.300"]
@@ -47,8 +46,7 @@
                  [compojure "1.6.0"]
                  [environ "1.1.0"]
                  [com.stuartsierra/component "0.3.2"]
-                 [org.danielsz/system "0.4.1"]
-                 [org.clojure/tools.namespace "0.2.11"]])
+                 [org.danielsz/system "0.4.1"]])
 
 (require '[adzerk.boot-cljs :refer [cljs]]
          '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl cljs-repl-env]]

@@ -13,10 +13,12 @@
       [recharts/responsive-container {:height 240}
        [recharts/scatter-chart
         [recharts/tooltip]
+
         [recharts/x-axis {:dataKey :ctr :scale scale :type "number"}
          [recharts/label {:value "Clickthrough" :position "insideBottom" :offset 0}]]
         [recharts/y-axis {:dataKey :impCnt :scale scale}
          [recharts/label {:value "Impressions" :position "insideLeft" :offset 0 :angle -90}]]
+
         [recharts/z-axis {:dataKey :salesAmt :range [30 600]}]
         [recharts/scatter
          {:isAnimationActive true

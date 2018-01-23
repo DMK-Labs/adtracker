@@ -20,7 +20,8 @@
             [trendtracker.ui.components.optimize.objective :as objective]
             [trendtracker.ui.components.optimize.detail :as detail]
             [trendtracker.ui.components.optimize.portfolio :as portfolio]
-            [trendtracker.ui.components.charts.conversion-funnel :as conversion-funnel]))
+            [trendtracker.ui.components.charts.conversion-funnel :as conversion-funnel]
+            [trendtracker.ui.components.keyword-tool.results-table :as results-table]))
 
 (def ui
   {
@@ -42,6 +43,7 @@
    :objective objective/component
    :detail detail/component
    :portfolio portfolio/component
+   :keyword-tool-results-table results-table/component
 
    ;; Pages
    :login-page login/component

@@ -7,11 +7,11 @@
   (let [route (route> ctx)
         page (:page route)
         subpage (:subpage route)]
-    [ant/breadcrumb {:style {:margin-bottom 8}}
+    [ant/breadcrumb {:style {:margin-bottom 12}}
      ;; [ant/breadcrumb-item
      ;;  [:a {:href "http://www.trendtracker.co.kr/"} "TrendTracker"]]
      [ant/breadcrumb-item
-      [:a {:href (ui/url ctx {:page ""})} "Ad Tracker"]]
+      [:a {:href (ui/url ctx {:page "dashboard"})} "Ad Tracker"]]
      [ant/breadcrumb-item
       {:style {:text-transform "capitalize"}}
       (if subpage

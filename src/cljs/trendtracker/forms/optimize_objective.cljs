@@ -6,13 +6,19 @@
 
 (def validator
   (v/validator
-   {:objective [[:not-empty validators/not-empty?]]
-    :targets [[:not-empty validators/not-empty?]]}))
+   {:targets [[:not-empty validators/not-empty?]]
+    :objective []}))
 
 (defrecord OptimizeObjectiveForm [validator])
 
-(defmethod forms-core/submit-data OptimizeObjectiveForm [_ _ form-id data]
-  (print "Sending form" form-id))
+(defmethod forms-core/get-data OptimizeObjectiveForm [_ _ _]
+  ;; TODO api endpoint for calling this:
+  ;; last-optimization-setting-by-client-id
+  {:objective :impressions
+   :targets ["cmp-a001-01-000000000243172"]})
+
+(defmethod forms-core/submit-data OptimizeObjectiveForm [_ _ _ data]
+  (print "Sending form" data))
 
 (defmethod forms-core/on-submit-success OptimizeObjectiveForm [this app-db form-id res]
   (pipeline! [value app-db]

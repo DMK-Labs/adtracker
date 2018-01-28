@@ -27,6 +27,7 @@
                  [keechma/forms "0.1.3"]
                  [sooheon/antizer "0.2.4-SNAPSHOT"]
                  [reacharts "0.1.0-SNAPSHOT"]
+                 [hodgepodge "0.1.3"]
 
                  ;; backend
                  [org.immutant/web "2.1.10"]
@@ -37,6 +38,11 @@
                  [clojure.java-time "0.3.1"]
                  [naver-searchad "0.1.0-SNAPSHOT"]
                  [com.taoensso/nippy "2.14.0"]
+                 [buddy "2.0.0"]
+
+                 ;; data munging
+                 [huri "0.10.0-SNAPSHOT"]
+                 [json-html "0.4.4"]
 
                  ;; added by chestnut
                  [com.cognitect/transit-clj "0.8.300"]

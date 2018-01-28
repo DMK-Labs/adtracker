@@ -4,7 +4,6 @@
             [trendtracker.ui.components.date-range :as date-range]
             [trendtracker.ui.components.footer :as footer]
             [trendtracker.ui.components.header :as header]
-            [trendtracker.ui.components.charts.scatter-chart :as scatter-chart]
             [trendtracker.ui.components.sider :as sider]
             [trendtracker.ui.components.snapshot :as snapshot]
             [trendtracker.ui.components.charts.tabbed-charts :as tabbed-charts]
@@ -37,7 +36,6 @@
    :snapshot snapshot/component
    :tabbed-charts tabbed-charts/component
    :cascader cascader/component
-   :scatter-chart scatter-chart/component
    :conversion-funnel conversion-funnel/component
    :budgeting budgeting/component
    :objective objective/component

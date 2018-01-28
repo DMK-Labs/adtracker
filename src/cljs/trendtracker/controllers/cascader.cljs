@@ -9,8 +9,7 @@
 (def controller
   (pl-controller/constructor
     {:params (constantly true)
-     :start (fn [_ _ app-db]
-              (set-cascader app-db ["total"]))}
+     :start (fn [_ _ app-db] (set-cascader app-db ["total"]))}
     {:set (pipeline! [value app-db]
             (pl/commit! (set-cascader app-db value))
             (dataloader-controller/run-dataloader!))}))

@@ -17,7 +17,7 @@
    :db (new-postgres-database (:db-spec config))
    :middleware (new-middleware {:middleware (:middleware config)})
    :api-middleware (new-middleware {:middleware (:api-middleware config)})
-   :api-routes (component/using (new-endpoint routes/api-routes) [:db :api-middleware])
+   :api-routes (component/using (new-endpoint routes/api-routes) [:db :api-middleware :middleware])
    :app-routes (component/using (new-endpoint routes/app-routes) [:middleware])
    :handler (component/using (new-handler) [:api-routes :app-routes])
    :http (component/using (new-immutant-web :port (:http-port config)) [:handler])))

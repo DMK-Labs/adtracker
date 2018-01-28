@@ -10,11 +10,12 @@
     false))
 
 (defn not-empty? [v _ _]
-  (cond
-    (nil? v) false
-    (= "" v) false
-    (zero-count? v) false
-    :else true))
+  (let [v (js->clj v)]
+    (cond
+      (nil? v) false
+      (= "" v) false
+      (zero-count? v) false
+      :else true)))
 
 (defn url? [v _ _]
   (if (or (nil? v) (empty? v))

@@ -8,7 +8,8 @@
 
 (def validator
   (v/validator
-   {:keywords [[:not-empty validators/not-empty?]]}))
+   {:keywords [[:not-empty validators/not-empty?]]
+    :include-related? []}))
 
 (defrecord KeywordToolForm [validator])
 
@@ -18,8 +19,10 @@
     ;; Save the queried keywords, to be used as default-value upon returning to
     ;; form:
     (pl/commit! (assoc-in app-db [:kv :keyword-tool :query] (:keywords data)))
-    (api/first-place-stats
-     (set (string/split-lines (:keywords data))))))
+    (api/keyword-stats
+     (-> data
+         (update :keywords #(set (string/split-lines %)))
+         (update :include-related? boolean)))))
 
 (defmethod forms-core/on-submit-success KeywordToolForm [this app-db form-id res]
   (pipeline! [value app-db]

@@ -5,9 +5,10 @@
 
 (defn render [ctx]
   (let [current-page (:page (route> ctx))
-        subpage (:subpage (route> ctx))]
+        subpage      (:subpage (route> ctx))]
     (if (= "login" current-page)
       [(ui/component ctx :login-page)]
+
       [ant/layout {:style {:min-height "calc(100vh)"}}
        [(ui/component ctx :header)]
        [ant/layout

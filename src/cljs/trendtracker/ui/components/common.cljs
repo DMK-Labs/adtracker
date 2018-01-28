@@ -7,8 +7,7 @@
   ([d]
    (delta-widget d false))
   ([d down-is-good?]
-   (if (zero? d)
-     [:div "--"]
+   (if (or (pos? d) (neg? d))
      [:div
       {:style {:min-width 90
                :color (if down-is-good?
@@ -18,7 +17,8 @@
       [:span (u/pct-fmt 2 d)]
       [ant/icon {:type (if (pos? d)
                          "arrow-up"
-                         "arrow-down")}]])))
+                         "arrow-down")}]]
+     [:div "--"])))
 
 (defn title-w-info [title info]
   (r/as-element

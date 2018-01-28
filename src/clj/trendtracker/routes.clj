@@ -1,18 +1,21 @@
 (ns trendtracker.routes
   (:require [clojure.java.io :as io]
+            [clojure.set :as set]
             [compojure.api.sweet :as sweet]
             [compojure.route :refer [resources]]
             [naver-searchad.api.adgroup :as naver-adgroup]
             [naver-searchad.api.stats :as naver-stats]
-            [ring.util.http-response :refer [ok]]
+            [ring.util.http-response :as respond]
             [ring.util.response :refer [response]]
             [schema.coerce :as coerce]
             [schema.core :as s]
+            [trendtracker.ad.keyword-tool :as keyword-tool]
             [trendtracker.config :refer [config]]
             [trendtracker.db :as db]
-            [trendtracker.utils :as u]
-            [trendtracker.ad.keyword-tool :as keyword-tool]
-            [clojure.set :as set]))
+            [trendtracker.models.portfolio :as portfolio]
+            [trendtracker.models.user :as user]
+            [trendtracker.modules.auth :as auth]
+            [trendtracker.utils :as u]))
 
 (defn app-routes [endpoint]
   (sweet/routes
@@ -47,57 +50,59 @@
 
 (defn api-routes [{db :db}]
   (sweet/api
-    {:swagger
+   {:swagger
     {:ui "/api-docs"
      :spec "/swagger.json"
      :data {:info {:title "Trend Tracker API"
                    :description "Use it or lose it."}}}}
 
-    (sweet/context "/api" []
-      :tags ["api"]
+   (sweet/context "/api" []
+     :tags ["api"]
 
-      (sweet/GET "/plus" []
+     (sweet/GET "/plus" []
        :summary "adding two numbers"
        :query-params [x :- Long y :- Long]
-       (ok {:result (+ x y)}))
+       (respond/ok {:result (+ x y)}))
 
-      (sweet/GET "/performance" []
+     (sweet/GET "/performance" []
        :summary "Total performance"
-       :query-params [low :- String high :- String]
+       :query-params [low :- String high :- String customer-id :- s/Int]
        :return [Perf]
-       (ok (into [] (comp
-                     (map (fn [m] (update m :during u/iso-date)))
-                     (map coerce-perf))
-                 (db/total-perf-by-date db {:customer-id 777309 :low low :high high}))))
+       (respond/ok (into [] (comp
+                             (map (fn [m] (update m :during u/iso-date)))
+                             (map coerce-perf))
+                         (db/total-perf-by-date db {:customer-id customer-id
+                                                    :low low
+                                                    :high high}))))
 
-      (sweet/GET "/performance/campaign" []
+     (sweet/GET "/performance/campaign" []
        :summary "Campaign performance"
-       :query-params [low :- String high :- String id :- String]
+       :query-params [low :- String high :- String id :- String customer-id :- s/Int]
        :return [Perf]
-       (ok (into [] (comp
-                     (map (fn [m] (update m :during u/iso-date)))
-                     (map coerce-perf))
-                 (db/cmp-perf-by-id-date db {:customer-id 777309
-                                             :id id
-                                             :low low
-                                             :high high}))))
+       (respond/ok (into [] (comp
+                             (map (fn [m] (update m :during u/iso-date)))
+                             (map coerce-perf))
+                         (db/cmp-perf-by-id-date db {:customer-id customer-id
+                                                     :id id
+                                                     :low low
+                                                     :high high}))))
 
-      (sweet/GET "/performance/type" []
+     (sweet/GET "/performance/type" []
        :summary "Campaign type performance"
-       :query-params [low :- String high :- String type :- String]
+       :query-params [low :- String high :- String type :- String customer-id :- s/Int]
        :return [Perf]
-       (ok (into [] (comp
-                     (map (fn [m] (update m :during u/iso-date)))
-                     (map coerce-perf))
-                 (db/cmp-type-perf db {:customer-id 777309
-                                       :type type
-                                       :low low
-                                       :high high}))))
+       (respond/ok (into [] (comp
+                             (map (fn [m] (update m :during u/iso-date)))
+                             (map coerce-perf))
+                         (db/cmp-type-perf db {:customer-id customer-id
+                                               :type type
+                                               :low low
+                                               :high high}))))
 
-      ;; Aggregate
-      (sweet/GET "/stats/aggregate-segmented" []
+     ;;* Aggregate
+     (sweet/GET "/stats/aggregate-segmented" []
        :summary "Forwards to Naver API"
-       (ok
+       (respond/ok
         (let [creds (assoc (:naver-creds config)
                            :customer-id 777309)
               ids (->> (naver-adgroup/all creds)
@@ -109,11 +114,34 @@
             :fields naver-stats/default-fields
             :date-preset :last30days}))))
 
-      ;; Keyword-tool
-      (sweet/POST "/keyword-tool" []
-        :return s/Any
-        :body-params [keywords]
-        (ok (set/join (keyword-tool/first-place keywords)
-                      (keyword-tool/fifth-place keywords)
-                      {:keyword :keyword
-                       :device :device}))))))
+     ;;* Keyword-tool
+     (sweet/POST "/keyword-tool" []
+       :return s/Any
+       :body-params [keywords :- s/Any
+                     include-related? :- s/Any]
+       (respond/ok
+        (keyword-tool/simple-process keywords include-related?)))
+
+     ;;* Users
+     (sweet/POST "/login" []
+       :return s/Any
+       :body-params [email password]
+       (if-let [logged-in-info-map (auth/logged-in-info email password)]
+         (respond/ok logged-in-info-map)
+         (respond/unauthorized {})))
+
+     (sweet/GET "/user" []
+       :header-params [authorization :- String]
+       (respond/ok (auth/unsign-auth-header authorization)))
+
+     (sweet/GET "/access-rights" []
+       (respond/ok (user/access-rights (:db-spec config) {})))
+
+     ;;** Portfolio
+     (sweet/GET "/portfolio" []
+       :query-params [customer-id :- s/Int]
+       (respond/ok (portfolio/tree customer-id)))
+
+     (sweet/GET "/portfolio/optimizing" []
+       :query-params [customer-id :- s/Int]
+       (respond/ok (portfolio/optimizing customer-id))))))

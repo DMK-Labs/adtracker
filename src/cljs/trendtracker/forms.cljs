@@ -1,15 +1,17 @@
 (ns trendtracker.forms
   (:require [trendtracker.forms.keyword-tool :as keyword-tool]
-            [trendtracker.forms.optimize-objective :as optimize-objective]))
+            [trendtracker.forms.optimize-objective :as optimize-objective]
+            [trendtracker.forms.login :as login]))
 
 (def forms
   {:keyword-tool (keyword-tool/constructor)
-   :optimize-objective (optimize-objective/constructor)})
+   :optimize-objective (optimize-objective/constructor)
+   :login (login/constructor)})
 
 (def forms-ids
-  {;; :login (fn [{:keys [page]}]
-   ;;          (when (= "login" page)
-   ;;            :form))
+  {:login (fn [{:keys [page]}]
+            (when (= "login" page)
+              :form))
    ;; :register (fn [{:keys [page]}]
    ;;             (when (= "register" page)
    ;;               :form))

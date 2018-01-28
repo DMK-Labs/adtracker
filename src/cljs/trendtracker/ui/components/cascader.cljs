@@ -29,7 +29,7 @@
              :value (sub> ctx :cascader)
              :changeOnSelect true
              :onChange #(<cmd ctx :set (js->clj %))
-             :options portfolio-tree
+             :options (sub> ctx :portfolio)
              :allowClear false}
             opts)]]))
 
@@ -37,4 +37,5 @@
   (ui/constructor
    {:renderer cascade-render
     :topic :cascader
-    :subscription-deps [:cascader]}))
+    :subscription-deps [:cascader
+                        :portfolio]}))

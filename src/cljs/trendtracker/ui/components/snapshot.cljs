@@ -14,7 +14,7 @@
      [ant/row {:type "flex" :align "bottom" :gutter 8}
       [ant/col [:h2 {:style {:margin-bottom 0}} sum-str]]
       [ant/col (common/delta-widget delta down-is-good?)]]]
-    [recharts/responsive-container {:height 42}
+    [recharts/responsive-container {:height 50}
      [recharts/composed-chart {:data data}
       [recharts/tooltip]
       [(if (> (count data) 12) recharts/area recharts/bar)

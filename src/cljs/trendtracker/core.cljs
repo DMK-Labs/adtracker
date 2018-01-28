@@ -9,10 +9,11 @@
    :controllers   controllers
    :subscriptions subscriptions
    :html-element  (.getElementById js/document "app")
-   :routes        [["" {:page "dashboard"}]
+   :routes        [["" {:page "login"}]
                    ":page"
-                   ":page/:subpage"]})
+                   ":page/:subpage"]
    ;; :router        :history
+   })
 
 
 (defonce running-app (clojure.core/atom nil))

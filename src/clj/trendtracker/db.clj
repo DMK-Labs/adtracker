@@ -24,8 +24,6 @@
 
 ;; Events API
 
-
-
 (defn send-event [db {:keys [type data] :as args}]
   (send-event* db (update args :data nippy/freeze)))
 
@@ -35,11 +33,5 @@
        (events* db args)))
 
 (comment
-  (send-event
-   (:db system.repl/system)
-   {:type "optimize"
-    :data {:user "dashcrab"
-           :objective :clicks
-           :budget 1000000
-           :targets ["cmp-1" "cmp-2"]}})
-  (events (:db system.repl/system) {:type "optimize"}))
+  (cmp-perf-by-id-date (system.repl/system :db) {:customer-id 777309
+                                                }))

@@ -8,12 +8,12 @@
   (>= d (.startOf (js/moment) "day")))
 
 (defn render [ctx]
-  [:div
-   ;; TODO: impl left/right buttons
-   [:a {:on-click #(print "go to prev")} [ant/icon {:type "left"}]]
+  [:span
+   [:a {:on-click #(print "go to prev")}
+    [ant/icon {:type "left"}]]
 
    [ant/date-picker-range-picker
-    {:style {:margin "0 8px" :width 272}
+    {:style {:margin "0 6px" :width 272}
      :format "YYYY-MM-DD"
      :allow-clear false
      :disabled-date today-or-after?
@@ -21,7 +21,8 @@
      :on-change #(<cmd ctx :set %)
      :ranges (date-range-ctrl/presets)}]
 
-   [:a {:on-click #(print "go to next")} [ant/icon {:type "right"}]]])
+   [:a {:on-click #(print "go to next")}
+    [ant/icon {:type "right"}]]])
 
 (def component
   (ui/constructor

@@ -5,7 +5,7 @@
             [keechma.ui-component :as ui]
             [trendtracker.ui.components.pure.form-inputs
              :refer
-             [controlled-textarea]]
+             [controlled-textarea controlled-switch]]
             [keechma.toolbox.ui :refer [route> sub>]]))
 
 (def form-item-params
@@ -26,7 +26,7 @@
     [:div
      [:div.content-header
       [(ui/component ctx :breadcrumbs)]
-      [:h1 "키워드 도구"]
+      [:h2 "키워드 도구"]
       [:p "입력 키워드 리스트 기반으로 경쟁도, 예상 수치를 탐색할 수 있는
       툴입니다. 새로운 블루오션 키워드를 발견하여 더 많은 잠재고객을 만나십시오."]]
 
@@ -48,19 +48,21 @@
               :default-value (:query data)}]
 
             [ant/form-item (assoc form-item-params :label "Excel 업로드")
-             [ant/upload-dragger {:disabled false}
+             [ant/upload-dragger {:disabled true}
               [ant/icon {:type "upload" :style {:font-size 24}}]]]
 
-            [ant/form-item (assoc form-item-params :label "연관어 추가")
-             [ant/switch]]
+            [controlled-switch
+             {:form-state form-state
+              :helpers helpers
+              :attr :include-related?
+              :label "연관어 포함"}]
 
             [ant/form-item (assoc form-item-params
                                   :wrapper-col {:xs {:span 24}
                                                 :sm {:span 18 :offset 6}}
                                   :style {:margin-bottom 0})
              [ant/button {:htmlType "submit"
-                          :type "primary"
-                          :disabled submitting?}
+                          :type "primary"}
               "키워드 검토"]]]]]])]]))
 
 (def component

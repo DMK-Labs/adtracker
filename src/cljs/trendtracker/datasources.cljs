@@ -54,9 +54,9 @@
 (def current-client-datasource
   {:target [:kv :current-client]
    :deps [:managed-clients]
-   :params (fn [prev _ {:keys [managed-clients]}]
-             (if-let [data (:data prev)]
-               data
+   :params (fn [prev {:keys [client]} {:keys [managed-clients]}]
+             (if client
+               (first (filter #(= client (str (:customer_id %))) managed-clients))
                (first managed-clients)))
    :loader pass-through-params})
 

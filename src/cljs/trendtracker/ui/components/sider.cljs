@@ -6,7 +6,9 @@
 
 (defn render [ctx]
   (let [kws (sub> ctx :keyword-tool)
-        current-page (:page (route> ctx))]
+        route (route> ctx)
+        current-page (:page route)
+        client (:client route)]
     [ant/layout-sider {:collapsible true
                        :breakpoint "lg"
                        :collapsed-width 64}
@@ -18,7 +20,8 @@
                  :on-click #(let [page (:key (js->clj % :keywordize-keys true))]
                               (ui/redirect
                                ctx
-                               (merge {:page page}
+                               (merge {:page page
+                                       :client client}
                                       (when (and (= "keyword-tool" page)
                                                  (:result kws))
                                         {:subpage "result"}))))}

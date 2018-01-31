@@ -9,10 +9,12 @@
         subpage      (:subpage route)
         current-user (get-named-item app-db :user :current)
         dashboard    {:page "dashboard"}
-        login        {:page "login"}]
+        login        {:page "login"}
+        client       (get-in app-db [:kv :current-client])]
     (cond
       (and (= "login" page) current-user) dashboard
       (not current-user)                  login
+      (not (:client route))               (assoc route :client (:customer_id client))
       :else                               nil)))
 
 (defn redirect! [route app-db]

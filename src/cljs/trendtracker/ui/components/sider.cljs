@@ -32,17 +32,21 @@
         [ant/icon {:type "line-chart"}]
         [:span "대쉬보드"]]
 
-       [ant/menu-item {:key "keyword-tool"}
-        [ant/icon {:type "tool"}]
-        [:span "키워드 도구"]]
-
        [ant/menu-item {:key "optimize"}
         [ant/icon {:type "rocket"}]
         [:span "입찰 최적화"]]
 
-       [ant/menu-item {:key "manage" :disabled true}
+       [ant/menu-item {:key "keyword-tool"}
+        [ant/icon {:type "tool"}]
+        [:span "신규 키워드 찾기"]]
+
+       [ant/menu-item {:key "keywords"}
         [ant/icon {:type "profile"}]
-        [:span "광고 관리"]]
+        [:span "키워드 목록"]]
+
+       [ant/menu-item {:key "manage" :disabled true}
+        [ant/icon {:type "bulb"}]
+        [:span "광고 개선"]]
 
        (when (= current-page "user")
          [ant/menu-item {:key "user" :disabled false}

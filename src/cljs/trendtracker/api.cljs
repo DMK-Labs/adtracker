@@ -24,7 +24,6 @@
       (add-auth-header jwt)
       (add-params data)))
 
-
 ;; User Login
 
 (defn login [user]
@@ -47,12 +46,28 @@
                                      :customer-id customer-id)
                         :jwt jwt)))
 
+(defn total-perf
+  [jwt client-id range]
+  (-> [(total-performance jwt client-id (:curr range))
+       (total-performance jwt client-id (:prev range))]
+      p/all
+      (p/then
+       #(zipmap [:curr :prev] %))))
+
 (defn campaign-performance [jwt customer-id dates id]
   (ajax/GET "/api/performance/campaign"
             (req-params :data (assoc (parse-date-range dates)
                                      :id id
                                      :customer-id customer-id)
                         :jwt jwt)))
+
+(defn campaign-perf
+  [jwt client-id id range]
+  (-> [(campaign-performance jwt client-id (:curr range) id)
+       (campaign-performance jwt client-id (:prev range) id)]
+      p/all
+      (p/then
+       #(zipmap [:curr :prev] %))))
 
 (defn campaign-type-performance [jwt customer-id type dates]
   (ajax/GET "/api/performance/type"
@@ -61,9 +76,21 @@
                                      :customer-id customer-id)
                         :jwt jwt)))
 
+(defn campaign-type-perf
+  [jwt client-id type range]
+  (-> [(campaign-type-performance jwt client-id type (:curr range))
+       (campaign-type-performance jwt client-id type (:prev range))]
+      p/all
+      (p/then
+       #(zipmap [:curr :prev] %))))
+
 (defn keyword-stats [data]
   (ajax/POST "/api/keyword-tool"
              (req-params :data data)))
+
+(defn optimize-settings [customer-id]
+  (ajax/GET "/api/optimize/settings"
+            (req-params :data {:customer-id customer-id})))
 
 (defn dataloader-req [req-params]
   (let [headers (:headers req-params)

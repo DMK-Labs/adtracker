@@ -22,8 +22,7 @@
 
 (def controller
   (pl-controller/constructor
-   (fn [{:keys [data]}]
-     data)
+   (fn [{:keys [data]}] data)
    {:start (pipeline! [value app-db]
              (dataloader-controller/wait-dataloader-pipeline!)
              (redirect! value app-db))}))

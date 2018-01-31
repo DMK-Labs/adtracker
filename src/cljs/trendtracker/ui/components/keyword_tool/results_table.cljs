@@ -91,9 +91,9 @@
           :bordered true
           :pagination {:hideOnSinglePage true
                        :showTotal (fn [total [start end]]
-                                    (gstring/format "%s-%s of %s items" start end total))
+                                    (gstring/format "총 %s개 중 %s-%s" total start end))
                        :defaultPageSize 15
-                       :pageSizeOptions [15 30 45]
+                       :pageSizeOptions ["15" "30" "45"]
                        :showSizeChanger true}}]
         (ui/redirect ctx {:page "keyword-tool"}))]]))
 

@@ -55,13 +55,13 @@
     (conj renamed-tree {:value :total :label "모든 검색광고"})))
 
 (defn optimizing
-  "The subset of the portfolio tree which is currently being optimized, with
-  relevant info."
+  "The subset of the portfolio tree which is currently eligible to be optimized,
+  with relevant info."
   [n-id]
   (let [children (->> (campaigns n-id)
                       (h/where {:status "ELIGIBLE" :campaignTp "WEB_SITE"})
                       (map #(select-keys % [:nccCampaignId :expectCost :name :campaignTp]))
-                      (map #(assoc % :status :manual))
+                      (map #(assoc % :status :manual)) ; FIXME should not be hardcoded
                       rename)]
     [{:value "powerlink"
       :label "ALL"

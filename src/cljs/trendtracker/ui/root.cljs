@@ -23,6 +23,7 @@
                              [(ui/component ctx :optimize-page)])
             "keyword-tool" [(ui/component ctx :keyword-tool-page)]
             "overview"     [(ui/component ctx :overview-page)]
+            "keywords"     [(ui/component ctx :keywords-page)]
             [:div.content "404: page not found"])]
          [(ui/component ctx :footer)]]]])))
 
@@ -38,4 +39,5 @@
                      :optimize-new-page
                      :user-page
                      :keyword-tool-page
+                     :keywords-page
                      :overview-page]}))

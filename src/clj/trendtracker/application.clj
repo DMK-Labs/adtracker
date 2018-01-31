@@ -3,7 +3,7 @@
   (:require [com.stuartsierra.component :as component]
             [system.components.endpoint :refer [new-endpoint]]
             [system.components.handler :refer [new-handler]]
-            [system.components.immutant-web :refer [new-immutant-web]]
+            [system.components.aleph :refer [new-web-server]]
             [system.components.middleware :refer [new-middleware]]
             [system.components.postgres :refer [new-postgres-database]]
             [system.components.repl-server :refer [new-repl-server]]
@@ -20,7 +20,7 @@
    :api-routes (component/using (new-endpoint routes/api-routes) [:db :api-middleware :middleware])
    :app-routes (component/using (new-endpoint routes/app-routes) [:middleware])
    :handler (component/using (new-handler) [:api-routes :app-routes])
-   :http (component/using (new-immutant-web :port (:http-port config)) [:handler])))
+   :http (component/using (new-web-server (:http-port config)) [:handler])))
 
 (defn prod-system
   []

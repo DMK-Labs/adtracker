@@ -73,7 +73,8 @@
        :treeData treeData
        :placeholder placeholder
        :value (forms-helpers/attr-get-in form-state attr)
-       :onChange #(set-value attr %)
+       :onChange #(do (print %)
+                      (set-value attr %))
        :style {:max-width 400}}]]))
 
 (defn controlled-radio-group [{:keys [form-state helpers label attr options]}]

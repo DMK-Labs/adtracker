@@ -30,6 +30,7 @@
                  [hodgepodge "0.1.3"]
 
                  ;; backend
+                 [aleph "0.4.4"]
                  [org.immutant/web "2.1.10"]
                  [org.clojure/java.jdbc "0.7.5"]
                  [org.postgresql/postgresql "42.2.0"]
@@ -40,9 +41,10 @@
                  [com.taoensso/nippy "2.14.0"]
                  [buddy "2.0.0"]
 
-                 ;; data munging
+                 ;; data science
                  [huri "0.10.0-SNAPSHOT"]
                  [json-html "0.4.4"]
+                 [optimus "0.1.0-SNAPSHOT"]
 
                  ;; added by chestnut
                  [com.cognitect/transit-clj "0.8.300"]

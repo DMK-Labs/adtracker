@@ -1,6 +1,5 @@
 (ns trendtracker.routes
   (:require [clojure.java.io :as io]
-            [clojure.set :as set]
             [compojure.api.sweet :as sweet]
             [compojure.route :refer [resources]]
             [naver-searchad.api.adgroup :as naver-adgroup]
@@ -12,6 +11,8 @@
             [trendtracker.ad.keyword-tool :as keyword-tool]
             [trendtracker.config :refer [config]]
             [trendtracker.db :as db]
+            [trendtracker.models.keywords :as keywords]
+            [trendtracker.models.optimize :as optimize]
             [trendtracker.models.portfolio :as portfolio]
             [trendtracker.models.user :as user]
             [trendtracker.modules.auth :as auth]
@@ -135,7 +136,7 @@
        (respond/ok (auth/unsign-auth-header authorization)))
 
      (sweet/GET "/access-rights" []
-       (respond/ok (user/access-rights (:db-spec config) {})))
+       (respond/ok (user/access-rights db {})))
 
      ;;** Portfolio
      (sweet/GET "/portfolio" []
@@ -144,4 +145,18 @@
 
      (sweet/GET "/portfolio/optimizing" []
        :query-params [customer-id :- s/Int]
-       (respond/ok (portfolio/optimizing customer-id))))))
+       (respond/ok (portfolio/optimizing customer-id)))
+
+     ;;** Optimize
+     (sweet/GET "/optimize/settings" []
+       :query-params [customer-id :- s/Int]
+       (respond/ok (optimize/current-settings db {:customer-id customer-id})))
+
+     (sweet/GET "/optimize/marginals" []
+       :query-params []
+       (respond/ok optimize/marginals))
+
+     ;;** Keywords
+     (sweet/GET "/keywords/all" []
+       :query-params [customer-id :- s/Int]
+       (respond/ok (keywords/all db {:customer-id customer-id}))))))

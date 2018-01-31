@@ -10,13 +10,12 @@
   (pl-controller/constructor
    (constantly true)
    {:set (pipeline! [value app-db]
-           (do
-             (ant/message-success (str "광고 계정 변경: " value))
-             (set-item local-storage "lacuna-current-client"
-                       (get-item-by-id app-db :managed-clients value)))
+           (set-item local-storage "lacuna-current-client"
+                     (get-item-by-id app-db :managed-clients value))
            (pl/commit! (assoc-in app-db [:kv :portfolio-optimizing] nil))
            (pl/commit! (assoc-in app-db [:kv :portfolio] nil))
            (pl/commit! (assoc-in app-db [:kv :current-client]
                                  (get-item-by-id app-db :managed-clients value)))
            (pl/commit! (assoc-in app-db [:kv :cascader] ["total"]))
-           (dataloader-controller/run-dataloader!))}))
+           (do (ant/message-success (str "광고 계정 변경: " value))
+               (dataloader-controller/run-dataloader!)))}))

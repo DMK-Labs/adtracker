@@ -7,6 +7,8 @@
             [cljs.core.match :refer-macros [match]]
             [trendtracker.api :as api]))
 
+(def ignore-datasource-check :keechma.toolbox.dataloader.core/ignore)
+
 (def api-loader
   (map-loader
    (fn [req]
@@ -24,37 +26,10 @@
      (assoc headers :authorization (str "Bearer " jwt))
      headers)))
 
-(defn total-perf
-  [jwt client-id range]
-  (-> [(api/total-performance jwt client-id (:curr range))
-       (api/total-performance jwt client-id (:prev range))]
-      p/all
-      (p/then
-       #(zipmap [:curr :prev] %))))
-
-(defn campaign-perf
-  [jwt client-id id range]
-  (-> [(api/campaign-performance jwt client-id (:curr range) id)
-       (api/campaign-performance jwt client-id (:prev range) id)]
-      p/all
-      (p/then
-       #(zipmap [:curr :prev] %))))
-
-(defn campaign-type-perf
-  [jwt client-id type range]
-  (-> [(api/campaign-type-performance jwt client-id type (:curr range))
-       (api/campaign-type-performance jwt client-id type (:prev range))]
-      p/all
-      (p/then
-       #(zipmap [:curr :prev] %))))
-
-(def ignore-datasource-check :keechma.toolbox.dataloader.core/ignore)
-
 (def jwt-datasource
   {:target [:kv :jwt]
    :loader (map-loader #(get-item local-storage "lacuna-jwt-token"))
-   :params (fn [prev _ _]
-             (when (:data prev) ignore-datasource-check))})
+   :params (fn [prev _ _] (when (:data prev) ignore-datasource-check))})
 
 (def current-user-datasource
   {:target [:edb/named-item :user/current]
@@ -94,14 +69,28 @@
                {:url "/portfolio"
                 :customer-id (:customer_id current-client)}))})
 
-(def portfolio-optimizing-datasource
-  {:target [:kv :portfolio-optimizing]
+(def registered-keywords-datasource
+  {:target [:kv :keywords]
    :deps [:current-client]
    :loader api-loader
    :params (fn [_ _ {:keys [current-client]}]
              (when current-client
+               {:url "/keywords/all"
+                :customer-id (:customer_id current-client)}))})
+
+(def portfolio-optimizing-datasource
+  {:target [:kv :portfolio-optimizing]
+   :deps [:current-client]
+   :loader api-loader
+   :params (fn [_ route {:keys [current-client]}]
+             (when current-client
                {:url "/portfolio/optimizing"
                 :customer-id (:customer_id current-client)}))})
+
+(def optimize-settings-datasource
+  {:target [:kv :optimize :settings]
+   :params (fn [prev _ _] (:data prev))
+   :loader pass-through-params})
 
 (def daily-stats-datasource
   "Stats depend on the date-range, so it will be reloaded whenever date-range
@@ -120,9 +109,9 @@
                     customer-id (get-in req [:params :current-client :customer_id])]
                 (when (and (seq range) (seq casc) jwt)
                   (match casc
-                    ["total"] (total-perf jwt customer-id range)
-                    [type] (campaign-type-perf jwt customer-id type range)
-                    [type cmp-id] (campaign-perf jwt customer-id cmp-id range))))))})
+                    ["total"] (api/total-perf jwt customer-id range)
+                    [type] (api/campaign-type-perf jwt customer-id type range)
+                    [type cmp-id] (api/campaign-perf jwt customer-id cmp-id range))))))})
 
 (def date-range-datasource
   {:target [:kv :date-range]
@@ -131,11 +120,6 @@
 
 (def cascader-datasource
   {:target [:kv :cascader]
-   :params (fn [prev _ _] (:data prev))
-   :loader pass-through-params})
-
-(def optimize-settings-datasource
-  {:target [:kv :optimize :settings]
    :params (fn [prev _ _] (:data prev))
    :loader pass-through-params})
 
@@ -149,4 +133,5 @@
    :daily-stats          daily-stats-datasource
    :portfolio            portfolio-datasource
    :portfolio-optimizing portfolio-optimizing-datasource
-   :optimize-settings    optimize-settings-datasource})
+   :optimize-settings    optimize-settings-datasource
+   :registered-keywords  registered-keywords-datasource})

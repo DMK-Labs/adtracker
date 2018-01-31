@@ -33,5 +33,4 @@
        (events* db args)))
 
 (comment
-  (cmp-perf-by-id-date (system.repl/system :db) {:customer-id 777309
-                                                }))
+  (cmp-perf-by-id-date (system.repl/system :db) {:customer-id 777309}))

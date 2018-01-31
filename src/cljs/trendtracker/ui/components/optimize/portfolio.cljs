@@ -24,9 +24,8 @@
                  "on" [ant/badge {:status "success" :text "On"}]
                  "processing" [ant/badge {:status "processing" :text "Processing"}]
                  "manual" [ant/badge {:status "default" :text "Off"}])))}
-   {:title "예상 비용" :dataIndex :expected-cost
-    :render (fn [cost]
-              (u/krw cost))}
+   {:title "예상 비용 (일별)" :dataIndex :expected-cost
+    :render (fn [cost] (u/krw cost))}
    ;; {:title "최근 30일 Clicks" :dataIndex :clicks
    ;;  :render #(r/as-element
    ;;            [:div

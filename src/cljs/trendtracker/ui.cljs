@@ -20,34 +20,36 @@
             [trendtracker.ui.components.optimize.detail :as detail]
             [trendtracker.ui.components.optimize.portfolio :as portfolio]
             [trendtracker.ui.components.charts.conversion-funnel :as conversion-funnel]
-            [trendtracker.ui.components.keyword-tool.results-table :as results-table]))
+            [trendtracker.ui.components.keyword-tool.results-table :as results-table]
+            [trendtracker.ui.pages.keywords :as keywords]))
 
 (def ui
   {
    ;; Layout
-   :main root/component
-   :header header/component
-   :sider sider/component
-   :footer footer/component
+   :main        root/component
+   :header      header/component
+   :sider       sider/component
+   :footer      footer/component
    :breadcrumbs breadcrumbs/component
 
    ;; Components
-   :date-range-picker date-range/component
-   :snapshot snapshot/component
-   :tabbed-charts tabbed-charts/component
-   :cascader cascader/component
-   :conversion-funnel conversion-funnel/component
-   :budgeting budgeting/component
-   :objective objective/component
-   :detail detail/component
-   :portfolio portfolio/component
+   :date-range-picker          date-range/component
+   :snapshot                   snapshot/component
+   :tabbed-charts              tabbed-charts/component
+   :cascader                   cascader/component
+   :conversion-funnel          conversion-funnel/component
+   :budgeting                  budgeting/component
+   :objective                  objective/component
+   :detail                     detail/component
+   :portfolio                  portfolio/component
    :keyword-tool-results-table results-table/component
 
    ;; Pages
-   :login-page login/component
-   :user-page user/component
-   :dashboard-page dashboard/component
+   :login-page        login/component
+   :user-page         user/component
+   :dashboard-page    dashboard/component
    :keyword-tool-page keyword-tool/component
-   :optimize-page optimize/component
+   :optimize-page     optimize/component
    :optimize-new-page optimize-new/component
-   :overview-page overview/component})
+   :overview-page     overview/component
+   :keywords-page     keywords/component})

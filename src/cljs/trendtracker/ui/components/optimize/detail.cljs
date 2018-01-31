@@ -52,8 +52,13 @@
       "이전"]
      [ant/button
       {:on-click #(request-optimization ctx %)
+       :icon "download"}
+      "대량관리 CSV 내려 받기"]
+     [ant/button
+      {:on-click #(request-optimization ctx %)
        :type "primary"
-       :icon "rocket"}
+       :icon "rocket"
+       :disabled true}
       "자동 최적화 실시"]]]])
 
 (def component

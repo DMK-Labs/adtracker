@@ -4,12 +4,12 @@
             [keechma.toolbox.pipeline.core :as pl :refer-macros [pipeline!]]))
 
 (def settings
-  {:budget 3139001
+  {:budget 0
    :objective :clicks
-   :cost 3039000
-   :impressions 1939292
-   :clicks 19104
-   :conversions 230})
+   :cost 0
+   :impressions 0
+   :clicks 0
+   :conversions 0})
 
 (defn set-optimization [app-db settings]
   (assoc-in app-db [:kv :optimize :settings] settings))

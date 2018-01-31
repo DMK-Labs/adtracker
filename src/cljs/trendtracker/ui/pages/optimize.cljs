@@ -24,13 +24,14 @@
   [:div
    [:div.content-header
     [(ui/component ctx :breadcrumbs)]
-    [ant/row {:type "flex" :align "center"}
-     [ant/col {:md 14 :xs 24}
+    [ant/row ;; {:type "flex" :align "center"}
+     [ant/col ;; {:md 14 :xs 24}
       [:h2 "자동 입찰 최적화"]
       [:p {:style {:margin-right 8}}
        "관리중인 키워드를 자동 실시간 관리할 수 있는 AI 기반 입찰 툴입니다. 캠페인을 선택하시고 (모두 하셔도 좋습니다!), 최적화에 준수할 예산으로 설정하십시오."]]
-     [ant/col {:md 10 :xs 24}
-      [opt-settings ctx]]]
+     ;; [ant/col {:md 10 :xs 24}
+     ;;  [opt-settings ctx]]
+     ]
     [new-opt-btn ctx]]
    [:div.content
     [ant/card

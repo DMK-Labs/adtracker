@@ -13,12 +13,12 @@
             [trendtracker.controllers.optimize :as optimize]))
 
 (def controllers
-  (-> {:redirect redirect/controller
-       :date-range date-range/controller
-       :cascader cascader/controller
-       :logout logout/controller
+  (-> {:redirect       redirect/controller
+       :date-range     date-range/controller
+       :cascader       cascader/controller
+       :logout         logout/controller
        :current-client current-client/controller
-       :optimize optimize/controller}
+       :optimize       optimize/controller}
       (forms-controller/register forms)
       (forms-mount-controller/register forms-ids)
       (dataloader-controller/register datasources edb-schema)))

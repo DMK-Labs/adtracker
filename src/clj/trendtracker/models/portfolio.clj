@@ -12,7 +12,7 @@
   (campaign/all (assoc creds :customer-id n-id)))
 
 (defn filter-eligible [maps]
-  (filter #(= "ELIGIBLE" (:status %)) maps))
+  (h/where {:status "ELIGIBLE"} maps))
 
 (defn assoc-adgroup [campaign-map]
   (let [new-creds (assoc creds :customer-id (:customerId campaign-map))

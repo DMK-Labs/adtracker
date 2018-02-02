@@ -1,6 +1,6 @@
 (ns trendtracker.ui.components.header
   (:require [antizer.reagent :as ant]
-            [keechma.toolbox.ui :refer [sub> <cmd]]
+            [keechma.toolbox.ui :refer [sub> <cmd route>]]
             [keechma.ui-component :as ui]
             [reagent.core :as r]
             [clojure.string :as string]
@@ -18,13 +18,15 @@
 
 (defn user [ctx]
   (let [current-user (sub> ctx :current-user)
-        current-client (sub> ctx :current-client)]
+        current-client (sub> ctx :current-client)
+        route (route> ctx)]
     [:span
      [ant/dropdown
       {:placement "bottomCenter"
        :overlay (r/as-element (client-menu ctx))}
       (if current-client
-        [:span (:login_id current-client) [ant/icon {:type "down" :style {:margin-left "4px"}}]]
+        [:a {:style {:color "rgba(0, 0, 0, .65)"}}
+         (:login_id current-client) [ant/icon {:type "down" :style {:margin-left "4px"}}]]
         [ant/icon {:type "loading"}])]
      [ant/divider {:type "vertical"}]
      [ant/dropdown
@@ -32,14 +34,13 @@
        :overlay (r/as-element
                  [ant/menu
                   [ant/menu-item
-                   [:a {:href (ui/url ctx {:page "user"})}
+                   [:a {:href (ui/url ctx (assoc route :page "user"))}
                     [:span [ant/icon {:type "setting"}] " 계정설정"]]]
                   [ant/menu-item
-                   [:a {:href (ui/url ctx {:page "logout"})}
+                   [:a {:href (ui/url ctx (assoc route :page "logout"))}
                     [:span [ant/icon {:type "logout"}] " 로그아웃"]]]])}
       [:a {:style {:margin-right "16px"}}
-       (:name current-user)
-       ]]]))
+       (:name current-user)]]]))
 
 (defn notifications [ctx]
   [ant/popover

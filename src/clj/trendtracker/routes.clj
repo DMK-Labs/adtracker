@@ -154,7 +154,7 @@
 
      (sweet/GET "/optimize/marginals" []
        :query-params []
-       (respond/ok optimize/marginals))
+       (respond/ok (optimize/marginals {})))
 
      ;;** Keywords
      (sweet/GET "/keywords/all" []

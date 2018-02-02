@@ -1,5 +1,6 @@
 (ns trendtracker.ui.components.optimize.detail
   (:require [keechma.ui-component :as ui]
+            [keechma.toolbox.ui :refer [route>]]
             [antizer.reagent :as ant]))
 
 (def columns
@@ -28,7 +29,8 @@
 
 (defn request-optimization [ctx _]
   (do
-    (ui/redirect ctx {:page "optimize"})
+    (ui/redirect ctx {:page "optimize"
+                      :client (:client (route> ctx))})
     (js/setTimeout
      (fn []
        (ant/notification-success
@@ -47,11 +49,15 @@
    [ant/form-item {:style {:margin-bottom 0}}
     [ant/button-group
      [ant/button
-      {:on-click #(ui/redirect ctx {:page "optimize" :subpage "new" :step 2})
+      {:on-click #(ui/redirect ctx (assoc (route> ctx)
+                                          :page "optimize"
+                                          :subpage "new"
+                                          :step 2))
        :icon "left"}
       "이전"]
      [ant/button
       {:on-click #(request-optimization ctx %)
+       :type "primary"
        :icon "download"}
       "대량관리 CSV 내려 받기"]
      [ant/button

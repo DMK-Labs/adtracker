@@ -25,15 +25,16 @@
    (select-keys data [:targets :objective])
    :targets js/JSON.parse))
 
-(defmethod forms-core/submit-data OptimizeObjectiveForm [_ _ _ data]
-  (println "Sending form" data)
-  (let [marginals (ajax/GET "/api/optimize/marginals" {})]
-    (println "RCVD marginals" marginals)
-    marginals))
+;; (defmethod forms-core/submit-data OptimizeObjectiveForm [_ _ _ data]
+;;   (ajax/GET "/api/optimize/marginals" {}))
 
-(defmethod forms-core/on-submit-success OptimizeObjectiveForm [this app-db form-id res]
-  (pipeline! [value app-db]
-    (pl/redirect! {:page "optimize" :subpage "new" :step "2"})))
+;; (defmethod forms-core/on-submit-success OptimizeObjectiveForm [this app-db form-id res]
+;;   (pipeline! [value app-db]
+;;     (pl/commit! (assoc-in app-db [:kv :optimize :marginals] res))
+;;     (pl/redirect! {:page "optimize"
+;;                    :subpage "new"
+;;                    :step "2"
+;;                    :client (get-in app-db [:route :data :client])})))
 
 (defn constructor []
   (->OptimizeObjectiveForm validator))

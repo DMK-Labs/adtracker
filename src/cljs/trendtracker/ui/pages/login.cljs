@@ -10,10 +10,12 @@
         form-state @(forms-helpers/form-state ctx form-id)
         helpers (forms-helpers/make-component-helpers ctx form-id)
         submitting? (= (get-in form-state [:state :type]) :submitting)]
-    [:div {:style {:max-width 550
-                   :margin "128px"}}
+    [:div {:style {:display "flex"
+                   :justify-content "center"
+                   :align-items "center"
+                   :height "100vh"}}
      [ant/spin {:spinning submitting?}
-      [ant/card
+      [ant/card {:style {:padding 32}}
        [:h1 "DataMKTKorea Ad Tracker"]
        [:h4 "모든 마케팅 ROI를 정량화 한다!"]
        [:br]

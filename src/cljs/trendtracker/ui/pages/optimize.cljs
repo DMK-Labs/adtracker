@@ -1,11 +1,14 @@
 (ns trendtracker.ui.pages.optimize
   (:require [antizer.reagent :as ant]
             [keechma.ui-component :as ui]
-            [keechma.toolbox.ui :refer [sub>]]
+            [keechma.toolbox.ui :refer [sub> route>]]
             [trendtracker.utils :as u]))
 
 (defn new-opt-btn [ctx]
-  [:a {:href (ui/url ctx {:page "optimize" :subpage "new" :step "1"})}
+  [:a {:href (ui/url ctx (assoc (route> ctx)
+                                :page "optimize"
+                                :subpage "new"
+                                :step "1"))}
    [ant/button {:type "primary" :icon "setting"}
     "자동 최적화 설정"]])
 

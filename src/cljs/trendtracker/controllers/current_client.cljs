@@ -11,9 +11,11 @@
    {:set (pipeline! [value app-db]
            (pl/commit! (assoc-in app-db [:kv :portfolio-optimizing] nil))
            (pl/commit! (assoc-in app-db [:kv :portfolio] nil))
-           (pl/commit! (assoc-in app-db [:kv :current-client]
+           (pl/redirect! (assoc (get-in app-db [:route :data])
+                                :client value))
+           (pl/commit! (assoc-in app-db
+                                 [:kv :current-client]
                                  (get-item-by-id app-db :managed-clients value)))
-           (pl/redirect! (assoc (get-in app-db [:route :data]) :client value))
            (pl/commit! (assoc-in app-db [:kv :cascader] ["total"]))
-           (do (ant/message-success (str "광고 계정 변경: " value))
-               (dataloader-controller/run-dataloader!)))}))
+           (do (dataloader-controller/run-dataloader!)
+               (ant/message-success (str "광고 계정 변경: " value))))}))

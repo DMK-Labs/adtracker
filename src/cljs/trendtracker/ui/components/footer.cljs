@@ -13,7 +13,7 @@
                "✨" ;; sparkle
                "🌟" ;; glowing star
                ])
-    "in Seoul"]])
+    " in Seoul"]])
 
 (def component
   (ui/constructor {:renderer render}))

@@ -1,7 +1,8 @@
 (ns trendtracker.ui.pages.dashboard
   (:require [antizer.reagent :as ant]
             [keechma.ui-component :as ui]
-            [keechma.toolbox.ui :refer [sub>]]))
+            [keechma.toolbox.ui :refer [sub> route>]]
+            [reagent.core :as r]))
 
 (defn render [ctx]
   (let [breadcrumbs       (ui/component ctx :breadcrumbs)
@@ -26,8 +27,20 @@
         [ant/alert
          {:showIcon true
           :message "광고 성과 정보가 없습니다. "
-          :description "이 기간에 집행된 광고가 없거나, 아직 정보가 동기화 중입니다. 다른 광고 계정을 선택하시거나, 문제가 지속된다면 관리자에게 문의해 주십시오."
-          :type "warning"}]]
+          :description (r/as-element
+                        [:span
+                         [:p "이 기간에 집행된 광고가 없거나, 아직 정보가 동기화 중입니다. 다른 광고 계정을 선택하시거나, 문제가 지속된다면 관리자에게 문의해 주십시오."]
+                         [:a {:href (str "https://manage.searchad.naver.com/customers/"
+                                         (:client (route> ctx))
+                                         "/campaigns")
+                              :target "_blank"}
+                          "네이버에서 확인하기"]])
+          :type "warning"}]
+        [:img {:src "/img/404.svg"
+               :style {:display "block"
+                       :margin-top 32
+                       :margin-left "auto"
+                       :margin-right "auto"}}]]
        [:div.content
         [ant/row {:gutter 16}
          [ant/col {:md 8 :sm 12} [snapshot :cost]]

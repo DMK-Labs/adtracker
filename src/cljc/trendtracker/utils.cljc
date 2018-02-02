@@ -30,7 +30,7 @@
      "Returns a sorting function which takes two maps and compares them by a
   common key `k`. Used to create a sorter fn for table columns."
      (fn [curr next]
-       (apply - (map #(-> % (js->clj :keywordize-keys true) k)
+       (apply - (map #(k (js->clj % :keywordize-keys true))
                      [curr next])))))
 
 ;;* Formatting

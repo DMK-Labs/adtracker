@@ -23,34 +23,42 @@
       (update :targets json/read-value)
       (update :objective keyword)))
 
-(defn marginals [{:keys [budget naver_customer_id objective] :as settings}]
-  (let [estimates (customer-estimates naver_customer_id) ;; TODO filter by campaign_id
-        ]
-    (mckp/marginal-landscape objective estimates)))
-
-(defn parent [adgroup-id]
-  (parent-campaign
-   (:db-spec config)
-   {:adgroup-id adgroup-id}))
+(defn parent-id [adgroup-id]
+  (:id
+    (parent-campaign
+      (:db-spec config)
+      {:adgroup-id adgroup-id})))
 
 (defn insert-click-marginals!
   [rel]
   (jdbc/with-db-transaction [tx (:db-spec config)]
-    (doseq [marginals rel]
-      (println "Inserting" marginals)
+    (doseq [row rel]
+      (println "Inserting" row)
       (insert-click-marginals
        tx
-       (-> marginals
-           (assoc :campaign-id (:id (parent (:adgroup-id marginals))))
+       (-> row
+           (assoc :campaign-id (parent-id (:adgroup-id row)))
            (set/rename-keys {:key :keyword-id}))))))
 
-(def marginals
+;; (defn marginals [{:keys [naver_customer_id objective] :as settings}]
+;;   (let [estimates (customer-estimates naver_customer_id) ;; TODO filter by campaign_id
+;;         ]
+;;     (mckp/marginal-landscape objective estimates)))
+
+(defn marginals [{:keys [bid-limit]}]
   ;; TODO: replace with a function
-  (mckp/marginal-landscape :clicks (kw-estimates (:db-spec config) {})))
+  (mckp/marginal-landscape
+   :clicks
+   (h/where
+    {:bid [< (or bid-limit (* 100 1000))]}
+    (kw-estimates (:db-spec config) {}))))
 
 (comment
   (let [ma (marginals (settings 137307))]
     (insert-click-marginals! ma))
+
+  (def y (marginals {:bid-limit 2000}))
+  (def x (marginals {}))
 
   (def df (read-string (slurp "data/df")))
   (count df)

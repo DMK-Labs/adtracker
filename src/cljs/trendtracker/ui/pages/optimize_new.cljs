@@ -20,7 +20,7 @@
     [:div
      [:div.content-header
       [breadcrumbs]
-      [ant/row [:h1 "네이버 검색광고 입찰 최적화"]]
+      [ant/row [:h2 "네이버 검색광고 입찰 최적화"]]
       [ant/row
        (case step
          0 [:p "최적화를 진행할 목표 지표와, 대상 캠페인을 선택하십시오."]

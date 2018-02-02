@@ -1,7 +1,7 @@
 (ns trendtracker.ui.components.keyword-tool.results-table
   (:require [antizer.reagent :as ant]
             [goog.string :as gstring]
-            [keechma.toolbox.ui :refer [sub>]]
+            [keechma.toolbox.ui :refer [sub> route>]]
             [keechma.ui-component :as ui]
             [reagent.core :as r]
             [trendtracker.utils :as u]
@@ -75,7 +75,8 @@
      [ant/card
       [ant/row {:style {:margin-bottom 16} :type "flex" :justify "space-between"}
        [ant/button
-        {:on-click #(ui/redirect ctx {:page "keyword-tool"})
+        {:on-click #(ui/redirect ctx {:page "keyword-tool"
+                                      :client (:client (route> ctx))})
          :icon "left"}
         "키워드 변경"]
        [ant/button {:on-click #()
@@ -95,7 +96,8 @@
                        :defaultPageSize 15
                        :pageSizeOptions ["15" "30" "45"]
                        :showSizeChanger true}}]
-        (ui/redirect ctx {:page "keyword-tool"}))]]))
+        (ui/redirect ctx (assoc (route> ctx)
+                                :page "keyword-tool")))]]))
 
 (def component
   (ui/constructor

@@ -2,7 +2,7 @@
   (:require [antizer.reagent :as ant]
             [keechma.toolbox.forms.core :as forms-core]
             [keechma.toolbox.forms.helpers :as forms-helpers]
-            [keechma.toolbox.ui :refer [sub>]]
+            [keechma.toolbox.ui :refer [sub> route>]]
             [keechma.ui-component :as ui]
             [trendtracker.ui.components.pure.form-inputs
              :refer
@@ -21,6 +21,14 @@
                  :banner true}]
      [ant/spin {:spinning (empty? optimizing)}
       [ant/form {:on-submit (:submit helpers)}
+       [controlled-radio-group
+        {:form-state form-state
+         :helpers    helpers
+         :attr       :objective
+         :label      "최적화 기준"
+         :options    [{:value :impressions :label "노출"}
+                      {:value :clicks :label "클릭"}
+                      {:value :conversions :label "전환"}]}]
        [controlled-tree-select
         {:form-state           form-state
          :helpers              helpers
@@ -30,19 +38,17 @@
          :treeDefaultExpandAll true
          :treeData             optimizing
          :placeholder          "입찰 최적화 대상을 서택하십시오."}]
-       [controlled-radio-group
-        {:form-state form-state
-         :helpers    helpers
-         :attr       :objective
-         :label      "최적화 기준"
-         :options    [{:value :impressions :label "노출"}
-                      {:value :clicks :label "클릭"}
-                      {:value :conversions :label "전환"}]}]
        [ant/form-item {:style {:margin-bottom 0}}
         [ant/button-group
-         [ant/button {:on-click #(ui/redirect ctx {:page "optimize"})} "취소"]
-         [ant/button {:type "primary" :htmlType "submit"}
-          "다음" [ant/icon {:type "right"}]]]]]]]))
+         [ant/button {:on-click #(ui/redirect ctx {:page "optimize"
+                                                   :client (:client (route> ctx))})}
+          "취소"]
+         [ant/button {:type "primary" ;; :htmlType "submit"
+                      :on-click #(ui/redirect ctx {:page "optimize"
+                                                   :subpage "new"
+                                                   :step 2
+                                                   :client (:client (route> ctx))})}
+          "예산 설정" [ant/icon {:type "right"}]]]]]]]))
 
 (def component
   (ui/constructor

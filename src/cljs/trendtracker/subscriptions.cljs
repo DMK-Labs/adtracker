@@ -11,6 +11,7 @@
      (get-in @app-db-atom (flatten [:kv key])))))
 
 (def subscriptions
-  (merge {:form-state forms-helpers/form-state-sub
-          :keyword-tool (get-kv :keyword-tool)}
+  (merge {:form-state   forms-helpers/form-state-sub
+          :keyword-tool (get-kv :keyword-tool)
+          :marginals    (get-kv [:optimize :marginals])}
          (dataloader/make-subscriptions datasources edb-schema)))

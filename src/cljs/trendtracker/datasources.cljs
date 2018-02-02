@@ -55,9 +55,11 @@
   {:target [:kv :current-client]
    :deps [:managed-clients]
    :params (fn [prev {:keys [client]} {:keys [managed-clients]}]
-             (if client
-               (first (filter #(= client (str (:customer_id %))) managed-clients))
-               (first managed-clients)))
+             (if-let [data (:data prev)]
+               data
+               (if client
+                 (first (filter #(= client (str (:customer_id %))) managed-clients))
+                 (first managed-clients))))
    :loader pass-through-params})
 
 (def portfolio-datasource
@@ -73,8 +75,8 @@
   {:target [:kv :keywords]
    :deps [:current-client]
    :loader api-loader
-   :params (fn [_ _ {:keys [current-client]}]
-             (when current-client
+   :params (fn [_ route {:keys [current-client]}]
+             (when (and (= (:page route) "keywords") current-client)
                {:url "/keywords/all"
                 :customer-id (:customer_id current-client)}))})
 
@@ -92,15 +94,60 @@
    :params (fn [prev _ _] (:data prev))
    :loader pass-through-params})
 
+(def marginals-datasource
+  {:target [:kv :optimize :marginals]
+   :deps [:optimize-settings :current-client]
+   :params (fn [_ route {:keys [optimize-settings current-client]}]
+             (when (and current-client optimize-settings (and (= (:page route) "optimize")
+                                                              (= (:subpage route) "new")))
+               {:url "/optimize/marginals"
+                :customer-id (:customer_id current-client)
+                :objective (:objective optimize-settings)}))
+   :loader api-loader})
+
+(defn fit-to-budget
+  "Takes marginal segments from the total landscape pool until budget is
+  exhausted."
+  [budget marginals]
+  (loop [todo marginals
+         acc []]
+    (if (or (empty? todo)
+            (> (+ (:marginal-cost (first todo)) (u/sum :marginal-cost acc)) budget))
+      acc
+      (recur (next todo)
+             (conj acc (first todo))))))
+
+(defn stats [df cost]
+  (let [res (fit-to-budget cost df)
+        clicks (u/sum :marginal-clicks res)
+        cost (u/sum :marginal-cost res)
+        impressions (u/sum :marginal-impressions res)]
+    {:clicks clicks
+     :cost cost
+     :impressions impressions
+     :cpc (double (/ cost clicks))
+     :cpm (* 1000. (/ cost impressions))
+     ;; :res (model/final-bid-perf-estimates res)
+     }))
+
+(def optimize-stats-datasource
+  {:target [:kv :optimize :stats]
+   :deps [:optimize-settings :marginals]
+   :params (fn [_ route {:keys [optimize-settings marginals]}]
+             (when (= (:page route) "optimize")
+               (stats marginals (:budget optimize-settings))))
+   :loader pass-through-params})
+
 (def daily-stats-datasource
   "Stats depend on the date-range, so it will be reloaded whenever date-range
   changes."
   {:target [:kv :daily-stats]
    :deps   [:jwt :date-range :cascader :current-client]
    :params (fn [_ {:keys [page]} deps]
-             (when-not (or (= "login" page)
-                           (= "logout" page))
-               (select-keys deps [:date-range :cascader :current-client :jwt])))
+             (;; when-not (or (= "login" page)
+              ;;              (= "logout" page))
+              when (= "dashboard" page)
+              (select-keys deps [:date-range :cascader :current-client :jwt])))
    :loader (map-loader
             (fn [req]
               (let [range       (get-in req [:params :date-range])
@@ -133,5 +180,8 @@
    :daily-stats          daily-stats-datasource
    :portfolio            portfolio-datasource
    :portfolio-optimizing portfolio-optimizing-datasource
+   :registered-keywords  registered-keywords-datasource
+
+   :marginals            marginals-datasource
    :optimize-settings    optimize-settings-datasource
-   :registered-keywords  registered-keywords-datasource})
+   :optimize-stats       optimize-stats-datasource})

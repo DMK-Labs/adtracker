@@ -24,6 +24,8 @@
                  [reagent "0.7.0"]
                  [keechma "0.3.1" :exclusions [cljsjs/react-with-addons]]
                  [keechma/toolbox "0.1.7"]
+                 [cljsjs/filesaverjs "1.3.3-0"]
+                 [testdouble/clojurescript.csv "0.3.0"]
                  [keechma/forms "0.1.3"]
                  [sooheon/antizer "0.2.4-SNAPSHOT"]
                  [reacharts "0.1.0-SNAPSHOT"]

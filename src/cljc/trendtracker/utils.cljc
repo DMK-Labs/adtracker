@@ -2,7 +2,11 @@
   (:require #?(:cljs goog.string.format)
             #?(:cljs [cljs.pprint :refer [cl-format]]
                :clj [clojure.pprint :refer [cl-format]])
-            #?(:clj [java-time :as time])))
+            #?(:clj [java-time :as time])
+            #?(:cljs [testdouble.cljs.csv :as csv]
+               :clj [clojure.data.csv :as csv])
+            #?(:cljs cljsjs.filesaverjs)
+            [semantic-csv.core :as scsv]))
 
 
 ;;* Maps and keys
@@ -62,3 +66,14 @@
 #?(:clj
    (defn iso-date [dt]
      (time/format :iso-date (time/local-date dt))))
+
+;;* CSV Download
+#?(:cljs (defn download-csv [filename header content]
+           (let [mime-type (str "text/plain;charset=" (.-characterSet js/document))
+                 csv (->> content
+                          (scsv/vectorize {:header header})
+                          csv/write-csv)
+                 blob (new js/Blob
+                           (clj->js [csv])
+                           (clj->js {:type mime-type}))]
+             (js/saveAs blob filename))))

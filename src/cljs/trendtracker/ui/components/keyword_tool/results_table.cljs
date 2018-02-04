@@ -79,8 +79,12 @@
                                       :client (:client (route> ctx))})
          :icon "left"}
         "키워드 변경"]
-       [ant/button {:on-click #()
-                    :disabled true
+       [ant/button {:on-click #(u/download-csv "keyword_discovery.csv"
+                                               [:keyword :device :keywordplus
+                                                :1-bid :1-impressions :1-clicks :1-cost
+                                                :2-bid :2-impressions :2-clicks :2-cost
+                                                :5-bid :5-impressions :5-clicks :5-cost]
+                                               (:result data))
                     :icon "download"}
         "XLSX로 다운로드"]]
       (if data

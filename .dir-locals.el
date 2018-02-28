@@ -1,2 +1,2 @@
 ((nil
-   (cider-boot-parameters . "dev")))
+   (cider-boot-parameters . "cider dev")))

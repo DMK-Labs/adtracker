@@ -19,7 +19,7 @@
         adgrps (->> (:nccCampaignId campaign-map)
                     (adgroup/get-by-campaign-id new-creds)
                     :body
-                    filter-eligible
+                    ;; filter-eligible
                     (map #(select-keys % [:nccAdgroupId :name])))]
     (-> campaign-map
         (assoc :children adgrps)
@@ -44,7 +44,7 @@
 
 (defn tree [n-id]
   (let [eligible (->> (campaigns n-id)
-                      filter-eligible
+                      ;; filter-eligible
                       (map #(select-keys % [:campaignTp :name :nccCampaignId :customerId])))
         raw-tree (map (fn [[k v]]
                         {:value (keyword k)
@@ -59,25 +59,17 @@
   with relevant info."
   [n-id]
   (let [children (->> (campaigns n-id)
-                      (h/where {:status "ELIGIBLE" :campaignTp "WEB_SITE"})
-                      (map #(select-keys % [:nccCampaignId :expectCost :name :campaignTp]))
-                      (map #(assoc % :status :manual)) ; FIXME should not be hardcoded
-                      rename)]
-    [{:value "powerlink"
-      :label "ALL"
-      :status (let [statuses (map :status children)]
-                (if (some :processing statuses)
-                  :processing
-                  (if (some :on statuses)
-                    :on
-                    :manual)))
-      :campaign-type "파워링크"
-      :expected-cost (h/sum :expected-cost children)
-      :children children}]))
+                      (h/where {:campaignTp "WEB_SITE"})
+                      (map #(select-keys % [:nccCampaignId :expectCost :name :campaignTp :status]))
+                      (map #(assoc % :optimizing? false))
+                      rename
+                      (sort-by :status))]
+    children))
+
 
 (comment
-  (tree 137307)
-  (optimizing 137307)
+  (tree 1334028)
+  (optimizing 137307))
   ;; =>
   ;; [{:value "powerlink",
   ;;   :name "ALL",
@@ -96,4 +88,4 @@
   ;;               :expected-cost 77,
   ;;               :label "1.프라젠트라PC",
   ;;               :campaign-type "파워링크"})}]
-  )
+

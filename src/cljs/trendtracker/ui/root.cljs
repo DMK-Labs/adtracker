@@ -24,6 +24,7 @@
             "keyword-tool" [(ui/component ctx :keyword-tool-page)]
             "overview"     [(ui/component ctx :overview-page)]
             "keywords"     [(ui/component ctx :keywords-page)]
+            "manage"       [(ui/component ctx :manage-page)]
             [:div.content "404: page not found"])]
          [(ui/component ctx :footer)]]]])))
 
@@ -40,4 +41,5 @@
                      :user-page
                      :keyword-tool-page
                      :keywords-page
-                     :overview-page]}))
+                     :overview-page
+                     :manage-page]}))

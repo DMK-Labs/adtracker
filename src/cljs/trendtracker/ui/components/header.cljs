@@ -32,13 +32,11 @@
      [ant/dropdown
       {:placement "bottomCenter"
        :overlay (r/as-element
-                 [ant/menu
-                  [ant/menu-item
-                   [:a {:href (ui/url ctx (assoc route :page "user"))}
-                    [:span [ant/icon {:type "setting"}] " 계정설정"]]]
-                  [ant/menu-item
-                   [:a {:href (ui/url ctx (assoc route :page "logout"))}
-                    [:span [ant/icon {:type "logout"}] " 로그아웃"]]]])}
+                 [ant/menu {:on-click #(ui/redirect ctx (assoc route :page (:key (js->clj % :keywordize-keys true))))}
+                  [ant/menu-item {:key "user"}
+                   [:span [ant/icon {:type "setting"}] " 계정설정"]]
+                  [ant/menu-item {:key "logout"}
+                   [:span [ant/icon {:type "logout"}] " 로그아웃"]]])}
       [:a {:style {:margin-right "16px"}}
        (:name current-user)]]]))
 
@@ -69,7 +67,8 @@
             :style {:height 34 :width 152}}]]
     [:div {:style {:float "right"}}
      [user ctx]
-     [notifications ctx]]]])
+     ;; [notifications ctx]
+     ]]])
 
 (def component
   (ui/constructor

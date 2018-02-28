@@ -20,6 +20,6 @@
                      :form))
    :optimize-objective (fn [{:keys [page subpage step]}]
                          (when (and (= "optimize" page)
-                                    (= "new" subpage)
+                                    (= "settings" subpage)
                                     (= "1" step))
                            :form))})

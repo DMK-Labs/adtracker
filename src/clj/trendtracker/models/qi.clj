@@ -1,0 +1,1 @@
+(ns trendtracker.models.qi)

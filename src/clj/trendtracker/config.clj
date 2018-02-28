@@ -32,3 +32,6 @@
    :naver-creds {:customer-id 719425
                  :access-key (env :x-api-key)
                  :private-key (env :x-private-key)}})
+
+(defn creds [customer-id]
+  (assoc (:naver-creds config) :customer-id customer-id))

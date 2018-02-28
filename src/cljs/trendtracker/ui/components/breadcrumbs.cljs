@@ -6,22 +6,18 @@
 (defn render [ctx]
   (let [route (route> ctx)
         page (:page route)
-        subpage (:subpage route)]
+        subpage (:subpage route)
+        client (:client route)
+        capitalize {:style {:text-transform "capitalize"}}]
     [ant/breadcrumb {:style {:margin-bottom 12}}
-     ;; [ant/breadcrumb-item
-     ;;  [:a {:href "http://www.trendtracker.co.kr/"} "TrendTracker"]]
      [ant/breadcrumb-item
-      [:a {:href (ui/url ctx {:page "dashboard"})} "Ad Tracker"]]
-     [ant/breadcrumb-item
-      {:style {:text-transform "capitalize"}}
+      [:a {:href (ui/url ctx {:page "dashboard" :client client})} "Ad Tracker"]]
+     [ant/breadcrumb-item capitalize
       (if subpage
-        [:a {:href (ui/url ctx {:page page})}
-         page]
+        [:a {:href (ui/url ctx {:page page :client client})} page]
         page)]
      (when subpage
-       [ant/breadcrumb-item
-        {:style {:text-transform "capitalize"}}
-        subpage])]))
+       [ant/breadcrumb-item capitalize subpage])]))
 
 (def component
   (ui/constructor {:renderer render}))

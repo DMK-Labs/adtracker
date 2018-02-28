@@ -29,15 +29,15 @@
          :options    [{:value :impressions :label "노출"}
                       {:value :clicks :label "클릭"}
                       {:value :conversions :label "전환"}]}]
-       [controlled-tree-select
-        {:form-state           form-state
-         :helpers              helpers
-         :attr                 :targets
-         :label                "최적화 대상 캠페인 선택"
-         :treeCheckable        true
-         :treeDefaultExpandAll true
-         :treeData             optimizing
-         :placeholder          "입찰 최적화 대상을 서택하십시오."}]
+       ;[controlled-tree-select
+       ; {:form-state           form-state
+       ;  :helpers              helpers
+       ;  :attr                 :targets
+       ;  :label                "최적화 대상 캠페인 선택"
+       ;  :treeCheckable        true
+       ;  :treeDefaultExpandAll true
+       ;  :treeData             optimizing
+       ;  :placeholder          "입찰 최적화 대상을 서택하십시오."}]
        [ant/form-item {:style {:margin-bottom 0}}
         [ant/button-group
          [ant/button {:on-click #(ui/redirect ctx {:page "optimize"
@@ -45,7 +45,7 @@
           "취소"]
          [ant/button {:type "primary" ;; :htmlType "submit"
                       :on-click #(ui/redirect ctx {:page "optimize"
-                                                   :subpage "new"
+                                                   :subpage "settings"
                                                    :step 2
                                                    :client (:client (route> ctx))})}
           "예산 설정" [ant/icon {:type "right"}]]]]]]]))

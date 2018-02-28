@@ -1,15 +1,16 @@
 (ns trendtracker.ui.components.keyword-tool.results-table
   (:require [antizer.reagent :as ant]
             [goog.string :as gstring]
-            [keechma.toolbox.ui :refer [sub> route>]]
+            goog.string.format
+            [keechma.toolbox.ui :refer [route> sub>]]
             [keechma.ui-component :as ui]
             [reagent.core :as r]
-            [trendtracker.utils :as u]
-            [goog.string.format]))
+            [trendtracker.helpers.download :as download]
+            [trendtracker.utils :as u]))
 
 (def columns
-  [{:title "키워드" :dataIndex :keyword :width 150 :fixed :left}
-   {:title "기기" :width 80 :fixed :left :dataIndex :device
+  [{:title "키워드" :dataIndex :keyword :fixed :left :width 220}
+   {:title "기기" :dataIndex :device :fixed :left :width 80
     :filters [{:text "PC" :value "PC"}
               {:text "Mobile" :value "MOBILE"}]
     :onFilter (fn [value record]
@@ -17,7 +18,7 @@
                     (js->clj :keywordize-keys true)
                     :device
                     (= value)))}
-   {:title "30일간 1순위 평균"
+   {:title "1순위 평균"
     :children [{:title "입찰"
                 :dataIndex :1-bid
                 :render #(r/as-element (u/krw %))
@@ -34,7 +35,7 @@
                 :dataIndex :1-cost
                 :render #(r/as-element (u/krw %))
                 :sorter (u/sorter-by :1-cost)}]}
-   {:title "30일간 2순위 평균"
+   {:title "2순위 평균"
     :children [{:title "입찰"
                 :dataIndex :2-bid
                 :render #(r/as-element (u/krw %))
@@ -51,7 +52,41 @@
                 :dataIndex :2-cost
                 :render #(r/as-element (u/krw %))
                 :sorter (u/sorter-by :2-cost)}]}
-   {:title "30일간 5순위 평균"
+   {:title "3순위 평균"
+    :children [{:title "입찰"
+                :dataIndex :3-bid
+                :render #(r/as-element (u/krw %))
+                :sorter (u/sorter-by :3-bid)}
+               {:title "노출"
+                :dataIndex :3-impressions
+                :render #(r/as-element (u/int-fmt %))
+                :sorter (u/sorter-by :3-impressions)}
+               {:title "클릭"
+                :dataIndex :3-clicks
+                :render #(r/as-element (u/int-fmt %))
+                :sorter (u/sorter-by :3-clicks)}
+               {:title "비용"
+                :dataIndex :3-cost
+                :render #(r/as-element (u/krw %))
+                :sorter (u/sorter-by :3-cost)}]}
+   {:title "4순위 평균"
+    :children [{:title "입찰"
+                :dataIndex :4-bid
+                :render #(r/as-element (u/krw %))
+                :sorter (u/sorter-by :4-bid)}
+               {:title "노출"
+                :dataIndex :4-impressions
+                :render #(r/as-element (u/int-fmt %))
+                :sorter (u/sorter-by :4-impressions)}
+               {:title "클릭"
+                :dataIndex :4-clicks
+                :render #(r/as-element (u/int-fmt %))
+                :sorter (u/sorter-by :4-clicks)}
+               {:title "비용"
+                :dataIndex :4-cost
+                :render #(r/as-element (u/krw %))
+                :sorter (u/sorter-by :4-cost)}]}
+   {:title "5순위 평균"
     :children [{:title "입찰"
                 :dataIndex :5-bid
                 :render #(r/as-element (u/krw %))
@@ -67,7 +102,41 @@
                {:title "비용"
                 :dataIndex :5-cost
                 :render #(r/as-element (u/krw %))
-                :sorter (u/sorter-by :5-cost)}]}])
+                :sorter (u/sorter-by :5-cost)}]}
+   {:title "Median 입찰가"
+    :children [{:title "입찰"
+                :dataIndex :median-bid
+                :render #(r/as-element (u/krw %))
+                :sorter (u/sorter-by :median-bid)}
+               {:title "노출"
+                :dataIndex :median-impressions
+                :render #(r/as-element (u/int-fmt %))
+                :sorter (u/sorter-by :median-impressions)}
+               {:title "클릭"
+                :dataIndex :median-clicks
+                :render #(r/as-element (u/int-fmt %))
+                :sorter (u/sorter-by :median-clicks)}
+               {:title "비용"
+                :dataIndex :median-cost
+                :render #(r/as-element (u/krw %))
+                :sorter (u/sorter-by :median-cost)}]}
+   {:title "최소노출 입찰가"
+    :children [{:title "입찰"
+                :dataIndex :min-bid
+                :render #(r/as-element (u/krw %))
+                :sorter (u/sorter-by :min-bid)}
+               {:title "노출"
+                :dataIndex :min-impressions
+                :render #(r/as-element (u/int-fmt %))
+                :sorter (u/sorter-by :min-impressions)}
+               {:title "클릭"
+                :dataIndex :min-clicks
+                :render #(r/as-element (u/int-fmt %))
+                :sorter (u/sorter-by :min-clicks)}
+               {:title "비용"
+                :dataIndex :min-cost
+                :render #(r/as-element (u/krw %))
+                :sorter (u/sorter-by :min-cost)}]}])
 
 (defn render [ctx]
   (let [data (sub> ctx :keyword-tool)]
@@ -79,17 +148,23 @@
                                       :client (:client (route> ctx))})
          :icon "left"}
         "키워드 변경"]
-       [ant/button {:on-click #(u/download-csv "keyword_discovery.csv"
-                                               [:keyword :device :keywordplus
-                                                :1-bid :1-impressions :1-clicks :1-cost
-                                                :2-bid :2-impressions :2-clicks :2-cost
-                                                :5-bid :5-impressions :5-clicks :5-cost]
-                                               (:result data))
+       [ant/button {:on-click #(download/download-csv
+                                {:filename "keyword_discovery.csv"
+                                 :header [:keyword :device :keywordplus
+                                          :1-bid :1-impressions :1-clicks :1-cost
+                                          :2-bid :2-impressions :2-clicks :2-cost
+                                          :3-bid :3-impressions :3-clicks :3-cost
+                                          :4-bid :4-impressions :4-clicks :4-cost
+                                          :5-bid :5-impressions :5-clicks :5-cost
+                                          :median-bid :median-impressions :median-clicks :median-cost
+                                          :min-bid :min-impressions :min-clicks :min-cost]
+                                 :content (:result data)
+                                 :prepend-header true})
                     :icon "download"}
-        "XLSX로 다운로드"]]
+        "CSV로 다운로드"]]
       (if data
         [ant/table
-         {:scroll {:x 1500}
+         {:scroll {:x 2500}
           :dataSource (map #(assoc % :key (str (:keyword %) (:device %))) (:result data))
           :columns columns
           :size "middle"

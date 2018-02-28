@@ -5,11 +5,11 @@
             [keechma.toolbox.ui :refer [sub>]]
             [trendtracker.utils :as u]))
 
-(def columns
+(def ^:private columns
   [{:title "광고그룹 ID" :dataIndex :adgroup-id}
-   {:title "키워드" :dataIndex :keyword}
    {:title "ID" :dataIndex :id}
-   {:title "Bid" :dataIndex :bid}])
+   {:title "키워드" :dataIndex :keyword}
+   {:title "Bid" :dataIndex :bid :render u/krw}])
 
 (defn render [ctx]
   [:div

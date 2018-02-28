@@ -11,6 +11,7 @@
    {:set (pipeline! [value app-db]
            (pl/commit! (assoc-in app-db [:kv :portfolio-optimizing] nil))
            (pl/commit! (assoc-in app-db [:kv :portfolio] nil))
+           (pl/commit! (assoc-in app-db [:kv :optimize :stats] nil))
            (pl/redirect! (assoc (get-in app-db [:route :data])
                                 :client value))
            (pl/commit! (assoc-in app-db

@@ -10,7 +10,7 @@
         current-page (:page route)
         client (:client route)]
     [ant/layout-sider {:collapsible true
-                       :breakpoint "lg"
+                       :breakpoint "xl"
                        :collapsed-width 64}
      [ant/affix {:offset 56}
       [ant/menu {:theme :dark
@@ -24,37 +24,39 @@
                                        :client client}
                                       (when (and (= "keyword-tool" page)
                                                  (:result kws))
-                                        {:subpage "result"}))))}
+                                        {:subpage "result"}))))
+                 :defaultOpenKeys [:ad]}
 
-       #_[ant/menu-sub-menu {:key :ad
-                             :title (r/as-element
-                                     [:span
-                                      [ant/icon {:type "dot-chart"}]
-                                      [:span "Ad Tracker"]])}]
-       [ant/menu-item {:key "dashboard"}
-        [ant/icon {:type "line-chart"}]
-        [:span "대쉬보드"]]
+       [ant/menu-sub-menu {:key :ad
+                           :title (r/as-element
+                                   [:span
+                                    [ant/icon {:type "line-chart"}]
+                                    [:span "Ad Tracker"]])}
 
-       [ant/menu-item {:key "optimize"}
-        [ant/icon {:type "rocket"}]
-        [:span "입찰 최적화"]]
+        [ant/menu-item {:key "dashboard"}
+         [ant/icon {:type "dashboard"}]
+         [:span "대쉬보드"]]
 
-       [ant/menu-item {:key "keyword-tool"}
-        [ant/icon {:type "tool"}]
-        [:span "신규 키워드 찾기"]]
+        [ant/menu-item {:key "optimize"}
+         [ant/icon {:type "rocket"}]
+         [:span "입찰 최적화"]]
 
-       [ant/menu-item {:key "keywords"}
-        [ant/icon {:type "profile"}]
-        [:span "키워드 목록"]]
+        [ant/menu-item {:key "keyword-tool"}
+         [ant/icon {:type "tool"}]
+         [:span "키워드 조사 도구"]]
 
-       [ant/menu-item {:key "manage" :disabled true}
-        [ant/icon {:type "bulb"}]
-        [:span "광고 개선"]]
+        [ant/menu-item {:key "keywords"}
+         [ant/icon {:type "profile"}]
+         [:span "키워드 목록"]]
 
-       (when (= current-page "user")
-         [ant/menu-item {:key "user" :disabled false}
-          [ant/icon {:type "setting"}]
-          [:span "계정 설정"]])]]]))
+        [ant/menu-item {:key "manage"}
+         [ant/icon {:type "bulb"}]
+         [:span "광고 개선"]]
+
+        (when (= current-page "user")
+          [ant/menu-item {:key "user"}
+               [ant/icon {:type "setting"}]
+               [:span "계정 설정"]])]]]]))
 
 (def component
   (ui/constructor

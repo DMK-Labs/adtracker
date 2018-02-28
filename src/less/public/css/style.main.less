@@ -1,151 +1,158 @@
 @import url(https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css);
 
 * {
-    font-family: NanumSquare;
+  font-family: NanumSquare, sans-serif;
 }
 
 .ant-pagination-jump-prev, .ant-pagination-jump-next {
-    font-family: Helvetica !important;
+  font-family: Helvetica, sans-serif !important;
 }
 
 .ant-layout-header {
-    padding: 0 24px 0 24px;
-    background-color: #fff;
-    position: relative;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.04), 0 5px 10px rgba(0, 0, 0, 0.08);
-    line-height: 56px;
-    height: 56px;
+  padding: 0 24px 0 24px;
+  background-color: #fff;
+  position: relative;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.04), 0 5px 10px rgba(0, 0, 0, 0.08);
+  line-height: 56px;
+  height: 56px;
 }
 
 .content-header {
-    margin: 0 !important;
-    padding: 12px 20px;
-    background-color: #fff;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.04);
+  margin: 0 !important;
+  padding: 12px 20px;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.04);
 }
 
 .content {
-    margin: 16px;
+  margin: 16px;
 }
 
 // Layout Colors fix
 .ant-layout,
-.ant-layout-footer
-{
-    background-color: rgba(247, 247, 247, 1.00);
+.ant-layout-footer {
+  background-color: rgba(247, 247, 247, 1.00);
 }
 
 .ant-layout-sider, .ant-layout-sider .ant-menu {
-    background-color: #444;
+  background-color: #444;
 }
 
 .ant-layout-sider .ant-menu .ant-menu-sub,
 .ant-layout-sider-trigger,
 .ant-menu-sub.ant-menu-vertical {
-    background-color: #393939;
+  background-color: #393939;
 }
+
 // Layout Colors fix
 
-
-
 .ant-layout-footer {
-    text-align: center;
+  text-align: center;
 }
 
 .ant-layout-footer p {
-    color: #999;
-    font-height: 8px;
-    margin-top: 8px;
-    margin-bottom: 0;
+  color: #999;
+  font-height: 8px;
+  margin-top: 8px;
+  margin-bottom: 0;
 }
 
 .ant-card-body {
-    padding: 12px !important;
+  padding: 12px !important;
 }
 
 .ant-card-head {
-    padding: 0 12px !important;
+  padding: 0 12px !important;
 }
 
 // Sider collapsed width
 .ant-layout-sider .ant-menu-inline-collapsed {
-    width: 64px;
+  width: 64px;
 }
 
-.ant-layout-sider .ant-menu-inline-collapsed>.ant-menu-item,
-.ant-layout-sider .ant-menu-inline-collapsed>.ant-menu-item-group>.ant-menu-item-group-list>.ant-menu-item,
-.ant-layout-sider .ant-menu-inline-collapsed>.ant-menu-submenu>.ant-menu-submenu-title
-{
-    padding: 0 24px !important;
+.ant-layout-sider .ant-menu-inline-collapsed > .ant-menu-item,
+.ant-layout-sider .ant-menu-inline-collapsed > .ant-menu-item-group > .ant-menu-item-group-list > .ant-menu-item,
+.ant-layout-sider .ant-menu-inline-collapsed > .ant-menu-submenu > .ant-menu-submenu-title {
+  padding: 0 24px !important;
 }
+
 // Sider collapsed width
 
 // vertical margin between cards in content
 .content .ant-row .ant-card {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
-
 
 // New Optimization Step 2
 .totals {
-    display: flex;
-    flex-direction: row;
-    padding: 16px 32px 16px;
-    justify-content: center;
-    list-style: none;
-    margin: 0;
+  display: flex;
+  flex-direction: row;
+  padding: 16px 32px 16px;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
 }
 
 .total {
-    padding: 0 20px;
-    margin: 0;
-    text-align: center;
-    flex: 1 1 50%;
-    display: list-item;
+  padding: 0 20px;
+  margin: 0;
+  text-align: center;
+  flex: 1 1 50%;
+  display: list-item;
 }
 
 .total p {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 // optimization settings
-.opt-settings {
-    display: flex;
-    padding: 8px;
-    justify-content: center;
-    list-style: none;
-    margin: 0;
-    height: 100%;
-    align-items: center;
+.opt-settings, .summaries {
+  display: flex;
+  padding: 0px;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  height: 100%;
+  align-items: center;
 }
 
-.opt-setting {
-    padding: 0 8px;
-    margin: 0;
-    text-align: center;
-    flex: 1 1 50%;
-    display: list-item;
+.opt-setting, .summary {
+  padding: 8px;
+  margin: 0;
+  text-align: center;
+  flex: 1 1 50%;
+  display: list-item;
 }
 
-.opt-setting p,  {
-    margin: 0;
+.summary-title {
+  font-size: 20px;
+  color: black;
+  margin-right: 4px;
+}
+
+.opt-setting p {
+  margin: 0;
+}
+
+.summaries p {
+  margin: 0;
 }
 
 .opt-setting h2 {
-    font-weight: 400;
+  font-weight: 400;
 }
 
 ///////////////////////////// jh
 
-.jh-root, .jh-type-object, .jh-type-array, .jh-key, .jh-value, .jh-root tr{
- -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
- -moz-box-sizing: border-box;    /* Firefox, other Gecko */
- box-sizing: border-box;         /* Opera/IE 8+ */
+.jh-root, .jh-type-object, .jh-type-array, .jh-key, .jh-value, .jh-root tr {
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box; /* Firefox, other Gecko */
+  box-sizing: border-box; /* Opera/IE 8+ */
 }
 
-.jh-key, .jh-value{
- margin: 0;
- padding: 0.2em;
+.jh-key, .jh-value {
+  margin: 0;
+  padding: 0.2em;
 }
 
 .jh-empty-collection:before {
@@ -164,74 +171,74 @@
   content: '""';
 }
 
-.jh-value{
-    border-left: 1px solid #ddd;
+.jh-value {
+  border-left: 1px solid #ddd;
 }
 
-.jh-type-bool, .jh-type-number{
-    font-weight: bold;
-    text-align: center;
-    color: #5286BC;
+.jh-type-bool, .jh-type-number {
+  font-weight: bold;
+  text-align: center;
+  color: #5286BC;
 }
 
-.jh-type-string{
-    font-style: italic;
-    color: #839B00;
+.jh-type-string {
+  font-style: italic;
+  color: #839B00;
 }
 
-.jh-type-date{
-    font-style: italic;
-    color: #839C00;
+.jh-type-date {
+  font-style: italic;
+  color: #839C00;
 }
 
-.jh-array-key{
-    font-style: italic;
-    font-size: small;
-    text-align: center;
+.jh-array-key {
+  font-style: italic;
+  font-size: small;
+  text-align: center;
 }
 
-.jh-object-key, .jh-array-key{
-    color: #444;
-    vertical-align: top;
+.jh-object-key, .jh-array-key {
+  color: #444;
+  vertical-align: top;
 }
 
-.jh-type-object > tbody > tr:nth-child(odd), .jh-type-array > tbody > tr:nth-child(odd){
-    background-color: #f5f5f5;
+.jh-type-object > tbody > tr:nth-child(odd), .jh-type-array > tbody > tr:nth-child(odd) {
+  background-color: #f5f5f5;
 }
 
-.jh-type-object > tbody > tr:nth-child(even), .jh-type-array > tbody > tr:nth-child(even){
-    background-color: #fff;
+.jh-type-object > tbody > tr:nth-child(even), .jh-type-array > tbody > tr:nth-child(even) {
+  background-color: #fff;
 }
 
-.jh-type-object, .jh-type-array{
-    width: 100%;
-    border-collapse: collapse;
+.jh-type-object, .jh-type-array {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.jh-root{
- border: 1px solid #ccc;
- margin: 0.2em;
+.jh-root {
+  border: 1px solid #ccc;
+  margin: 0.2em;
 }
 
-th.jh-key{
- text-align: left;
+th.jh-key {
+  text-align: left;
 }
 
-.jh-type-object > tbody > tr, .jh-type-array > tr{
- border: 1px solid #ddd;
- border-bottom: none;
+.jh-type-object > tbody > tr, .jh-type-array > tr {
+  border: 1px solid #ddd;
+  border-bottom: none;
 }
 
-.jh-type-object > tbody > tr:last-child, .jh-type-array > tbody > tr:last-child{
- border-bottom: 1px solid #ddd;
+.jh-type-object > tbody > tr:last-child, .jh-type-array > tbody > tr:last-child {
+  border-bottom: 1px solid #ddd;
 }
 
-.jh-type-object > tbody > tr:hover, .jh-type-array > tbody > tr:hover{
- border: 1px solid #F99927;
+.jh-type-object > tbody > tr:hover, .jh-type-array > tbody > tr:hover {
+  border: 1px solid #F99927;
 }
 
-.jh-empty{
- font-style: italic;
- color: #999;
- font-size: small;
+.jh-empty {
+  font-style: italic;
+  color: #999;
+  font-size: small;
 }

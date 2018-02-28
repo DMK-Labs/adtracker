@@ -22,8 +22,8 @@
                  ;; frontend
                  [metosin/compojure-api "2.0.0-alpha17"]
                  [reagent "0.7.0"]
-                 [keechma "0.3.1" :exclusions [cljsjs/react-with-addons]]
-                 [keechma/toolbox "0.1.7"]
+                 [keechma "0.3.2" :exclusions [cljsjs/react-with-addons]]
+                 [keechma/toolbox "0.1.8"]
                  [cljsjs/filesaverjs "1.3.3-0"]
                  [testdouble/clojurescript.csv "0.3.0"]
                  [keechma/forms "0.1.3"]
@@ -33,9 +33,8 @@
 
                  ;; backend
                  [aleph "0.4.4"]
-                 [org.immutant/web "2.1.10"]
                  [org.clojure/java.jdbc "0.7.5"]
-                 [org.postgresql/postgresql "42.2.0"]
+                 [org.postgresql/postgresql "42.2.1"]
                  [com.layerware/hugsql "0.4.8"]
                  [ring-middleware-format "0.7.2"]
                  [clojure.java-time "0.3.1"]
@@ -47,6 +46,8 @@
                  [huri "0.10.0-SNAPSHOT"]
                  [json-html "0.4.4"]
                  [optimus "0.1.0-SNAPSHOT"]
+                 [semantic-csv "0.2.1-alpha1"]
+                 [dk.ative/docjure "1.12.0"]
 
                  ;; added by chestnut
                  [com.cognitect/transit-clj "0.8.300"]
@@ -91,8 +92,9 @@
   (comp
    (watch)
    (system :sys (resolve 'trendtracker.application/dev-system)
-           :auto true
-           :files ["routes.clj" "application.clj"])
+           ;; :auto true
+           ;; :files ["routes.clj" "application.clj"]
+           )
    (less)
    (reload)
    ;; this is also the server repl!

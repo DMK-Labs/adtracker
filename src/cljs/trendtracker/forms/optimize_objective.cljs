@@ -10,7 +10,7 @@
 
 (def validator
   (v/validator
-   {:targets [[:not-empty validators/not-empty?]]
+   {:targets []
     :objective []}))
 
 (defrecord OptimizeObjectiveForm [validator])
@@ -23,7 +23,8 @@
 (defmethod forms-core/process-in OptimizeObjectiveForm [_ _ _ data]
   (update
    (select-keys data [:targets :objective])
-   :targets js/JSON.parse))
+   :targets
+   js/JSON.parse))
 
 ;; (defmethod forms-core/submit-data OptimizeObjectiveForm [_ _ _ data]
 ;;   (ajax/GET "/api/optimize/marginals" {}))
@@ -32,7 +33,7 @@
 ;;   (pipeline! [value app-db]
 ;;     (pl/commit! (assoc-in app-db [:kv :optimize :marginals] res))
 ;;     (pl/redirect! {:page "optimize"
-;;                    :subpage "new"
+;;                    :subpage "settings"
 ;;                    :step "2"
 ;;                    :client (get-in app-db [:route :data :client])})))
 

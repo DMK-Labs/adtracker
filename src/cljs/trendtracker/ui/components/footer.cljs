@@ -8,12 +8,12 @@
    #_[:p>a {:href "http://github.com/sooheon/"
             :style {:color "inherit"}}
       "Github"]
-   [:p "DataMKTKorea © 2018 - Made with "
-    (rand-nth ["❤️" ;; heart
-               "✨" ;; sparkle
-               "🌟" ;; glowing star
-               ])
-    " in Seoul"]])
+   [:p (str "DataMKTKorea © 2018 - Made with "
+         (rand-nth ["❤️"  ;; heart
+                    "✨" ;; sparkle
+                    "🌟" ;; glowing star
+                    ])
+         " in Seoul")]])
 
 (def component
   (ui/constructor {:renderer render}))

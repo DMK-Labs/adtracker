@@ -1,10 +1,34 @@
 -- :name all :? :*
-select
-keyword,
-id,
-bid,
-ad_group_id as "adgroup-id",
-pc_landing_url as "pc-landing",
-mobile_landing_url as "mobile-landing"
-from naver.keyword
-where customer_id = :customer-id and is_off IS FALSE and del_at IS NULL
+SELECT
+  a.campaign_id AS "campaign-id",
+  k.ad_group_id AS "adgroup-id",
+  k.id,
+  k.keyword,
+  k.bid
+FROM naver.keyword AS k LEFT JOIN naver.ad_group AS a ON k.ad_group_id = a.id
+WHERE k.customer_id = :customer-id AND k.is_off IS FALSE AND k.del_at IS NULL
+
+-- :name by-campaign-id :? :*
+SELECT
+  a.campaign_id AS "campaign-id",
+  k.ad_group_id AS "adgroup-id",
+  k.id,
+  k.keyword,
+  k.bid
+FROM naver.keyword AS k LEFT JOIN naver.ad_group AS a ON k.ad_group_id = a.id
+WHERE
+  k.customer_id = :customer-id AND k.is_off IS FALSE AND k.del_at IS NULL AND a.campaign_id IN (:v*:campaign-ids);
+
+-- :name -parent :? :1
+SELECT ad_group_id AS "adgroup-id"
+FROM naver.keyword
+WHERE id = :id;
+
+-- :name -owner :? :1
+SELECT customer_id AS "customer-id"
+FROM naver.keyword
+WHERE id = :id;
+
+  -- :name name :? :1
+  select keyword AS "name"
+FROM naver.keyword WHERE id = :id

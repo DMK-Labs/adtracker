@@ -9,16 +9,15 @@
   ([ctx opts]
    (let [portfolio (sub> ctx :portfolio)]
      [ant/spin {:spinning (empty? portfolio)
-                :size     "small"}
+                :size "small"}
       [:div [ant/icon {:type "filter"}]
        [ant/cascader
-        (merge {:style          {:min-width   200
-                                 :margin-left 8}
-                :value          (sub> ctx :cascader)
+        (merge {:style {:margin-left 8}
+                :value (sub> ctx :cascader)
                 :changeOnSelect true
-                :onChange       #(<cmd ctx :set (js->clj %))
-                :options        portfolio
-                :allowClear     false}
+                :onChange #(<cmd ctx :set (js->clj %))
+                :options portfolio
+                :allowClear false}
                opts)]]])))
 
 (def component

@@ -5,15 +5,14 @@
             [trendtracker.ui :refer [ui]]))
 
 (def app-definition
-  {:components    ui
-   :controllers   controllers
+  {:components ui
+   :controllers controllers
    :subscriptions subscriptions
-   :html-element  (.getElementById js/document "app")
-   :routes        [["" {:page "login"}]
-                   ":page"
-                   ":page/:subpage"]
-   ;; :router        :history
-   })
+   :html-element (.getElementById js/document "app")
+   :routes [["" {:page "login"}]
+            ":page"
+            ":page/:subpage"]
+   :router :history})
 
 
 (defonce running-app (clojure.core/atom nil))

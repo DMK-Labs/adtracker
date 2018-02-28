@@ -1,23 +1,20 @@
 (ns trendtracker.utils
-  (:require #?(:cljs goog.string.format)
-            #?(:cljs [cljs.pprint :refer [cl-format]]
-               :clj [clojure.pprint :refer [cl-format]])
-            #?(:clj [java-time :as time])
-            #?(:cljs [testdouble.cljs.csv :as csv]
-               :clj [clojure.data.csv :as csv])
-            #?(:cljs cljsjs.filesaverjs)
-            [semantic-csv.core :as scsv]))
+  (:require
+   #?(:cljs goog.string.format)
+   #?(:cljs goog.i18n.NumberFormat)
+   #?(:cljs [cljs.pprint :refer [cl-format]]
+      :clj [clojure.pprint :refer [cl-format]])
+   #?(:clj
+           [java-time :as time])))
 
 
 ;;* Maps and keys
-
 (defn prefix-keys [m s]
   (into {} (map (fn [[k v]]
                   [(keyword (str s (name k))) v])
                 m)))
 
 ;;* Math
-
 (defn sum [k df]
   (apply + (map k df)))
 
@@ -38,7 +35,6 @@
                      [curr next])))))
 
 ;;* Formatting
-
 (defn int-fmt
   "Puts commas in thousandth places. 1234567 => 1,234,567"
   [n]
@@ -67,13 +63,10 @@
    (defn iso-date [dt]
      (time/format :iso-date (time/local-date dt))))
 
-;;* CSV Download
-#?(:cljs (defn download-csv [filename header content]
-           (let [mime-type (str "text/plain;charset=" (.-characterSet js/document))
-                 csv (->> content
-                          (scsv/vectorize {:header header})
-                          csv/write-csv)
-                 blob (new js/Blob
-                           (clj->js [csv])
-                           (clj->js {:type mime-type}))]
-             (js/saveAs blob filename))))
+(defn parse-date-range
+  "`dates` are a vector pair of js/moments
+  [moment moment] => {:low str :high str}"
+  [dates]
+  (->> dates
+       (map fmt-dt)
+       (zipmap [:low :high])))

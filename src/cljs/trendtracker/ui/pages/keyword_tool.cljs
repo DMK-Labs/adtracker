@@ -26,9 +26,12 @@
     [:div
      [:div.content-header
       [(ui/component ctx :breadcrumbs)]
-      [:h2 "키워드 도구"]
+      [:h2 "키워드 조사 도구"]
       [:p "입력 키워드 리스트 기반으로 경쟁도, 예상 수치를 탐색할 수 있는
-      툴입니다. 새로운 블루오션 키워드를 발견하여 더 많은 잠재고객을 만나십시오."]]
+      툴입니다. 새로운 블루오션 키워드를 발견하여 더 많은 잠재고객을 만나십시오."]
+      [ant/alert {:message "모든 지표는 네이버 전체 시스템 내의 과거 28일(4주)의 성과를 비롯해 산출되었습니다."
+                  :banner true
+                  :closable true}]]
 
      [:div.content
       (if subpage

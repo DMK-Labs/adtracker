@@ -1,10 +1,8 @@
 (ns trendtracker.models.optimize
   (:require [clojure.java.jdbc :as jdbc]
-            [clojure.set :as set]
             [hugsql.core :as hugsql]
-            [huri.core :as h]
             [jsonista.core :as json]
-            [optimus.mckp :as mckp]
+            [semantic-csv.core :as scsv]
             [trendtracker.config :refer [config]]))
 
 (def db-fns
@@ -14,60 +12,70 @@
 
 (defn customer-estimates
   [customer-id]
-  (estimates (:db-spec config)
-             {:customer-id customer-id}))
+  (estimates
+   (:db-spec config)
+   {:customer-id customer-id}))
 
 (defn settings
   [customer-id]
-  (-> (current-settings (:db-spec config) {:customer-id customer-id})
-      (update :targets json/read-value)
-      (update :objective keyword)))
+  (when-let [raw-settings (current-settings (:db-spec config) {:customer-id customer-id})]
+    (-> raw-settings
+        (update :targets json/read-value)
+        (update :objective keyword))))
 
-(defn parent-id [adgroup-id]
-  (:id
-    (parent-campaign
-      (:db-spec config)
-      {:adgroup-id adgroup-id})))
+(defn save-settings
+  [customer-id budget objective targets bid-limit]
+  (-save-settings
+   (:db-spec config)
+   {:customer-id customer-id
+    :budget budget
+    :objective (name objective)
+    :targets targets
+    :bid-limit bid-limit}))
 
-(defn insert-click-marginals!
-  [rel]
+(defn insert-estimates [customer-id rel]
   (jdbc/with-db-transaction [tx (:db-spec config)]
-    (doseq [row rel]
-      (println "Inserting" row)
-      (insert-click-marginals
-       tx
-       (-> row
-           (assoc :campaign-id (parent-id (:adgroup-id row)))
-           (set/rename-keys {:key :keyword-id}))))))
+    (let [chunks (partition-all 3000 rel)]
+      (doseq [chunk chunks]
+        (println "Inserting" (first chunk) "...")
+        (-insert-estimates
+         tx
+         {:estimates
+          (->> chunk
+               (scsv/vectorize
+                {:header [:key :device :keywordplus :bid :impressions :clicks :cost]
+                 :prepend-header false})
+               (map #(cons customer-id %)))})))))
 
-;; (defn marginals [{:keys [naver_customer_id objective] :as settings}]
-;;   (let [estimates (customer-estimates naver_customer_id) ;; TODO filter by campaign_id
-;;         ]
-;;     (mckp/marginal-landscape objective estimates)))
+(defn insert-click-marginals
+  [customer-id rel]
+  (jdbc/with-db-transaction [tx (:db-spec config)]
+    (let [chunks (partition-all 2000 rel)]
+      (doseq [chunk chunks]
+        (println "Inserting" (first chunk) "...")
+        (-insert-click-marginals
+         tx
+         {:marginals
+          (->> chunk
+               (map #(assoc % :customer-id customer-id))
+               (scsv/vectorize
+                {:prepend-header false
+                 :header [:customer-id, :key, :device, :keywordplus, :bid, :impressions,
+                          :clicks, :cost, :marginal-bid, :marginal-impressions, :marginal-clicks,
+                          :marginal-cost, :marginal-efficiency]}))})))))
 
-(defn marginals [{:keys [bid-limit]}]
-  ;; TODO: replace with a function
-  (mckp/marginal-landscape
-   :clicks
-   (h/where
-    {:bid [< (or bid-limit (* 100 1000))]}
-    (kw-estimates (:db-spec config) {}))))
+(defn fetch-marginals
+  [customer-id]
+  (-fetch-marginals (:db-spec config) {:customer-id customer-id}))
 
 (comment
-  (let [ma (marginals (settings 137307))]
-    (insert-click-marginals! ma))
+  (current-settings (:db-spec config) {:customer-id 1334028})
+  (count (fetch-marginals 1334028))
+  ;; 9625
+  (count (fetch-marginals 137307))
+  ;; 1771
+  (settings 777309)
+  ;; nil
+  (settings 137307))
 
-  (def y (marginals {:bid-limit 2000}))
-  (def x (marginals {}))
 
-  (def df (read-string (slurp "data/df")))
-  (count df)
-  ;; => 56162
-
-  (doseq [ests (partition-all
-                1000
-                (map (juxt :key :device :keywordplus :bid :impressions :clicks :cost) df))]
-    (print "inserting" ests)
-    (insert-kw-estimates
-     (:db-spec config)
-     {:estimates ests})))

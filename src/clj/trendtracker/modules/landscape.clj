@@ -33,9 +33,15 @@
     (if (empty? remaining)
       (println "No more keywords to add!")
       (doseq [k remaining]
-        (swap! df
-               set/union
-               (set (perfs creds :id {:device device-string :keywordplus false :key k})))))
+        (swap!
+         df
+         set/union
+         (set
+          (transduce
+           (map #(set/rename-keys % {:key :keyword-id}))
+           conj
+           #{}
+           (perfs creds :id {:device device-string :keywordplus false :key k}))))))
     (println "done!")))
 
 (defn add-portfolio-estimates [df customer-id]

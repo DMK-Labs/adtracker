@@ -45,9 +45,11 @@
                  ;; data science
                  [huri "0.10.0-SNAPSHOT"]
                  [json-html "0.4.4"]
-                 [optimus "0.1.0-SNAPSHOT"]
                  [semantic-csv "0.2.1-alpha1"]
                  [dk.ative/docjure "1.12.0"]
+                 [org.clojure/algo.monads "0.1.6"] ; For graham's scan
+                 [orchestra "2017.08.13"] ; Spec testing of fn and ret keys
+
 
                  ;; added by chestnut
                  [com.cognitect/transit-clj "0.8.300"]

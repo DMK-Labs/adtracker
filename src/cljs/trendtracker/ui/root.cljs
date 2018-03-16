@@ -16,7 +16,7 @@
         [ant/layout
          [ant/layout-content
           (case current-page
-            "user"         [(ui/component ctx :user-page)]
+            "settings"     [(ui/component ctx :settings-page)]
             "dashboard"    [(ui/component ctx :dashboard-page)]
             "optimize"     (if subpage
                              [(ui/component ctx :optimize-new-page)]
@@ -38,7 +38,7 @@
                      :dashboard-page
                      :optimize-page
                      :optimize-new-page
-                     :user-page
+                     :settings-page
                      :keyword-tool-page
                      :keywords-page
                      :overview-page

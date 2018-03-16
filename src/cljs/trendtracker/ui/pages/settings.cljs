@@ -1,4 +1,4 @@
-(ns trendtracker.ui.pages.user
+(ns trendtracker.ui.pages.settings
   (:require [antizer.reagent :as ant]
             [keechma.ui-component :as ui]
             [keechma.toolbox.ui :refer [sub> <cmd]]
@@ -42,6 +42,7 @@
          [ant/table
           {:dataSource managed-clients
            :pagination false
+           :size :middle
            :rowKey :customer_id
            :columns [{:title "네이버 광고 ID" :dataIndex :customer_id}
                      {:title "로그인 ID" :dataIndex :login_id}

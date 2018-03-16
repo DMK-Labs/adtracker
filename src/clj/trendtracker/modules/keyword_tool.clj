@@ -81,6 +81,6 @@
 
   (median-bid-stats {:device :pc :keywords ["대출" "신용"]})
 
-  (simple-process ["p2p대출"] false)
+  (simple-process ["튼살크림"] false)
 
   (first-place ["P2P대출"]))

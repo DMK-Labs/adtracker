@@ -48,6 +48,22 @@
 
 (defmulti snapshot (fn [kpi _] kpi))
 
+
+(defmethod snapshot :cost [kpi stats]
+  (let [current (:curr stats)
+        sum (u/sum kpi current)
+        prev-sum (u/sum kpi (:prev stats))
+        delta (u/delta prev-sum sum)
+        color "#ff85c0"]
+    (pure-draw {:title "소진 비용"
+                :info "선택된 기간 동안 집행된 총 광고비"
+                :sum-str (u/krw sum)
+                :delta delta
+                :data current
+                :k kpi
+                :color color
+                :down-is-good? true})))
+
 (defmethod snapshot :budget [kpi stats budget]
   (let [kpi :cost
         current (:curr stats)
@@ -55,34 +71,45 @@
         prev-sum (u/sum kpi (:prev stats))
         delta (u/delta prev-sum sum)
         color "#ff85c0"]
-    (if budget
-      (budget-draw {:title "소진 비용"
-                   :info "선택된 기간 동안 집행된 총 광고비"
-                   :sum-str (u/krw sum)
-                   :delta delta
-                   :down-is-good? true
-                   :sum sum
-                   :budget budget})
-      (pure-draw {:title "소진 비용"
+    (budget-draw {:title "소진 비용"
                   :info "선택된 기간 동안 집행된 총 광고비"
                   :sum-str (u/krw sum)
                   :delta delta
-                  :data current
-                  :k kpi
-                  :color color
-                  :down-is-good? true}))))
+                  :down-is-good? true
+                  :sum sum
+                  :budget budget})))
 
 (defmethod snapshot :revenue [kpi stats]
   (let [current (:curr stats)
         sum (u/sum kpi current)
         prev-sum (u/sum kpi (:prev stats))
         delta (u/delta prev-sum sum)
-        color "#52c41a"]
+        color "#a0d911"]
     (pure-draw {:title "매출"
                 :info "선택된 기간 동안 추적된 총 매출"
                 :sum-str (u/krw sum)
                 :delta delta
                 :data current
+                :k kpi
+                :color color
+                :down-is-good? false})))
+
+(defmethod snapshot :profit [kpi stats]
+  (let [current (:curr stats)
+        sum (- (u/sum :revenue current)
+               (u/sum :cost current))
+        prev-sum (- (u/sum :revenue (:prev stats))
+                    (u/sum :cost (:prev stats)))
+        delta (u/delta prev-sum sum)
+        color "#a0d911"]
+    (pure-draw {:title "이윤"
+                :info "선택된 기간 동안 추적된 총 이윤"
+                :sum-str (u/krw sum)
+                :delta delta
+                :data (map #(assoc % :profit
+                                   (- (:revenue %)
+                                      (:cost %)))
+                           current)
                 :k kpi
                 :color color
                 :down-is-good? false})))
@@ -113,7 +140,7 @@
         prev-sum (/ (u/sum :cost (:prev stats))
                     (u/sum :clicks (:prev stats)))
         delta (u/delta prev-sum sum)
-        color "#faad14"]
+        color "#fa541c"]
     (pure-draw {:title "CPC"
                 :info "평균 클릭당 비용"
                 :sum-str (u/krw (int sum))
@@ -133,7 +160,7 @@
         prev-sum (/ (u/sum :cost (:prev stats))
                     (u/sum :impressions (:prev stats)))
         delta (u/delta prev-sum sum)
-        color "#a0d911"]
+        color "#52c41a"]
     (pure-draw {:title "CPM"
                 :info "1,000개의 노출당 비용"
                 :sum-str (u/krw (int (* 1000 sum)))
@@ -157,7 +184,7 @@
         prev-sum (/ (u/sum :cost (:prev stats))
                     (u/sum :conversions (:prev stats)))
         delta (u/delta prev-sum sum)
-        color "#fa541c"]
+        color "#faad14"]
     (pure-draw {:title "CPA"
                 :info "전환당 비용"
                 :sum-str (u/krw (int sum))

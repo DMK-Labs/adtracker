@@ -4,6 +4,7 @@
             [trendtracker.ui.components.charts.conversion-funnel
              :as
              conversion-funnel]
+            [trendtracker.ui.components.cards.cost-effectiveness :as cost-effectiveness]
             [trendtracker.ui.components.charts.device-pie :as device-pie]
             [trendtracker.ui.components.charts.scatter :as scatter]
             [trendtracker.ui.components.charts.tabbed-charts :as tabbed-charts]
@@ -31,45 +32,48 @@
             [trendtracker.ui.pages.optimize :as optimize]
             [trendtracker.ui.pages.optimize-new :as optimize-new]
             [trendtracker.ui.pages.overview :as overview]
-            [trendtracker.ui.pages.user :as user]
+            [trendtracker.ui.pages.settings :as settings]
             [trendtracker.ui.root :as root]))
 
 (def ui
   {
    ;; Layout
-   :main        root/component
-   :header      header/component
-   :sider       sider/component
-   :footer      footer/component
+   :main root/component
+   :header header/component
+   :sider sider/component
+   :footer footer/component
    :breadcrumbs breadcrumbs/component
 
    ;; Components
-   :date-range-picker          date-range/component
-   :snapshot                   snapshot/component
-   :tabbed-charts              tabbed-charts/component
-   :cascader                   cascader/component
-   :conversion-funnel          conversion-funnel/component
-   :budgeting                  budgeting/component
-   :objective                  objective/component
-   :detail                     detail/component
-   :portfolio                  portfolio/component
+   :date-range-picker date-range/component
+   :snapshot snapshot/component
+   :tabbed-charts tabbed-charts/component
+   :cascader cascader/component
+   :conversion-funnel conversion-funnel/component
+   :budgeting budgeting/component
+   :objective objective/component
+   :detail detail/component
+   :portfolio portfolio/component
    :keyword-tool-results-table results-table/component
-   :scatter-chart              scatter/component
-   :optimize-settings          optimize-settings/component
-   :slider                     slider/component
-   :summary                    summary/component
-   :device-pie                 device-pie/component
+   :scatter-chart scatter/component
+   :optimize-settings optimize-settings/component
+   :slider slider/component
+   :summary summary/component
+   :device-pie device-pie/component
+
+   ;; Cards
+   :cost-effectiveness cost-effectiveness/component
 
    ;; Tables
    :segment-stats segment-stats/component
 
    ;; Pages
-   :login-page        login/component
-   :user-page         user/component
-   :dashboard-page    dashboard/component
+   :login-page login/component
+   :settings-page settings/component
+   :dashboard-page dashboard/component
    :keyword-tool-page keyword-tool/component
-   :optimize-page     optimize/component
+   :optimize-page optimize/component
    :optimize-new-page optimize-new/component
-   :overview-page     overview/component
-   :keywords-page     keywords/component
-   :manage-page       manage/component})
+   :overview-page overview/component
+   :keywords-page keywords/component
+   :manage-page manage/component})

@@ -60,7 +60,7 @@
 (defn campaign-performance [jwt customer-id dates id]
   (ajax/GET "/api/performance/campaign"
             (req-params :data (assoc (u/parse-date-range dates)
-                                     :id id
+                                     :campaign-id id
                                      :customer-id customer-id))))
 (defn campaign-perf
   [jwt client-id id range]

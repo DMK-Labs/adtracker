@@ -12,24 +12,27 @@
    {:title "Bid" :dataIndex :bid :render u/krw}])
 
 (defn render [ctx]
-  [:div
-   [:div.content-header
-    [(ui/component ctx :breadcrumbs)]
-    [:h2 "키워드 목록"]]
-   [:div.content
-    [ant/card
-     [ant/table
-      {:columns columns
-       :dataSource (sub> ctx :registered-keywords)
-       :rowKey :id
-       :size "middle"
-       :bordered true
-       :pagination {:hideOnSinglePage true
-                    :showTotal (fn [total [start end]]
-                                 (gstring/format "총 %s개 중 %s-%s" total start end))
-                    :defaultPageSize 15
-                    :pageSizeOptions ["15" "30" "45"]
-                    :showSizeChanger true}}]]]])
+  (let [data (sub> ctx :registered-keywords)]
+    [:div
+     [:div.content-header
+      [(ui/component ctx :breadcrumbs)]
+      [:h2 "키워드 목록"]]
+     [:div.content
+      [ant/card
+       [:code (pr-str (take 5 data))]]
+      [ant/card
+       [ant/table
+        {:columns columns
+         :dataSource data
+         :rowKey :id
+         :size "middle"
+         :bordered true
+         :pagination {:hideOnSinglePage true
+                      :showTotal (fn [total [start end]]
+                                   (gstring/format "총 %s개 중 %s-%s" total start end))
+                      :defaultPageSize 15
+                      :pageSizeOptions ["15" "30" "45"]
+                      :showSizeChanger true}}]]]]))
 
 (def component
   (ui/constructor

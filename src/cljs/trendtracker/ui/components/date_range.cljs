@@ -17,7 +17,7 @@
    [:span
     [ant/button {:icon "left" :on-click #(<cmd ctx :set-prev)}]
     [ant/date-picker-range-picker
-     {:style {:margin "0 2px" :width 272}
+     {:style {:margin "0 2px" :width 252}
       :format "YYYY-MM-DD"
       :allow-clear false
       :disabled-date today-or-after?

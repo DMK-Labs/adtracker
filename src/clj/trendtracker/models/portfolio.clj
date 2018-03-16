@@ -28,17 +28,19 @@
 (defn rename [rel]
   (w/postwalk (fn [x]
                 (case x
-                  :nccAdgroupId  :value
-                  :name          :label
-                  :nccCampaignId :value
-                  "SHOPPING"     "쇼핑"
-                  :SHOPPING      :shopping
-                  "WEB_SITE"     "파워링크"
-                  :WEB_SITE      :powerlink
-                  "BRAND_SEARCH" "브랜드"
-                  :BRAND_SEARCH  :brand
-                  :campaignTp    :campaign-type
-                  :expectCost    :expected-cost
+                  :nccAdgroupId    :value
+                  :name            :label
+                  :nccCampaignId   :value
+                  "SHOPPING"       "쇼핑"
+                  :SHOPPING        :shopping
+                  "WEB_SITE"       "파워링크"
+                  :WEB_SITE        :powerlink
+                  "BRAND_SEARCH"   "브랜드"
+                  :BRAND_SEARCH    :brand
+                  "POWER_CONTENTS" "파워컨텐츠"
+                  :POWER_CONTENTS  :power-contents
+                  :campaignTp      :campaign-type
+                  :expectCost      :expected-cost
                   x))
               rel))
 

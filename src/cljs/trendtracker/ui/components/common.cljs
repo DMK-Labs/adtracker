@@ -15,7 +15,7 @@
                         (if (pos? d) "#389e0d" "#f5222d"))
                :margin-bottom 3}}
       [:span (if (js/isFinite d)
-               (u/pct-fmt 2 d)
+               (u/pct-fmt d)
                "∞")]
       [ant/icon {:type (if (pos? d) "arrow-up" "arrow-down")}]]
      [:div "--"])))
@@ -23,7 +23,7 @@
 (defn title-w-info [title info]
   (r/as-element
    [ant/row {:type "flex" :justify "space-between"}
-    title
+    [:h3 {:style {:margin-bottom 0 :color "#666"}} title]
     [ant/tooltip {:title info}
      [ant/icon {:type "info-circle-o"
                 :style {:margin-left 8}}]]]))

@@ -13,10 +13,12 @@
             [trendtracker.modules.keyword-tool :as keyword-tool]
             [trendtracker.config :refer [config creds]]
             [trendtracker.db :as db]
+            [trendtracker.models.daily-stats :as daily-stats]
             [trendtracker.models.keywords :as keywords]
             [trendtracker.models.optimize :as optimize]
             [trendtracker.models.portfolio :as portfolio]
             [trendtracker.models.user :as user]
+            [trendtracker.models.segments :as segments]
             [trendtracker.modules.auth :as auth]
             [trendtracker.utils :as u]
             [trendtracker.modules.landscape :as landscape]
@@ -45,6 +47,10 @@
    (s/optional-key :cost) s/Int
    (s/optional-key :cvr) Double
    (s/optional-key :ctr) Double
+   (s/optional-key :cpm) s/Any
+   (s/optional-key :cpa) s/Any
+   (s/optional-key :cpc) s/Any
+   (s/optional-key :i2c) Double
    (s/optional-key :customer_id) s/Int
    (s/optional-key :campaign_id) s/Str
    (s/optional-key :campaign) s/Str
@@ -73,53 +79,64 @@
      (sweet/GET "/performance" []
        :summary "Total performance"
        :query-params [low :- String high :- String customer-id :- s/Int]
-       :return [Perf]
        (respond/ok
         (into [] (comp
                   (map (fn [m] (update m :during u/iso-date)))
-                  (map coerce-perf))
-              (db/total-perf-by-date db {:customer-id customer-id
-                                         :low low
-                                         :high high}))))
+                  (map coerce-perf)
+                  (map daily-stats/add-ratios2))
+              (daily-stats/by-customer
+               db
+               {:customer-id customer-id
+                :low low
+                :high high}))))
 
      (sweet/GET "/performance/type" []
        :summary "Campaign type performance"
        :query-params [low :- s/Str high :- s/Str type :- s/Str customer-id :- s/Int]
-       :return [Perf]
        (respond/ok
         (into [] (comp
                   (map (fn [m] (update m :during u/iso-date)))
-                  (map coerce-perf))
-              (db/cmp-type-perf db {:customer-id customer-id
-                                    :type type
-                                    :low low
-                                    :high high}))))
+                  (map coerce-perf)
+                  (map daily-stats/add-ratios2))
+              (daily-stats/by-type
+               db
+               {:customer-id customer-id
+                :campaign-type type
+                :low low
+                :high high}))))
 
      (sweet/GET "/performance/campaign" []
        :summary "Campaign performance"
-       :query-params [low :- String high :- String id :- String customer-id :- s/Int]
-       :return [Perf]
+       :query-params [low :- s/Str
+                      high :- s/Str
+                      campaign-id :- s/Str
+                      customer-id :- s/Int]
        (respond/ok
         (into [] (comp
                   (map (fn [m] (update m :during u/iso-date)))
-                  (map coerce-perf))
-              (db/cmp-perf-by-id-date db {:customer-id customer-id
-                                          :id id
-                                          :low low
-                                          :high high}))))
+                  (map coerce-perf)
+                  (map daily-stats/add-ratios2))
+              (daily-stats/by-campaign
+               db
+               {:customer-id customer-id
+                :campaign-id campaign-id
+                :low low
+                :high high}))))
 
      (sweet/GET "/performance/adgroup" []
        :summary "Adgroup performance"
        :query-params [low :- String high :- String id :- String customer-id :- s/Int]
-       :return [Perf]
        (respond/ok
         (into [] (comp
                   (map (fn [m] (update m :during u/iso-date)))
-                  (map coerce-perf))
-              (db/adgrp-perf-by-id-date db {:customer-id customer-id
-                                            :id id
-                                            :low low
-                                            :high high}))))
+                  (map coerce-perf)
+                  (map daily-stats/add-ratios2))
+              (daily-stats/by-adgroup
+               db
+               {:customer-id customer-id
+                :adgroup-id id
+                :low low
+                :high high}))))
 
      ;;* Aggregate
      (sweet/GET "/stats/segmented" []
@@ -128,17 +145,46 @@
         (let [creds (creds customer-id)
               [k segments] (case type
                              "adgroup" [:nccAdgroupId (naver-adgroup/all creds)]
-                             "keyword" [:nccKeywordId (naver-keyword/all creds)]
-                             [:nccCampaignId (naver-campaign/all creds)])
-              ids (map k segments)]
-          (set/join
-           segments
-           (naver-stats/by-id
-            creds
-            {:ids ids
-             :fields (conj naver-stats/default-fields :avgRnk)
-             :time-range {:since low :until high}})
-           {k :id}))))
+                             "campaign" [:nccCampaignId (naver-campaign/all creds)])
+              ids (map k segments)
+              stats (set/join
+                     segments
+                     (naver-stats/by-id
+                      creds
+                      {:ids ids
+                       :fields (conj naver-stats/default-fields :avgRnk)
+                       :time-range {:since low :until high}})
+                     {k :id})]
+          (sort-by :profit
+                   >
+                   (transduce (comp
+                               (map #(assoc % :profit (- (:convAmt %) (:salesAmt %))))
+                               (map #(assoc % :roas
+                                              (if (zero? (:salesAmt %))
+                                                0
+                                                (/ (:convAmt %) (:salesAmt %))))))
+                              conj
+                              stats)))))
+
+     (sweet/GET "/stats/keywords" []
+       :query-params [low :- s/Str high :- s/Str customer-id :- s/Int]
+       (respond/ok
+        (map daily-stats/add-ratios2
+             (segments/keywords db {:low low :high high :customer-id customer-id}))))
+
+     (sweet/GET "/segments/pc-mobile" []
+       :query-params [low :- s/Str high :- s/Str customer-id :- s/Int]
+       (respond/ok
+        (into [] (comp
+                  (map #(update % :pc_mobile_type (fn [s] (case s
+                                                            "P" "PC"
+                                                            "M" "Mobile"))))
+                  (map daily-stats/add-ratios2))
+              (segments/pc-mobile
+               db
+               {:customer-id customer-id
+                :low low
+                :high high}))))
 
      ;;* Keyword-tool
      (sweet/POST "/keyword-tool" []

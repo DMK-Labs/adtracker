@@ -84,7 +84,10 @@
                       :label {:angle 90 :value "CPC" :position "insideRight"}}]
     [recharts/x-axis
      {:dataKey :cost :type :number :tick false :domain [0 "dataMax"]}]
-    [recharts/tooltip]
+    [recharts/tooltip {:formatter #(if (> 1 %)
+                                     (u/pct-fmt %)
+                                     (u/krw %))
+                       :labelFormatter u/krw}]
     [recharts/reference-line {:x budget
                               :label "예산"
                               :stroke "#ff7875"}]
@@ -126,13 +129,14 @@
         [ant/table
          {:dataSource
           (mapv
-           #(assoc % :delta (- (:expected %) (:as-is %))
+           #(assoc %
+                   :delta (- (:expected %) (:as-is %))
                    :pct-delta (u/delta (:as-is %) (:expected %)))
            [{:kpi "예상 비용" :as-is 0 :expected (u/krw (:cost stats))}
             {:kpi "노출수" :as-is 0 :expected (:impressions stats)}
             {:kpi "클릭수" :as-is 0 :expected (:clicks stats)}
             {:kpi "CPC" :as-is 0 :expected (u/krw (Math/ceil (:cpc stats)))}
-            {:kpi "클릭률" :as-is 0 :expected (u/pct-fmt 2 (/ (:clicks stats) (:impressions stats)))}])
+            {:kpi "클릭률" :as-is 0 :expected (u/pct-fmt (/ (:clicks stats) (:impressions stats)))}])
           :bordered true
           :pagination false
           :columns columns

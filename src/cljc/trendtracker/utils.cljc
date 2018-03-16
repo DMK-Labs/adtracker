@@ -41,17 +41,19 @@
   (cl-format nil "~:d" n))
 
 (defn krw [num]
-  (str "₩" (int-fmt num)))
+  #?(:cljs (.toLocaleString (js/Math.round num) js/undefined #js {:style "currency" :currency "KRW"})
+     :clj (str "₩" (int-fmt (Math/round num)))))
 
 (defn dec-fmt [decimals num]
   #?(:cljs (goog.string.format (str "%." decimals "f") num)))
 
 #?(:cljs (defn pct-fmt
            "Formats `decimal` as a %, to the `n`th place. 0.1234 => 12.34%"
-           ([decimal]
-            (pct-fmt 2 decimal))
-           ([n decimal]
-            (goog.string.format (str "%." n "f%") (* 100 decimal)))))
+           [num]
+           (.toLocaleString
+            (js/Number num)
+            js/undefined
+            #js {:style "percent" :minimumFractionDigits 2})))
 
 (defn fmt-dt
   ([moment]

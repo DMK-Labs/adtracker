@@ -21,7 +21,10 @@
     (pl/commit! (assoc-in app-db [:kv :keyword-tool :query] (:keywords data)))
     (api/keyword-stats
      (-> data
-         (update :keywords #(set (string/split-lines %)))
+         (update :keywords #(->> %
+                                 string/split-lines
+                                 (map (fn [s] (string/replace s #" " "")))
+                                 set))
          (update :include-related? boolean)))))
 
 (defmethod forms-core/on-submit-success KeywordToolForm [this app-db form-id res]

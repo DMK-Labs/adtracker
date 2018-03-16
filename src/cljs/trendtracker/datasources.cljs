@@ -130,11 +130,16 @@
   {:target [:kv :segment-stats]
    :deps [:current-client :date-range]
    :params (fn [_ route {:keys [current-client date-range]}]
-             (when (and current-client date-range)
-               (merge {:url "/stats/segmented"
-                       :customer-id (:customer_id current-client)
-                       :type (or (:seg route) "campaign")}
-                      (u/parse-date-range (:curr date-range)))))
+             (let [segment (:seg route)]
+               (when (and current-client date-range)
+                 (if (= "keyword" segment)
+                   (merge {:url "/stats/keywords"
+                           :customer-id (:customer_id current-client)}
+                          (u/parse-date-range (:curr date-range)))
+                   (merge {:url "/stats/segmented"
+                           :customer-id (:customer_id current-client)
+                           :type (or segment "campaign")}
+                          (u/parse-date-range (:curr date-range)))))))
    :loader api-loader})
 
 (def with-min-70-bids-datasource
@@ -157,6 +162,17 @@
                {:url "/bids/with-minimum-exposure"
                 :customer-id (:customer_id current-client)
                 :budget (:budget optimize-settings)}))
+   :loader api-loader})
+
+(def pc-mobile-split-datasource
+  {:target [:kv :segments :pc-mobile]
+   :deps [:date-range :current-client]
+   :params (fn [_ {:keys [page]} {:keys [date-range current-client]}]
+             (when (and (= "dashboard" page) (seq date-range))
+               (let [r (assoc (u/parse-date-range (:curr date-range))
+                              :url "/segments/pc-mobile"
+                              :customer-id (:customer_id current-client))]
+                 r)))
    :loader api-loader})
 
 (def daily-stats-datasource
@@ -207,4 +223,5 @@
    :optimize-detail optimize-detail-datasource
    :with-minimum-exposure-bids with-minimum-exposure-bids-datasource
    :with-min-70-bids with-min-70-bids-datasource
-   :segment-stats segment-stats-datasource})
+   :segment-stats segment-stats-datasource
+   :pc-mobile-split pc-mobile-split-datasource})

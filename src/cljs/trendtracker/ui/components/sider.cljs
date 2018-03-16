@@ -6,17 +6,16 @@
 
 (defn render [ctx]
   (let [kws (sub> ctx :keyword-tool)
-        route (route> ctx)
-        current-page (:page route)
-        client (:client route)]
+        {:keys [page client]} (route> ctx)]
     [ant/layout-sider {:collapsible true
                        :breakpoint "xl"
-                       :collapsed-width 64}
+                       :collapsed-width 0
+                       :trigger nil}
      [ant/affix {:offset 56}
       [ant/menu {:theme :dark
                  :style {:border-right 0}
                  :mode "inline"
-                 :selected-keys [current-page]
+                 :selected-keys [page]
                  :on-click #(let [page (:key (js->clj % :keywordize-keys true))]
                               (ui/redirect
                                ctx
@@ -43,20 +42,20 @@
 
         [ant/menu-item {:key "keyword-tool"}
          [ant/icon {:type "tool"}]
-         [:span "키워드 조사 도구"]]
+         [:span "키워드 조사"]]
 
-        [ant/menu-item {:key "keywords"}
-         [ant/icon {:type "profile"}]
-         [:span "키워드 목록"]]
+        ;[ant/menu-item {:key "keywords"}
+        ; [ant/icon {:type "profile"}]
+        ; [:span "키워드 목록"]]
 
         [ant/menu-item {:key "manage"}
          [ant/icon {:type "bulb"}]
          [:span "광고 개선"]]
 
-        (when (= current-page "user")
-          [ant/menu-item {:key "user"}
+        (when (= page "settings")
+          [ant/menu-item {:key "settings"}
                [ant/icon {:type "setting"}]
-               [:span "계정 설정"]])]]]]))
+           [:span "설정"]])]]]]))
 
 (def component
   (ui/constructor

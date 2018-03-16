@@ -57,11 +57,11 @@
             [ant/col {:sm 8} [snapshot :revenue]]
             [ant/col {:sm 8} [snapshot :roas]]]
            [ant/row {:gutter 16}
-            [ant/col {:sm 8} [snapshot :cpc]]
-            [ant/col {:sm 8} [snapshot :cpm]]
-            [ant/col {:sm 8} [snapshot :cpa]]]])
+            [ant/col {:md 16} [tabbed-charts]]
+            [ant/col {:md 8}
+             [(ui/component ctx :cost-effectiveness)]]]])
         [ant/row {:gutter 16}
-         [ant/col {:lg 24} [tabbed-charts]]
+
          [ant/col {:lg 24} [(ui/component ctx :device-pie)]]]
         [ant/row [ant/col [segment-stats]]]])]))
 
@@ -76,5 +76,6 @@
                      :cascader
                      ;; :summary
                      :device-pie
+                     :cost-effectiveness
                      ]
     :subscription-deps [:daily-stats]}))

@@ -33,7 +33,7 @@
       {:placement "bottomCenter"
        :overlay (r/as-element
                  [ant/menu {:on-click #(ui/redirect ctx (assoc route :page (:key (js->clj % :keywordize-keys true))))}
-                  [ant/menu-item {:key "user"}
+                  [ant/menu-item {:key "settings"}
                    [:span [ant/icon {:type "setting"}] " 계정설정"]]
                   [ant/menu-item {:key "logout"}
                    [:span [ant/icon {:type "logout"}] " 로그아웃"]]])}

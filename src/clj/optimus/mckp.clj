@@ -3,7 +3,8 @@
             [optimus.utils :as u]
             [clojure.spec.alpha :as s]
             [huri.core :as h]
-            [orchestra.spec.test :as st]))
+            [orchestra.spec.test :as st]
+            [taoensso.timbre :as timbre]))
 
 (s/def ::marginal-performance
   (s/keys :req-un [(or ::key ::keyword-id) ::keywordplus ::device ::bid
@@ -59,7 +60,8 @@
                                  :marginal-bid :bid
                                  :marginal-cost :cost
                                  :marginal-clicks :clicks
-                                 :marginal-impressions :impressions})
+                                 :marginal-impressions :impressions
+                                 :marginal-conversions :conversions})
                  (sort-by :bid))
         butlst (butlast pts)
         rst (rest pts)]
@@ -70,7 +72,7 @@
           ;; marginal). Leave the other keys holding strings, etc. alone.
           (h/select-cols
            [;; :marginal-revenue
-            :marginal-bid :marginal-cost :marginal-clicks :marginal-impressions]
+            :marginal-bid :marginal-cost :marginal-clicks :marginal-impressions :marginal-conversions]
            butlst)
           rst)
      (cons (first pts)))))
@@ -86,9 +88,8 @@
 
   Returns a flat list of performances-estimate maps, with keys:
   [:clicks :cost :bid :marginal-clicks :marginal-cost :marginal-bid]"
-  [[keydev perfs]]
-  (->> (zipmap (map :bid perfs)
-               (derive-margins perfs))
+  [[_ perfs]]
+  (->> (zipmap (map :bid perfs) (derive-margins perfs))
        ;; Assoc the correct bid amounts in each map
        (map (fn [[bid m]]
               (assoc m :bid bid)))))
@@ -117,7 +118,7 @@
                          :device)
         res (->> landscape
                  (group-by identifier)
-                 (pmap (fn [[k v]] [k (conv-hull/upper-left-hull objective v)]))
+                 (map (fn [[k v]] [k (conv-hull/upper-left-hull objective v)]))
                  (mapcat class-marginals)
                  (h/derive-cols {:marginal-efficiency marginal-efficiency})
                  (sort-by :marginal-efficiency >))]
@@ -131,22 +132,23 @@
 (defn fit-to-budget
   "Takes marginal segments from the total landscape pool until budget is
   exhausted."
-  [budget marginals]
+  [^Double budget marginals]
   (loop [todo (sort-by :marginal-efficiency > marginals)
          acc []]
-    (if (or (empty? todo)
-            (> (+ (:marginal-cost (first todo)) (h/sum :marginal-cost acc)) budget))
-      acc
-      (recur (next todo)
-             (conj acc (first todo))))))
-
+    (let [^Double cost (h/sum :marginal-cost acc)]
+      (if (or (empty? todo)
+              (> (+ (:marginal-cost (first todo)) cost)
+                 budget))
+        acc
+        (recur (next todo)
+               (conj acc (first todo)))))))
 
 (defn bid-vectors
   "From an exploded list of marginal bids, groups by keydev and finds only the
   highest (i.e. final) bids."
   [optimized-marginals]
   (->> optimized-marginals
-       (group-by u/keydev)
+       (group-by (juxt :keyword-id :device))
        (map (fn [[k v]]
               (let [max-res (apply max-key :bid v)]
                 [(conj k (:bid max-res))

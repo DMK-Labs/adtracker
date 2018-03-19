@@ -12,12 +12,26 @@
     :render #(r/as-element (u/int-fmt %))}
    {:title "예상 성과 (30일)" :dataIndex :expected :className "numbers"
     :render #(r/as-element (u/int-fmt %))}
-   ;{:title "변화" :dataIndex :delta :className "numbers"
-   ; :render #(r/as-element
-   ;           [:div
-   ;            (u/int-fmt %)
-   ;            [ant/icon {:type :arrow-up :style {:color :green}}]])}
-   ])
+   {:title "변화" :dataIndex :delta :className "numbers"
+    :render #(r/as-element
+              [:div
+               (u/int-fmt %)
+               [ant/icon {:type (if (pos? %)
+                                  :arrow-up
+                                  :arrow-down)
+                          :style {:color (if (pos? %)
+                                           :green
+                                           :red)}}]])}
+   {:title "변화%" :dataIndex :pct-delta :className "numbers"
+    :render #(r/as-element
+              [:div
+               (u/pct-fmt %)
+               [ant/icon {:type (if (pos? %)
+                                  :arrow-up
+                                  :arrow-down)
+                          :style {:color (if (pos? %)
+                                           :green
+                                           :red)}}]])}])
 
 (defn nav-buttons [ctx]
   (let [route (route> ctx)
@@ -121,22 +135,36 @@
       [ant/row {:type "flex" :justify "space-around"}
        [ant/col {:span 19}
         [slider-detail budget budget-view]]]
-      (when (pos? (:impressions stats))
-        [ant/row {:type "flex" :justify "space-around"}
-         [ant/col {:span 20} [conversion-funnel]]])
+      
+      ;; (when (pos? (:impressions stats))
+      ;;   [ant/row {:type "flex" :justify "space-around"}
+      ;;    [ant/col {:span 20} [conversion-funnel]]])
+
       [ant/row
        [ant/col
         [ant/table
          {:dataSource
           (mapv
-           #(assoc %
-                   :delta (- (:expected %) (:as-is %))
-                   :pct-delta (u/delta (:as-is %) (:expected %)))
-           [{:kpi "예상 비용" :as-is 0 :expected (u/krw (:cost stats))}
-            {:kpi "노출수" :as-is 0 :expected (:impressions stats)}
-            {:kpi "클릭수" :as-is 0 :expected (:clicks stats)}
-            {:kpi "CPC" :as-is 0 :expected (u/krw (Math/ceil (:cpc stats)))}
-            {:kpi "클릭률" :as-is 0 :expected (u/pct-fmt (/ (:clicks stats) (:impressions stats)))}])
+           (fn [m] (if (#{"예상 비용" "CPC"} (:kpi m))
+                     (-> m
+                         (update :as-is u/krw)
+                         (update :expected u/krw)
+                         (update :delta u/krw))
+                     (if (= "클릭률" (:kpi m))
+                       (-> m
+                           (update :as-is u/pct-fmt)
+                           (update :expected u/pct-fmt)
+                           (update :delta u/pct-fmt))
+                       m)))
+           (map
+            #(assoc %
+                    :delta (- (:expected %) (:as-is %))
+                    :pct-delta (u/delta (:as-is %) (:expected %)))
+            [{:kpi "예상 비용" :as-is 1100100 :expected (:cost stats)}
+             {:kpi "노출수" :as-is 1620589 :expected (:impressions stats)}
+             {:kpi "클릭수" :as-is 1064 :expected (:clicks stats)}
+             {:kpi "CPC" :as-is 1033 :expected (Math/ceil (:cpc stats))}
+             {:kpi "클릭률" :as-is 0.0007 :expected (/ (:clicks stats) (:impressions stats))}]))
           :bordered true
           :pagination false
           :columns columns

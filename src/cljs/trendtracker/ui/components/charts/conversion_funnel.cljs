@@ -7,7 +7,7 @@
 (defn conversion-funnel [ctx]
   (let [stats (sub> ctx :optimize-stats)
         ridgeline (sub> ctx :ridgeline)
-        data [{:name "노출수" :expected (:impressions stats)}
+        data [{:name "노출수(K)" :expected (/ (:impressions stats) 1000)}
               {:name "클릭수" :expected (:clicks stats)}
               {:name "전환수" :expected (:conversions stats)}]
         max (:impressions (last ridgeline))]
@@ -15,7 +15,7 @@
      [recharts/composed-chart {:data data
                                :barCategoryGap "20%"}
       [recharts/x-axis {:dataKey :name}]
-      [recharts/y-axis {:scale :sqrt :domain [0 max]
+      [recharts/y-axis {:scale :sqrt :domain [0 (/ max 1000)]
                         :tickFormatter                      ;; u/int-fmt
                         (fn [n] (let [num (int (/ n 1000))]
                                   (if (zero? num)

@@ -17,6 +17,7 @@
    {:customer-id customer-id}))
 
 (defn settings
+  "Read settings for customer from DB, format as edn."
   [customer-id]
   (when-let [raw-settings (current-settings (:db-spec config) {:customer-id customer-id})]
     (-> raw-settings
@@ -70,12 +71,14 @@
 
 (comment
   (current-settings (:db-spec config) {:customer-id 1334028})
-  (count (fetch-marginals 1334028))
-  ;; 9625
   (count (fetch-marginals 137307))
-  ;; 1771
-  (settings 777309)
-  ;; nil
-  (settings 137307))
-
-
+  ;; => 128353
+  (settings 137307)
+  ;; =>
+  ;; {:customer-id 137307,
+  ;;  :budget 1724100,
+  ;;  :objective :clicks,
+  ;;  :targets ["cmp-a001-01-000000001015651"
+  ;;            "cmp-a001-01-000000001015620"],
+  ;;  :bid-limit 3000}
+  )

@@ -8,14 +8,50 @@
 
 (defn kwid->funnel [customer-id]
   (transduce
-   (map (fn [m] [(:keyword_id m) m]))
+   (map (fn [m] 
+          [(:keyword_id m) m]))
    conj
    {}
-   (global-funnel
+   (funnel-by-kwid
+    (:db-spec config)
+    {:customer-id customer-id})))
+
+(defn kw->funnel [customer-id]
+  (transduce
+   (map (fn [m] [(:keyword m) m]))
+   conj
+   {}
+   (funnel-by-keyword
     (:db-spec config)
     {:customer-id customer-id})))
 
 (comment
-  (kwid-ctr-cvr (:db-spec config)
-                {:id "nkw-a001-01-000000338280928"})
-  (kwid->funnel 137307))
+  (kwid-ctr-cvr 
+   (:db-spec config)
+   {:id "nkw-a001-01-000000338280928"})
+  (first (kwid->funnel 137307))
+  ;; =>
+  ;; ["nkw-a001-01-000001088394951"
+  ;;  {:keyword_id "nkw-a001-01-000001088394951",
+  ;;   :keyword "유아보습로션",
+  ;;   :impressions 52,
+  ;;   :clicks 0,
+  ;;   :conversions 0,
+  ;;   :ctr 0.0,
+  ;;   :cvr 0.0,
+  ;;   :i2c 0.0}]
+  (first (kw->funnel 137307))
+  ;; =>
+  ;; ["폼클렌저"
+  ;;  {:keyword "폼클렌저",
+  ;;   :impressions 17,
+  ;;   :clicks 0,
+  ;;   :conversions 0,
+  ;;   :ctr 0.0,
+  ;;   :cvr 0.0,
+  ;;   :i2c 0.0}]
+  (by-adgroup
+   (:db-spec config)
+   {:id "grp-a001-01-000000005994190"
+    :low "2018-02-26"
+    :high "2018-03-15"}))

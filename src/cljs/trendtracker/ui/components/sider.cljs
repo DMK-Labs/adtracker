@@ -38,24 +38,24 @@
 
         [ant/menu-item {:key "optimize"}
          [ant/icon {:type "rocket"}]
-         [:span "입찰 최적화"]]
+         [:span "최적화 전략"]]
 
         [ant/menu-item {:key "keyword-tool"}
          [ant/icon {:type "tool"}]
          [:span "키워드 조사"]]
 
-        ;[ant/menu-item {:key "keywords"}
-        ; [ant/icon {:type "profile"}]
-        ; [:span "키워드 목록"]]
+        ;; [ant/menu-item {:key "keywords"}
+        ;;  [ant/icon {:type "profile"}]
+        ;;  [:span "키워드 목록"]]
 
         [ant/menu-item {:key "manage"}
          [ant/icon {:type "bulb"}]
          [:span "광고 개선"]]
 
-        (when (= page "settings")
-          [ant/menu-item {:key "settings"}
-               [ant/icon {:type "setting"}]
-           [:span "설정"]])]]]]))
+        ;; [ant/menu-item {:key "settings"}
+        ;;  [ant/icon {:type "setting"}]
+        ;;  [:span "설정"]]
+        ]]]]))
 
 (def component
   (ui/constructor

@@ -50,6 +50,7 @@
                  [org.clojure/algo.monads "0.1.6"] ; For graham's scan
                  [orchestra "2017.08.13"] ; Spec testing of fn and ret keys
 
+                 [com.taoensso/timbre "4.10.0"]
 
                  ;; added by chestnut
                  [com.cognitect/transit-clj "0.8.300"]

@@ -24,7 +24,8 @@
   [coords]
   (map xy->pt coords))
 
-(def keydev (juxt :key :device))
+(def keydev 
+  (juxt :key :device))
 
 (def summary (juxt #(sum :cost %) #(sum :clicks %)))
 

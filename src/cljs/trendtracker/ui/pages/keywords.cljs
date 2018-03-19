@@ -3,12 +3,17 @@
             [keechma.ui-component :as ui]
             [goog.string :as gstring]
             [keechma.toolbox.ui :refer [sub>]]
-            [trendtracker.utils :as u]))
+            [trendtracker.utils :as u]
+            [trendtracker.options :as opts]
+            [reagent.core :as r]))
 
 (def ^:private columns
   [{:title "광고그룹 ID" :dataIndex :adgroup-id}
-   {:title "ID" :dataIndex :id}
-   {:title "키워드" :dataIndex :keyword}
+   ;; {:title "ID" :dataIndex :id}
+   {:title "키워드" :dataIndex :keyword
+    :renderer (fn [text record _]
+                (r/as-element 
+                 (str text (:id record))))}
    {:title "Bid" :dataIndex :bid :render u/krw}])
 
 (defn render [ctx]
@@ -18,21 +23,15 @@
       [(ui/component ctx :breadcrumbs)]
       [:h2 "키워드 목록"]]
      [:div.content
-      [ant/card
-       [:code (pr-str (take 5 data))]]
+      ;; [ant/card
+      ;;  [:code (pr-str (take 5 data))]]
       [ant/card
        [ant/table
         {:columns columns
          :dataSource data
          :rowKey :id
          :size "middle"
-         :bordered true
-         :pagination {:hideOnSinglePage true
-                      :showTotal (fn [total [start end]]
-                                   (gstring/format "총 %s개 중 %s-%s" total start end))
-                      :defaultPageSize 15
-                      :pageSizeOptions ["15" "30" "45"]
-                      :showSizeChanger true}}]]]]))
+         :pagination opts/pagination}]]]]))
 
 (def component
   (ui/constructor

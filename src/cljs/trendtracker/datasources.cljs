@@ -138,7 +138,7 @@
                           (u/parse-date-range (:curr date-range)))
                    (merge {:url "/stats/segmented"
                            :customer-id (:customer_id current-client)
-                           :type (or segment "campaign")}
+                           :type (or segment "adgroup")}
                           (u/parse-date-range (:curr date-range)))))))
    :loader api-loader})
 

@@ -22,7 +22,8 @@
         route (route> ctx)]
     [:span
      [ant/dropdown
-      {:placement "bottomCenter"
+      {:trigger ["click"]
+       :placement "bottomCenter"
        :overlay (r/as-element (client-menu ctx))}
       (if current-client
         [:a {:style {:color "rgba(0, 0, 0, .65)"}}
@@ -30,7 +31,8 @@
         [ant/icon {:type "loading"}])]
      [ant/divider {:type "vertical"}]
      [ant/dropdown
-      {:placement "bottomCenter"
+      {:trigger ["click"]
+       :placement "bottomCenter"
        :overlay (r/as-element
                  [ant/menu {:on-click #(ui/redirect ctx (assoc route :page (:key (js->clj % :keywordize-keys true))))}
                   [ant/menu-item {:key "settings"}

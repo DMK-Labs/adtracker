@@ -4,7 +4,8 @@
             [keechma.toolbox.ui :refer [sub>]]
             [reacharts.recharts :as recharts]
             [reagent.core :as r]
-            [trendtracker.utils :as u]))
+            [trendtracker.utils :as u]
+            [trendtracker.options :as opts]))
 
 (defn render-campaign-title
   [text record idx]
@@ -13,8 +14,15 @@
         :target "_blank"}
     text]))
 
+(defn render-optimizing-status
+  [status]
+  (r/as-element [ant/switch {:defaultChecked (= "ELIGIBLE" status)}])
+  ;; (r/as-element status)
+  )
+
 (def columns
-  [{:title "On/Off" :dataIndex :status
+  [{:title "On/Off"
+    :dataIndex :status
     :render (fn [status]
               (r/as-element
                (case status
@@ -22,16 +30,14 @@
                  "OPTIMIZING" [ant/badge {:status "processing" :text "Processing"}]
                  [ant/badge {:status "default" :text "Off"}])))}
    {:title "광고 구분" :dataIndex :campaign-type}
-   {:title "캠페인 명" :dataIndex :label
+   {:title "캠페인 명"
+    :dataIndex :label
     :render render-campaign-title}
-   {:title "최적화 ON/OFF" :dataIndex :status
+   {:title "입찰 자동화"
+    :dataIndex :status
     :key "optimizing"
-    :render (fn [status]
-              (r/as-element [ant/switch {:defaultChecked (= "ELIGIBLE" status)}]))}])
+    :render render-optimizing-status}])
 
-;; {:title "예상 비용 (일별)" :dataIndex :expected-cost
-
-;;  :render (fn [cost] (u/krw cost))}
 ;; {:title "최근 30일 Clicks" :dataIndex :clicks
 ;;  :render #(r/as-element
 ;;            [:div
@@ -52,18 +58,19 @@
 ;;                              :type :monotone
 ;;                              :dot nil}]]])}
 
-
 (defn campaign-list [ctx]
   (let [optimizing (sub> ctx :portfolio-optimizing)]
     [ant/table
-     {:dataSource optimizing
-      :loading (nil? optimizing)
-      :pagination {:hideOnSinglePage true :size "small"}
-      :columns columns
+     {:dataSource      optimizing
+      :loading         (nil? optimizing)
+      :pagination      opts/pagination
+      :columns         columns
       :expandedRowKeys (map :value optimizing)
-      :rowKey :value}]))
+      :size            :medium
+      :rowKey          :value}]))
 
 (def component
   (ui/constructor
-   {:renderer campaign-list
-    :subscription-deps [:portfolio-optimizing]}))
+   {:renderer          campaign-list
+    :subscription-deps [:portfolio-optimizing]
+    :component-deps    [:optimize-settings]}))

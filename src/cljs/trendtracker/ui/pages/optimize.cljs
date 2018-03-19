@@ -26,8 +26,7 @@
        [ant/col
         [opt-settings ctx]]
        [ant/col
-        [ant/card
-         [portfolio]]]]]]))
+        [ant/card [portfolio]]]]]]))
 
 (def component
   (ui/constructor

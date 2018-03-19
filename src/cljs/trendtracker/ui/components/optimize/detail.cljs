@@ -1,8 +1,9 @@
 (ns trendtracker.ui.components.optimize.detail
-  (:require [keechma.ui-component :as ui]
-            [keechma.toolbox.ui :refer [route> sub>]]
-            [antizer.reagent :as ant]
+  (:require [antizer.reagent :as ant]
             [goog.string :as gstring]
+            [keechma.toolbox.ui :refer [route> sub>]]
+            [keechma.ui-component :as ui]
+            [trendtracker.options :as opts]
             [trendtracker.helpers.download :as download]
             [trendtracker.utils :as u]))
 
@@ -92,8 +93,7 @@
          :dataSource data
          :size "small"
          :rowKey :keyword-id
-         :pagination {:showTotal (fn [total [start end]]
-                                   (gstring/format "총 %s개 중 %s-%s" total start end))}}]]]]))
+         :pagination opts/pagination}]]]]))
 
 (def component
   (ui/constructor

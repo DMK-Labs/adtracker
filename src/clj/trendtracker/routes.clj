@@ -1,29 +1,28 @@
 (ns trendtracker.routes
   (:require [clojure.java.io :as io]
+            [clojure.set :as set]
             [compojure.api.sweet :as sweet]
             [compojure.route :refer [resources]]
+            [huri.core :as h]
             [naver-searchad.api.adgroup :as naver-adgroup]
             [naver-searchad.api.campaign :as naver-campaign]
-            [naver-searchad.api.adkeyword :as naver-keyword]
             [naver-searchad.api.stats :as naver-stats]
             [ring.util.http-response :as respond]
             [ring.util.response :refer [response]]
             [schema.coerce :as coerce]
             [schema.core :as s]
-            [trendtracker.modules.keyword-tool :as keyword-tool]
-            [trendtracker.config :refer [config creds]]
-            [trendtracker.db :as db]
+            [trendtracker.config :refer [creds]]
+            [trendtracker.models.aggregate-stats :as aggregate]
             [trendtracker.models.daily-stats :as daily-stats]
             [trendtracker.models.keywords :as keywords]
             [trendtracker.models.optimize :as optimize]
             [trendtracker.models.portfolio :as portfolio]
-            [trendtracker.models.user :as user]
             [trendtracker.models.segments :as segments]
+            [trendtracker.models.user :as user]
             [trendtracker.modules.auth :as auth]
-            [trendtracker.utils :as u]
+            [trendtracker.modules.keyword-tool :as keyword-tool]
             [trendtracker.modules.landscape :as landscape]
-            [huri.core :as h]
-            [clojure.set :as set]))
+            [trendtracker.utils :as u]))
 
 (defn app-routes [endpoint]
   (sweet/routes
@@ -149,22 +148,25 @@
               ids (map k segments)
               stats (set/join
                      segments
-                     (naver-stats/by-id
-                      creds
-                      {:ids ids
-                       :fields (conj naver-stats/default-fields :avgRnk)
-                       :time-range {:since low :until high}})
+                     (naver-stats/by-id creds
+                                        {:ids ids
+                                         :fields (conj naver-stats/default-fields :avgRnk)
+                                         :time-range {:since low :until high}})
                      {k :id})]
-          (sort-by :profit
-                   >
-                   (transduce (comp
-                               (map #(assoc % :profit (- (:convAmt %) (:salesAmt %))))
-                               (map #(assoc % :roas
-                                              (if (zero? (:salesAmt %))
-                                                0
-                                                (/ (:convAmt %) (:salesAmt %))))))
-                              conj
-                              stats)))))
+          (->> (transduce (comp
+                           (map #(assoc % :profit (- (:convAmt %) (:salesAmt %))))
+                           (map #(assoc % :roas
+                                        (if (zero? (:salesAmt %))
+                                          0
+                                          (/ (:convAmt %) (:salesAmt %))))))
+                          conj
+                          stats)
+               (sort-by :profit >)))))
+     
+     (sweet/GET "/stats/aggregate/by-adgroup" []
+       :query-params [low :- s/Str high :- s/Str id :- s/Str]
+       (respond/ok
+        (aggregate/by-adgroup db {:id id :low low :high high})))
 
      (sweet/GET "/stats/keywords" []
        :query-params [low :- s/Str high :- s/Str customer-id :- s/Int]
@@ -269,3 +271,6 @@
        :query-params [customer-id :- s/Int]
        (respond/ok (keywords/all db {:customer-id customer-id}))))))
 
+(comment
+  (landscape/ridgeline 
+   (optimize/fetch-marginals 137307)))

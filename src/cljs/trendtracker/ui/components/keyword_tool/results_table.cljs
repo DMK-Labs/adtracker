@@ -6,7 +6,8 @@
             [keechma.ui-component :as ui]
             [reagent.core :as r]
             [trendtracker.helpers.download :as download]
-            [trendtracker.utils :as u]))
+            [trendtracker.utils :as u]
+            [trendtracker.options :as opts]))
 
 (def columns
   [{:title "키워드" :dataIndex :keyword :fixed :left :width 220}
@@ -169,12 +170,7 @@
           :columns columns
           :size "middle"
           :bordered true
-          :pagination {:hideOnSinglePage true
-                       :showTotal (fn [total [start end]]
-                                    (gstring/format "총 %s개 중 %s-%s" total start end))
-                       :defaultPageSize 15
-                       :pageSizeOptions ["15" "30" "45"]
-                       :showSizeChanger true}}]
+          :pagination opts/pagination}]
         (ui/redirect ctx (assoc (route> ctx)
                                 :page "keyword-tool")))]]))
 

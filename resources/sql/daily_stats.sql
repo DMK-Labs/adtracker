@@ -26,7 +26,6 @@ FROM
     ON cal.day = p.during
 ORDER BY during ASC;
 
-
 -- :name by-campaign :? :*
 SELECT
   cal.day :: DATE          AS during,

@@ -2,15 +2,19 @@
   (:require [reacharts.recharts :as recharts]
             [keechma.ui-component :as ui]))
 
-(defn scatter-chart [ctx data x y x-label y-label]
+(defn scatter-chart [ctx data x y z x-label y-label z-label]
   [recharts/responsive-container {:height 300}
    [recharts/scatter-chart
     [recharts/tooltip]
-    [recharts/x-axis {:dataKey x :scale :sqrt :type "number"}
+    [recharts/x-axis {:dataKey x
+                      :scale :sqrt 
+                      :type "number"}
      [recharts/label {:value x-label :position "insideBottom" :offset 0}]]
-    [recharts/y-axis {:dataKey y :scale :sqrt}
+    [recharts/y-axis {:dataKey y 
+                      :scale :sqrt}
      [recharts/label {:value y-label :position "insideLeft" :offset 0 :angle -90}]]
-    [recharts/z-axis {:dataKey :profit :range [20 800]}]
+    [recharts/z-axis {:dataKey z :range [20 800]
+                      :value z-label}]
     ;; [recharts/scatter
     ;;  {:isAnimationActive false
     ;;   :data data
@@ -19,7 +23,8 @@
     [recharts/scatter
      {:isAnimationActive false
       :data data
-      :stroke "#fa8c16" :fill "#ffe7ba"
+      :stroke "#1890ff" :fill "#bae7ff"
+      ;; :stroke "#fa8c16" :fill "#ffe7ba"
       :onClick #()}]]])
 
 (def component

@@ -166,7 +166,8 @@
      (sweet/GET "/stats/aggregate/by-adgroup" []
        :query-params [low :- s/Str high :- s/Str id :- s/Str]
        (respond/ok
-        (aggregate/by-adgroup db {:id id :low low :high high})))
+        (map daily-stats/add-ratios2
+             (aggregate/by-adgroup db {:id id :low low :high high}))))
 
      (sweet/GET "/stats/keywords" []
        :query-params [low :- s/Str high :- s/Str customer-id :- s/Int]

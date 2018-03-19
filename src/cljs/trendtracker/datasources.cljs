@@ -132,14 +132,16 @@
    :params (fn [_ route {:keys [current-client date-range]}]
              (let [segment (:seg route)]
                (when (and current-client date-range)
-                 (if (= "keyword" segment)
-                   (merge {:url "/stats/keywords"
-                           :customer-id (:customer_id current-client)}
-                          (u/parse-date-range (:curr date-range)))
-                   (merge {:url "/stats/segmented"
+                 (merge (if (= "keyword" segment)
+                          (if-let [id (:adgrp route)]
+                            {:url "/stats/aggregate/by-adgroup"
+                             :id id}
+                            {:url "/stats/keywords"
+                             :customer-id (:customer_id current-client)})
+                          {:url "/stats/segmented"
                            :customer-id (:customer_id current-client)
-                           :type (or segment "adgroup")}
-                          (u/parse-date-range (:curr date-range)))))))
+                           :type (or segment "adgroup")})
+                        (u/parse-date-range (:curr date-range))))))
    :loader api-loader})
 
 (def with-min-70-bids-datasource

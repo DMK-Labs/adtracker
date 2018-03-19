@@ -22,6 +22,18 @@
           :target "_blank"}
       text])))
 
+(defn adgroup-title-renderer
+  [ctx]
+  (fn [text record _]
+    (r/as-element
+     [:a {:href (ui/url ctx (assoc
+                             (route> ctx)
+                             :adgrp (-> record
+                                        (js->clj :keywordize-keys true)
+                                        :id)
+                             :seg "keyword"))}
+      text])))
+
 (def kw-columns (cons {:title "구분" :dataIndex :keyword :fixed true}
                       (map #(assoc %
                                    :className "numbers"
@@ -55,10 +67,10 @@
   [ctx customer-id]
   (let [stats (sub> ctx :segment-stats)
         default [{:title "구분" :dataIndex :name
-                  :render (title-renderer customer-id "adgroups")
+                  :render (adgroup-title-renderer ctx)
                   ;; :fixed "left"
                   }
-                 {:title "평균노출순위" :dataIndex :avgRnk
+                 {:title "노출순위" :dataIndex :avgRnk
                   :sorter (u/sorter-by :avgRnk)
                   :className "numbers"}
                  {:title "비용" :dataIndex :salesAmt :render #(u/krw %)
@@ -140,16 +152,19 @@
                "CSV 다운로드"])}
      [ant/table
       (if (= "keyword" (:seg route))
-        (merge table-opts
-               {:rowKey :keyword
-                :size   :middle
-                :scroll {:x "1200px"}})
-        (merge table-opts
-               {:rowKey :id
-                ;; :expandedRowRender (expanded-row-render ctx)
-                ;; :onExpandedRowsChange (on-expanded-rows-change ctx) 
-                ;; :expandRowByClick true
-                :scroll {:x "1200px"}}))]]))
+        (merge
+         table-opts
+         {:rowKey :keyword
+          :size   :middle
+          :scroll {:x "1200px"}})
+        (merge
+         table-opts
+         {:rowKey :id
+          :scroll {:x "1200px"}
+          ;; :expandedRowRender (expanded-row-render ctx)
+          ;; :onExpandedRowsChange (on-expanded-rows-change ctx)
+          ;; :expandRowByClick true
+          }))]]))
 
 (def component
   (ui/constructor

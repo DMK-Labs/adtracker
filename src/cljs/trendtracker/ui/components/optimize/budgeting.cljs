@@ -144,27 +144,16 @@
        [ant/col
         [ant/table
          {:dataSource
-          (mapv
-           (fn [m] (if (#{"예상 비용" "CPC"} (:kpi m))
-                     (-> m
-                         (update :as-is u/krw)
-                         (update :expected u/krw)
-                         (update :delta u/krw))
-                     (if (= "클릭률" (:kpi m))
-                       (-> m
-                           (update :as-is u/pct-fmt)
-                           (update :expected u/pct-fmt)
-                           (update :delta u/pct-fmt))
-                       m)))
-           (map
-            #(assoc %
-                    :delta (- (:expected %) (:as-is %))
-                    :pct-delta (u/delta (:as-is %) (:expected %)))
-            [{:kpi "예상 비용" :as-is 1100100 :expected (:cost stats)}
-             {:kpi "노출수" :as-is 1620589 :expected (:impressions stats)}
-             {:kpi "클릭수" :as-is 1064 :expected (:clicks stats)}
-             {:kpi "CPC" :as-is 1033 :expected (Math/ceil (:cpc stats))}
-             {:kpi "클릭률" :as-is 0.0007 :expected (/ (:clicks stats) (:impressions stats))}]))
+          (map
+           #(assoc %
+                   :delta (- (:expected %) (:as-is %))
+                   :pct-delta (u/delta (:as-is %) (:expected %)))
+           [{:kpi "예상 비용" :as-is 1100100 :expected (:cost stats)}
+            {:kpi "노출수" :as-is 1620589 :expected (:impressions stats)}
+            {:kpi "클릭수" :as-is 1064 :expected (:clicks stats)}
+            {:kpi "CPC" :as-is 1033 :expected (Math/ceil (:cpc stats))}
+            ;; {:kpi "클릭률" :as-is 0.0007 :expected (/ (:clicks stats) (:impressions stats))}
+            ])
           :bordered true
           :pagination false
           :columns columns

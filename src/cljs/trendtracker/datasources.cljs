@@ -72,7 +72,7 @@
    :deps [:current-client]
    :loader api-loader
    :params (fn [_ route {:keys [current-client]}]
-             (when (and (= (:page route) "keywords") current-client)
+             (when (and (= "keyword-tool" (:page route)) current-client)
                {:url "/keywords/all"
                 :customer-id (:customer_id current-client)}))})
 
@@ -132,13 +132,13 @@
    :params (fn [_ route {:keys [current-client date-range]}]
              (let [segment (:seg route)]
                (when (and current-client date-range)
-                 (merge (if (= "keyword" segment)
-                          (if-let [id (:adgrp route)]
-                            {:url "/stats/aggregate/by-adgroup"
-                             :id id}
-                            {:url "/stats/keywords"
-                             :customer-id (:customer_id current-client)})
-                          {:url "/stats/segmented"
+                 (merge (case segment
+                          "keyword" (if-let [id (:adgrp route)]
+                                      {:url "/stats/aggregate/by-adgroup"
+                                       :id id}
+                                      {:url "/stats/keywords"
+                                       :customer-id (:customer_id current-client)})
+                          {:url "/stats/aggregate/adgroups"
                            :customer-id (:customer_id current-client)
                            :type (or segment "adgroup")})
                         (u/parse-date-range (:curr date-range))))))
@@ -183,7 +183,7 @@
   {:target [:kv :daily-stats]
    :deps [:jwt :date-range :cascader :current-client]
    :params (fn [_ {:keys [page]} deps]
-             (when (= "dashboard" page)
+             (when page                                          ;; (= "dashboard" page)
                (select-keys deps [:date-range :cascader :current-client :jwt])))
    :loader (map-loader
             (fn [req]

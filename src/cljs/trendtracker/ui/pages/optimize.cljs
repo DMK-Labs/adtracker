@@ -1,7 +1,6 @@
 (ns trendtracker.ui.pages.optimize
   (:require [antizer.reagent :as ant]
-            [keechma.ui-component :as ui]
-            [trendtracker.ui.components.common :as common]))
+            [keechma.ui-component :as ui]))
 
 (defn render [ctx]
   (let [bc (ui/component ctx :breadcrumbs)
@@ -12,7 +11,7 @@
       [bc]
       [ant/row
        [ant/col
-        [:h2 common/naver-icon "자동 입찰 최적화"]
+        [:h2 "자동 입찰 최적화"]
         [:p {:style {:margin-right 8}}
          "관리중인 키워드를 자동 실시간 관리할 수 있는 AI 기반 입찰 툴입니다. 캠페인을 선택하시고 (모두 하셔도 좋습니다!), 최적화에 준수할 예산으로 설정하십시오."]]]
       [ant/button {:icon "reload"

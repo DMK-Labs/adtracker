@@ -7,8 +7,6 @@
             [trendtracker.models.adgroups :as adgroups]
             [naver-searchad.api.adgroup :as adgroup]))
 
-(def db-fns (hugsql/map-of-db-fns "sql/keywords.sql"))
-
 (hugsql/def-db-fns "sql/keywords.sql")
 
 (defn eligible-dep

@@ -1,6 +1,6 @@
 -- :name by-adgroup :? :*
 SELECT
-  cal.day :: DATE as during,
+  cal.day :: DATE          AS during,
   coalesce(cost, 0)        AS cost,
   coalesce(impressions, 0) AS impressions,
   coalesce(clicks, 0)      AS clicks,
@@ -54,7 +54,6 @@ FROM
     AS p
     ON cal.day = p.during
 ORDER BY during ASC;
-
 
 -- :name by-type :? :*
 SELECT

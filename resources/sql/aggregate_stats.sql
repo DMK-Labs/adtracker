@@ -47,4 +47,20 @@ SELECT
   sum(revenue) as revenue
 FROM naver.daily_keyword_stats
 WHERE ad_group_id = :id AND during BETWEEN :low :: TIMESTAMP AND :high :: TIMESTAMP
-GROUP BY keyword_id, keyword
+GROUP BY keyword_id, keyword;
+
+-- :name adgroups :? :*
+SELECT
+  ad_group_id AS "adgroup-id",
+  ad_group.name,
+  sum(cost)        AS cost,
+  sum(impressions) AS impressions,
+  sum(clicks)      AS clicks,
+  sum(ad_rank_sum) AS ad_rank_sum,
+  sum(conversions) AS conversions,
+  sum(revenue)     AS revenue
+FROM naver.daily_keyword_stats k
+  LEFT JOIN naver.ad_group ON ad_group_id = ad_group.id
+WHERE k.customer_id = :customer-id
+  AND during BETWEEN :low ::TIMESTAMP AND :high ::TIMESTAMP
+GROUP BY ad_group_id, ad_group.name;

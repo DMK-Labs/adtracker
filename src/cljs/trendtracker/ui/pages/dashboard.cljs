@@ -2,8 +2,7 @@
   (:require [antizer.reagent :as ant]
             [keechma.ui-component :as ui]
             [keechma.toolbox.ui :refer [sub> route>]]
-            [reagent.core :as r]
-            [trendtracker.ui.components.common :as common]))
+            [reagent.core :as r]))
 
 (defn render [ctx]
   (let [breadcrumbs (ui/component ctx :breadcrumbs)
@@ -21,7 +20,7 @@
       [breadcrumbs]
       [ant/row {:gutter 16 :type "flex" :justify "space-between"}
        [ant/col {:md 7 :xs 24}
-        [:h2 common/naver-icon "검색광고 대쉬보드"]]
+        [:h2 "검색광고 대쉬보드"]]
        [ant/col
         [ant/row {:type "flex" :justify "space-between" :gutter 8}
          [ant/col [cascader]]

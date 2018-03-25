@@ -177,7 +177,6 @@
                                                    nil
                                                    (/ (:cost %) (:conversions %)))))
                              (map #(select-keys % [:cpa :during :cost :conversions])))]
-                  ;; (print v)
                   v)
         sum (/ (u/sum :cost current)
                (u/sum :conversions current))

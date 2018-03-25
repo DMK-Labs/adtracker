@@ -68,9 +68,9 @@
      [:img {:src "/img/logo/tt-logo.png"
             :style {:height 34 :width 152}}]]
     [:div {:style {:float "right"}}
-     [user ctx]
+     [user ctx]]]])
      ;; [notifications ctx]
-     ]]])
+
 
 (def component
   (ui/constructor

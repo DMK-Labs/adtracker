@@ -2,7 +2,6 @@
   (:require [hugsql.core :as hugsql]
             [huri.core :as h]
             [plumbing.core :refer [defnk fnk sum]]
-            [plumbing.graph :as graph]
             [trendtracker.config :refer [config creds]]))
 
 (hugsql/def-db-fns "sql/daily_stats.sql")
@@ -57,7 +56,7 @@
               (if (zero? impressions)
                 0
                 (double (/ conversions impressions))))}
-                 rel))
+   rel))
 
 (add-ratios2
  {:during #inst "2018-02-26T15:00:00.000-00:00",

@@ -36,21 +36,17 @@
          [ant/icon {:type "dashboard"}]
          [:span "대쉬보드"]]
 
+        [ant/menu-item {:key "manage"}
+         [ant/icon {:type "bulb"}]
+         [:span "광고 개선"]]
+
         [ant/menu-item {:key "optimize"}
          [ant/icon {:type "rocket"}]
          [:span "최적화 전략"]]
 
         [ant/menu-item {:key "keyword-tool"}
          [ant/icon {:type "tool"}]
-         [:span "키워드 조사"]]
-
-        ;; [ant/menu-item {:key "keywords"}
-        ;;  [ant/icon {:type "profile"}]
-        ;;  [:span "키워드 목록"]]
-
-        [ant/menu-item {:key "manage"}
-         [ant/icon {:type "bulb"}]
-         [:span "광고 개선"]]
+         [:span "키워드 관리"]]
 
         ;; [ant/menu-item {:key "settings"}
         ;;  [ant/icon {:type "setting"}]

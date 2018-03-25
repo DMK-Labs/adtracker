@@ -54,4 +54,9 @@
    (:db-spec config)
    {:id "grp-a001-01-000000005994190"
     :low "2018-02-26"
+    :high "2018-03-15"})
+  (adgroups
+   (:db-spec config)
+   {:customer-id 137307
+    :low "2018-02-26"
     :high "2018-03-15"}))

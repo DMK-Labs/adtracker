@@ -1,31 +1,54 @@
 (ns trendtracker.ui.components.charts.scatter
   (:require [reacharts.recharts :as recharts]
-            [keechma.ui-component :as ui]))
+            [keechma.ui-component :as ui]
+            [trendtracker.utils :as u]))
 
-(defn scatter-chart [ctx data x y z x-label y-label z-label]
+(defn scatter-chart [ctx {:keys [data x y z x-label y-label z-label]}]
   [recharts/responsive-container {:height 300}
-   [recharts/scatter-chart
-    [recharts/tooltip]
-    [recharts/x-axis {:dataKey x
-                      :scale :sqrt 
-                      :type "number"}
-     [recharts/label {:value x-label :position "insideBottom" :offset 0}]]
-    [recharts/y-axis {:dataKey y 
-                      :scale :sqrt}
-     [recharts/label {:value y-label :position "insideLeft" :offset 0 :angle -90}]]
-    [recharts/z-axis {:dataKey z :range [20 800]
-                      :value z-label}]
-    ;; [recharts/scatter
-    ;;  {:isAnimationActive false
-    ;;   :data data
-    ;;   :stroke "#1890ff" :fill "#bae7ff"
-    ;;   :onClick #()}]
-    [recharts/scatter
-     {:isAnimationActive false
-      :data data
-      :stroke "#1890ff" :fill "#bae7ff"
-      ;; :stroke "#fa8c16" :fill "#ffe7ba"
-      :onClick #()}]]])
+   (let [clicks      (u/sum :clicks data)
+         impressions (u/sum :impressions data)
+         avg-ctr     (/ clicks impressions)
+         avg-imp     (/ impressions (count data))]
+     [recharts/scatter-chart
+      [recharts/tooltip]
+      [recharts/x-axis {:dataKey       x
+                        :scale         :sqrt 
+                        :tickFormatter #(u/pct-fmt %)
+                        :type          "number"
+                        :padding       {:left 25 :right 25}}
+       [recharts/label {:value x-label :position "insideBottom" :offset 0}]]
+      [recharts/y-axis {:dataKey       y 
+                        :scale         :sqrt
+                        :tickFormatter u/int-fmt
+                        :padding       {:top 25 :bottom 25}}
+       [recharts/label {:value y-label :position "insideLeft" :offset 0 :angle -90}]]
+      [recharts/z-axis {:dataKey z :range [20 800]
+                        :value   z-label}]
+      [recharts/scatter
+       {:isAnimationActive false
+        :data              data
+        :stroke    "#fa8c16" :fill "#ffe7ba"}]
+      [recharts/scatter
+       {:isAnimationActive false
+        :data              (filter #(> avg-imp (:impressions %)) data)
+        :stroke    "#bfbfbf" :fill "#f5f5f5"}]
+      [recharts/scatter
+       {:isAnimationActive false
+        :data              (filter #(< avg-ctr (:ctr %)) data)
+        :stroke            "#52c41a" :fill "#d9f7be"}]
+      [recharts/scatter
+       {:isAnimationActive false
+        :data (filter #(and
+                        (< avg-ctr (:ctr %))
+                        (< avg-imp (:impressions %)))
+                      data)
+        :stroke "#1890ff" :fill "#bae7ff"}]
+      [recharts/reference-line {:x      avg-ctr
+                                :stroke "green" 
+                                :label  "평균 CTR"}]
+      [recharts/reference-line {:y      avg-imp
+                                :stroke "red"
+                                :label  "평균 Imp."}]])])
 
 (def component
   (ui/constructor

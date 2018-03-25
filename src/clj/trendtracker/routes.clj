@@ -62,9 +62,9 @@
 (defn api-routes [{db :db}]
   (sweet/api
    {:swagger
-    {:ui "/api-docs"
+    {:ui   "/api-docs"
      :spec "/swagger.json"
-     :data {:info {:title "Trend Tracker API"
+     :data {:info {:title       "Trend Tracker API"
                    :description "Use it or lose it."}}}}
 
    (sweet/context "/api" []
@@ -86,8 +86,8 @@
               (daily-stats/by-customer
                db
                {:customer-id customer-id
-                :low low
-                :high high}))))
+                :low         low
+                :high        high}))))
 
      (sweet/GET "/performance/type" []
        :summary "Campaign type performance"
@@ -99,10 +99,10 @@
                   (map daily-stats/add-ratios2))
               (daily-stats/by-type
                db
-               {:customer-id customer-id
+               {:customer-id   customer-id
                 :campaign-type type
-                :low low
-                :high high}))))
+                :low           low
+                :high          high}))))
 
      (sweet/GET "/performance/campaign" []
        :summary "Campaign performance"
@@ -119,8 +119,8 @@
                db
                {:customer-id customer-id
                 :campaign-id campaign-id
-                :low low
-                :high high}))))
+                :low         low
+                :high        high}))))
 
      (sweet/GET "/performance/adgroup" []
        :summary "Adgroup performance"
@@ -133,41 +133,66 @@
               (daily-stats/by-adgroup
                db
                {:customer-id customer-id
-                :adgroup-id id
-                :low low
-                :high high}))))
+                :adgroup-id  id
+                :low         low
+                :high        high}))))
 
      ;;* Aggregate
      (sweet/GET "/stats/segmented" []
        :query-params [low :- s/Str high :- s/Str customer-id :- s/Int type :- s/Str]
        (respond/ok
-        (let [creds (creds customer-id)
+        (let [creds        (creds customer-id)
               [k segments] (case type
-                             "adgroup" [:nccAdgroupId (naver-adgroup/all creds)]
+                             "adgroup"  [:nccAdgroupId (naver-adgroup/all creds)]
                              "campaign" [:nccCampaignId (naver-campaign/all creds)])
-              ids (map k segments)
-              stats (set/join
-                     segments
-                     (naver-stats/by-id creds
-                                        {:ids ids
-                                         :fields (conj naver-stats/default-fields :avgRnk)
-                                         :time-range {:since low :until high}})
-                     {k :id})]
+              ids          (map k segments)
+              stats        (set/join
+                            segments
+                            (naver-stats/by-id creds
+                                               {:ids        ids
+                                                :fields     (conj naver-stats/default-fields :avgRnk)
+                                                :time-range {:since low :until high}})
+                            {k :id})]
           (->> (transduce (comp
                            (map #(assoc % :profit (- (:convAmt %) (:salesAmt %))))
                            (map #(assoc % :roas
                                         (if (zero? (:salesAmt %))
                                           0
-                                          (/ (:convAmt %) (:salesAmt %))))))
+                                          (/ (:convAmt %) (:salesAmt %)))))
+                           (map #(set/rename-keys % {:avgRnk   :avg-rank
+                                                     :salesAmt :cost
+                                                     :clkCnt   :clicks
+                                                     :impCnt   :impressions
+                                                     :ccnt     :conversions
+                                                     :crto     :cvr
+                                                     :convAmt  :revenue}))
+                           (map #(update % :cvr (fn [x] (/ x 100))))
+                           (map #(update % :ctr (fn [x] (/ x 100)))))
                           conj
                           stats)
                (sort-by :profit >)))))
      
+     (sweet/GET "/stats/aggregate/adgroups" []
+       :query-params [low :- s/Str high :- s/Str customer-id :- s/Int]
+       (respond/ok
+        (transduce
+         (comp 
+          (map daily-stats/add-ratios2)
+          (map #(assoc % :profit (- (:revenue %)
+                                    (:cost %)))))
+         conj
+         (aggregate/adgroups db {:customer-id customer-id :low low :high high}))))
+     
      (sweet/GET "/stats/aggregate/by-adgroup" []
        :query-params [low :- s/Str high :- s/Str id :- s/Str]
        (respond/ok
-        (map daily-stats/add-ratios2
-             (aggregate/by-adgroup db {:id id :low low :high high}))))
+        (transduce
+         (comp 
+          (map daily-stats/add-ratios2)
+          (map #(assoc % :profit (- (:revenue %)
+                                    (:cost %)))))
+         conj
+         (aggregate/by-adgroup db {:id id :low low :high high}))))
 
      (sweet/GET "/stats/keywords" []
        :query-params [low :- s/Str high :- s/Str customer-id :- s/Int]
@@ -186,8 +211,8 @@
               (segments/pc-mobile
                db
                {:customer-id customer-id
-                :low low
-                :high high}))))
+                :low         low
+                :high        high}))))
 
      ;;* Keyword-tool
      (sweet/POST "/keyword-tool" []

@@ -5,7 +5,7 @@
  :source-paths #{"src/clj" "src/cljs" "src/cljc" "src/less"}
  :resource-paths #{"resources"}
  :dependencies '[[org.clojure/clojure "1.9.0"]
-                 [org.clojure/clojurescript "1.9.946"]
+                 [org.clojure/clojurescript "1.10.217"]
                  [org.clojure/core.match "0.3.0-alpha5"]
 
                  ;; boot tasks
@@ -22,8 +22,8 @@
                  ;; frontend
                  [metosin/compojure-api "2.0.0-alpha17"]
                  [reagent "0.7.0"]
-                 [keechma "0.3.2" :exclusions [cljsjs/react-with-addons]]
-                 [keechma/toolbox "0.1.8"]
+                 [keechma "0.3.3" :exclusions [cljsjs/react-with-addons]]
+                 [keechma/toolbox "0.1.9"]
                  [cljsjs/filesaverjs "1.3.3-0"]
                  [testdouble/clojurescript.csv "0.3.0"]
                  [keechma/forms "0.1.3"]
@@ -34,7 +34,7 @@
                  ;; backend
                  [aleph "0.4.4"]
                  [org.clojure/java.jdbc "0.7.5"]
-                 [org.postgresql/postgresql "42.2.1"]
+                 [org.postgresql/postgresql "42.2.2"]
                  [com.layerware/hugsql "0.4.8"]
                  [ring-middleware-format "0.7.2"]
                  [clojure.java-time "0.3.1"]
@@ -48,7 +48,7 @@
                  [semantic-csv "0.2.1-alpha1"]
                  [dk.ative/docjure "1.12.0"]
                  [org.clojure/algo.monads "0.1.6"] ; For graham's scan
-                 [orchestra "2017.08.13"] ; Spec testing of fn and ret keys
+                 [orchestra "2017.11.12-1"] ; Spec testing of fn and ret keys
 
                  [com.taoensso/timbre "4.10.0"]
 
@@ -56,7 +56,7 @@
                  [com.cognitect/transit-clj "0.8.300"]
                  [ring "1.6.3"]
                  [ring/ring-defaults "0.3.1"]
-                 [bk/ring-gzip "0.2.1"]
+                 [bk/ring-gzip "0.3.0"]
                  [compojure "1.6.0"]
                  [environ "1.1.0"]
                  [com.stuartsierra/component "0.3.2"]
@@ -71,7 +71,7 @@
          'clojure.tools.namespace.repl
          'boot.lein)
 
-(boot.lein/generate)
+;; (boot.lein/generate)
 
 (task-options!
  aot {:all true}

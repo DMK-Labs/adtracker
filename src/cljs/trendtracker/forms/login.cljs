@@ -23,7 +23,7 @@
 (defmethod forms-core/on-submit-success LoginForm [this app-db form-id user]
   (let [jwt (:token user)]
     (pipeline! [value app-db]
-      (set-item local-storage "lacuna-jwt-token" jwt)
+      (set-item local-storage "trendtracker-jwt-token" jwt)
       (pl/commit! (-> app-db
                       (assoc-in [:kv :jwt] jwt)
                       (insert-named-item :user :current user)))

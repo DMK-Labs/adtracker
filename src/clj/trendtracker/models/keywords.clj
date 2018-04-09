@@ -4,7 +4,6 @@
             [trendtracker.config :refer [config creds]]
             [trendtracker.models.campaigns :as campaigns]
             [huri.core :as h]
-            [trendtracker.models.adgroups :as adgroups]
             [naver-searchad.api.adgroup :as adgroup]))
 
 (hugsql/def-db-fns "sql/keywords.sql")
@@ -13,9 +12,9 @@
   "Returns a list of the keywords {:keys [nccKeywordId ...]} under
    consideration for optimization."
   [customer-id]
-  (h/where {:nccCampaignId (set (keys campaigns/target-device))
+  (h/where {:nccCampaignId (set (keys campaigns/target-device))}
             ;; :status "ELIGIBLE"
-            }
+
            (adkeyword/all (creds customer-id))))
 
 (defn eligible
@@ -31,25 +30,6 @@
                 (map :body))
                concat
                (h/col :nccAdgroupId grps))))
-
-(defn parent [keyword-id]
-  (:adgroup-id (-parent (:db-spec config) {:id keyword-id})))
-
-(defn target-device [keyword-id]
-  (-> keyword-id
-      parent
-      adgroups/target-device))
-
-(defn owner [keyword-id]
-  (:customer-id (-owner (:db-spec config) {:id keyword-id})))
-
-(comment
-  (all (:db-spec config) {:customer-id 137307})
-  (time (-owner (:db-spec config) {:id "nkw-a001-01-000001080813650"}))
-  (set (map :campaign-id (eligible 137307)))
-  (time (target-device "nkw-a001-01-000001080813650"))
-  ;; :mobile
-  (count (adkeyword/all (creds 137307))))
 
 
 

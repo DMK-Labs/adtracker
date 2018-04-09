@@ -14,15 +14,16 @@
             [trendtracker.config :refer [creds]]
             [trendtracker.models.aggregate-stats :as aggregate]
             [trendtracker.models.daily-stats :as daily-stats]
-            [trendtracker.models.keywords :as keywords]
+   ;;[trendtracker.models.keywords :as keywords]
             [trendtracker.models.optimize :as optimize]
             [trendtracker.models.portfolio :as portfolio]
             [trendtracker.models.segments :as segments]
             [trendtracker.models.user :as user]
             [trendtracker.modules.auth :as auth]
             [trendtracker.modules.keyword-tool :as keyword-tool]
-            [trendtracker.modules.landscape :as landscape]
-            [trendtracker.utils :as u]))
+   ;;[trendtracker.modules.landscape :as landscape]
+            [trendtracker.utils :as u]
+            [trendtracker.models.insights :as insights]))
 
 (defn app-routes [endpoint]
   (sweet/routes
@@ -35,26 +36,26 @@
          (assoc :headers {"Content-Type" "text/html; charset=utf-8"})))))
 
 (s/defschema Perf
-  {(s/optional-key :impressions) s/Int
-   (s/optional-key :revenue) s/Int
-   (s/optional-key :roas) Double
-   (s/optional-key :during) s/Str
-   (s/optional-key :clicks) s/Int
-   (s/optional-key :profit) Double
-   (s/optional-key :conversions) s/Int
-   (s/optional-key :ad_rank_sum) s/Int
-   (s/optional-key :cost) s/Int
-   (s/optional-key :cvr) Double
-   (s/optional-key :ctr) Double
-   (s/optional-key :cpm) s/Any
-   (s/optional-key :cpa) s/Any
-   (s/optional-key :cpc) s/Any
-   (s/optional-key :i2c) Double
-   (s/optional-key :customer_id) s/Int
-   (s/optional-key :campaign_id) s/Str
-   (s/optional-key :campaign) s/Str
+  {(s/optional-key :impressions)      s/Int
+   (s/optional-key :revenue)          s/Int
+   (s/optional-key :roas)             Double
+   (s/optional-key :during)           s/Str
+   (s/optional-key :clicks)           s/Int
+   (s/optional-key :profit)           Double
+   (s/optional-key :conversions)      s/Int
+   (s/optional-key :ad_rank_sum)      s/Int
+   (s/optional-key :cost)             s/Int
+   (s/optional-key :cvr)              Double
+   (s/optional-key :ctr)              Double
+   (s/optional-key :cpm)              s/Any
+   (s/optional-key :cpa)              s/Any
+   (s/optional-key :cpc)              s/Any
+   (s/optional-key :i2c)              Double
+   (s/optional-key :customer_id)      s/Int
+   (s/optional-key :campaign_id)      s/Str
+   (s/optional-key :campaign)         s/Str
    (s/optional-key :campaign_type_id) s/Int
-   (s/optional-key :campaign_type) s/Str})
+   (s/optional-key :campaign_type)    s/Str})
 
 (def coerce-perf
   (coerce/coercer Perf coerce/json-coercion-matcher))
@@ -141,53 +142,54 @@
      (sweet/GET "/stats/segmented" []
        :query-params [low :- s/Str high :- s/Str customer-id :- s/Int type :- s/Str]
        (respond/ok
-        (let [creds        (creds customer-id)
+        (let [creds (creds customer-id)
               [k segments] (case type
-                             "adgroup"  [:nccAdgroupId (naver-adgroup/all creds)]
+                             "adgroup" [:nccAdgroupId (naver-adgroup/all creds)]
                              "campaign" [:nccCampaignId (naver-campaign/all creds)])
-              ids          (map k segments)
-              stats        (set/join
-                            segments
-                            (naver-stats/by-id creds
-                                               {:ids        ids
-                                                :fields     (conj naver-stats/default-fields :avgRnk)
-                                                :time-range {:since low :until high}})
-                            {k :id})]
-          (->> (transduce (comp
-                           (map #(assoc % :profit (- (:convAmt %) (:salesAmt %))))
-                           (map #(assoc % :roas
-                                        (if (zero? (:salesAmt %))
-                                          0
-                                          (/ (:convAmt %) (:salesAmt %)))))
-                           (map #(set/rename-keys % {:avgRnk   :avg-rank
-                                                     :salesAmt :cost
-                                                     :clkCnt   :clicks
-                                                     :impCnt   :impressions
-                                                     :ccnt     :conversions
-                                                     :crto     :cvr
-                                                     :convAmt  :revenue}))
-                           (map #(update % :cvr (fn [x] (/ x 100))))
-                           (map #(update % :ctr (fn [x] (/ x 100)))))
-                          conj
-                          stats)
+              ids   (map k segments)
+              stats (set/join
+                     segments
+                     (naver-stats/by-id creds
+                                        {:ids        ids
+                                         :fields     (conj naver-stats/default-fields :avgRnk)
+                                         :time-range {:since low :until high}})
+                     {k :id})]
+          (->> (transduce
+                (comp
+                 (map #(assoc % :profit (- (:convAmt %) (:salesAmt %))))
+                 (map #(assoc % :roas
+                                (if (zero? (:salesAmt %))
+                                  0
+                                  (/ (:convAmt %) (:salesAmt %)))))
+                 (map #(set/rename-keys % {:avgRnk   :avg-rank
+                                           :salesAmt :cost
+                                           :clkCnt   :clicks
+                                           :impCnt   :impressions
+                                           :ccnt     :conversions
+                                           :crto     :cvr
+                                           :convAmt  :revenue}))
+                 (map #(update % :cvr (fn [x] (/ x 100))))
+                 (map #(update % :ctr (fn [x] (/ x 100)))))
+                conj
+                stats)
                (sort-by :profit >)))))
-     
+
      (sweet/GET "/stats/aggregate/adgroups" []
        :query-params [low :- s/Str high :- s/Str customer-id :- s/Int]
        (respond/ok
         (transduce
-         (comp 
+         (comp
           (map daily-stats/add-ratios2)
           (map #(assoc % :profit (- (:revenue %)
                                     (:cost %)))))
          conj
          (aggregate/adgroups db {:customer-id customer-id :low low :high high}))))
-     
+
      (sweet/GET "/stats/aggregate/by-adgroup" []
        :query-params [low :- s/Str high :- s/Str id :- s/Str]
        (respond/ok
         (transduce
-         (comp 
+         (comp
           (map daily-stats/add-ratios2)
           (map #(assoc % :profit (- (:revenue %)
                                     (:cost %)))))
@@ -271,32 +273,28 @@
        :query-params [customer-id :- s/Int]
        (respond/ok (landscape/ridgeline (optimize/fetch-marginals customer-id))))
 
-     (sweet/GET "/optimize/detail" []
-       :query-params [customer-id :- s/Int
-                      budget :- s/Int]
-       (respond/ok
-        (h/select-cols
-         [:keyword-id :bid :impressions :clicks :cost]
-         (landscape/detail (optimize/fetch-marginals customer-id) budget))))
+     #_(sweet/GET "/optimize/detail" []
+         :query-params [customer-id :- s/Int
+                        budget :- s/Int]
+         (respond/ok
+          (h/select-cols
+           [:keyword-id :bid :impressions :clicks :cost]
+           (landscape/detail (optimize/fetch-marginals customer-id) budget))))
 
      ;;** Bids according to Naver
-     (sweet/GET "/bids/with-minimum-exposure" []
-       :query-params [customer-id :- s/Int
-                      budget :- s/Int]
-       (respond/ok
-        (landscape/optimized-bids-with-minimums customer-id budget)))
+     #_(sweet/GET "/bids/with-minimum-exposure" []
+         :query-params [customer-id :- s/Int
+                        budget :- s/Int]
+         (respond/ok
+          (landscape/optimized-bids-with-minimums customer-id budget)))
 
-     (sweet/GET "/bids/with-min-70" []
-       :query-params [customer-id :- s/Int
-                      budget :- s/Int]
-       (respond/ok
-        (landscape/optimized-bids-with-min-70 customer-id budget)))
+     #_(sweet/GET "/bids/with-min-70" []
+         :query-params [customer-id :- s/Int
+                        budget :- s/Int]
+         (respond/ok
+          (landscape/optimized-bids-with-min-70 customer-id budget)))
 
      ;;** Keywords
-     (sweet/GET "/keywords/all" []
-       :query-params [customer-id :- s/Int]
-       (respond/ok (keywords/all db {:customer-id customer-id}))))))
-
-(comment
-  (landscape/ridgeline 
-   (optimize/fetch-marginals 137307)))
+     #_(sweet/GET "/keywords/all" []
+         :query-params [customer-id :- s/Int]
+         (respond/ok (keywords/all db {:customer-id customer-id}))))))

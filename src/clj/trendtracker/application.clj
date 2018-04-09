@@ -11,8 +11,7 @@
             [trendtracker.config :refer [config]]
             [trendtracker.routes :as routes]))
 
-(defn dev-system
-  []
+(defn base-system []
   (component/system-map
    :db (new-postgres-database (:db-spec config))
    :middleware (new-middleware {:middleware (:middleware config)})
@@ -22,10 +21,9 @@
    :handler (component/using (new-handler) [:api-routes :app-routes])
    :http (component/using (new-web-server (:http-port config)) [:handler])))
 
-(defn prod-system
-  []
+(defn prod-system []
   (merge
-   (dev-system)
+   (base-system)
    (component/system-map
     :repl-server (new-repl-server 5602))))
 

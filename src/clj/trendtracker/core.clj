@@ -18,7 +18,8 @@
 
  (def capharm-estimates (estimates/by-customer 137307))
  (def re-estimated (predictor/derive-estimated-conversions
-                    (h/where {:bid [< 1500]} capharm-estimates)))
+                    (h/where {:bid [< 1500]}
+                             @ca-df)))
  (def ca-marginals (mckp/marginal-landscape
                     :conversions
                     re-estimated))
@@ -28,14 +29,15 @@
  (def fitted (future (mckp/fit-to-budget 1724100 ca-marginals)))
  (realized? fitted)
  ;; => false
- (def bids (mckp/bid-vectors fitted))
+ (def bids (mckp/bid-vectors @fitted))
+ (u/sum :marginal-clicks @fitted)
  (/ (u/sum :marginal-cost @fitted)
     (u/sum :marginal-clicks @fitted))
  ;; => 1219.0858047428715
  (/ (u/sum :marginal-cost @fitted)
-    (u/sum :marginal-conversions @fitted)))
-;; => 121908.58047430584
-
+    (u/sum :marginal-conversions @fitted))
+ ;; => 121908.58047430584
+ (u/sum :marginal-conversions @fitted))
 
 (comment
  (def kwid->funnel (aggregate/kwid->funnel 137307))

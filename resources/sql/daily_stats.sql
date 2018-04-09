@@ -120,3 +120,23 @@ FROM
     ON cal.day = p.during
 ORDER BY during ASC;
 
+-- :name last-recorded-conversion :? :1
+SELECT during
+FROM naver.conversion
+WHERE customer_id = :customer-id
+ORDER BY during DESC
+LIMIT 1;
+
+-- :name last-recorded-effectiveness :? :1
+SELECT during
+FROM naver.effectiveness
+WHERE customer_id = :customer-id
+ORDER BY during DESC
+LIMIT 1;
+
+-- :name last-recorded-foo :? :1
+SELECT during
+FROM :i:table
+WHERE customer_id = :customer-id
+ORDER BY during DESC
+LIMIT 1;

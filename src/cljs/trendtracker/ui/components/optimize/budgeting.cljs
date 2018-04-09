@@ -151,9 +151,9 @@
            [{:kpi "예상 비용" :as-is 1100100 :expected (:cost stats)}
             {:kpi "노출수" :as-is 1620589 :expected (:impressions stats)}
             {:kpi "클릭수" :as-is 1064 :expected (:clicks stats)}
-            {:kpi "CPC" :as-is 1033 :expected (Math/ceil (:cpc stats))}
+            {:kpi "CPC" :as-is 1033 :expected (Math/ceil (:cpc stats))}])
             ;; {:kpi "클릭률" :as-is 0.0007 :expected (/ (:clicks stats) (:impressions stats))}
-            ])
+
           :bordered true
           :pagination false
           :columns columns

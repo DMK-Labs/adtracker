@@ -26,7 +26,7 @@
 
 (def jwt-datasource
   {:target [:kv :jwt]
-   :loader (map-loader #(get-item local-storage "lacuna-jwt-token"))
+   :loader (map-loader #(get-item local-storage "trendtracker-jwt-token"))
    :params (fn [prev _ _] (when (:data prev) ignore-datasource-check))})
 
 (def current-user-datasource

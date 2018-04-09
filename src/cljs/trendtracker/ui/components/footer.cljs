@@ -11,8 +11,8 @@
    [:p (str "DataMKTKorea © 2018 - Made with "
          (rand-nth ["❤️"  ;; heart
                     "✨" ;; sparkle
-                    "🌟" ;; glowing star
-                    ])
+                    "🌟"]) ;; glowing star
+
          " in Seoul")]])
 
 (def component

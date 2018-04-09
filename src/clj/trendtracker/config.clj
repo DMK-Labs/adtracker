@@ -11,7 +11,7 @@
 (def auth-backend (jws-backend {:secret secret}))
 
 (def config
-  {:http-port  (Integer. (or (env :port) 10555))
+  {:http-port (Integer. (or (env :port) 10555))
    :middleware [[wrap-authentication auth-backend]
                 [wrap-authorization auth-backend]
                 [wrap-defaults (-> site-defaults
@@ -19,16 +19,16 @@
                                    (dissoc :session))]
                 wrap-gzip]
    :api-middleware [wrap-restful-format]
-   :db-spec    {:classname   "org.postgresql.Driver"
-                :subprotocol "postgresql"
-                :subname     (str "//"
-                                  (env :db-host)
-                                  ":"
-                                  (or (env :db-port) "5432")
-                                  "/"
-                                  (env :db-name))
-                :user        (env :db-user)
-                :password    (env :db-password)}
+   :db-spec {:classname "org.postgresql.Driver"
+             :subprotocol "postgresql"
+             :subname (str "//"
+                           (env :db-host)
+                           ":"
+                           (or (env :db-port) "5432")
+                           "/"
+                           (env :db-name))
+             :user (env :db-user)
+             :password (env :db-password)}
    :naver-creds {:customer-id 719425
                  :access-key (env :x-api-key)
                  :private-key (env :x-private-key)}})

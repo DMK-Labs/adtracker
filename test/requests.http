@@ -1,0 +1,41 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+GET http://localhost:10555/api/stats/aggregate/by-adgroup?
+  id=grp-a001-01-000000005994190&low=2018-02-26&high=2018-03-25
+Accepts: application/json
+
+###
+
+GET http://localhost:10555/api/stats/segmented?
+  customer-id=137307&low=2018-02-01&high=2018-02-05&type=campaign
+Accepts: application/json
+
+###
+
+GET http://localhost:10555/public/trendtracker.js
+Accepts: application/json
+
+###
+
+GET http://localhost:10555/api/stats/aggregate/by-adgroup?
+  low=2018-03-01&high=2018-04-01&id=grp-a001-01-000000006315078
+Accepts: application/json
+
+###
+
+GET http://localhost:10555/api/insights/keywords/no-clicks?
+  customer-id=137307
+Accepts: application/json
+
+###
+
+GET http://localhost:10555/api/insights/keywords/biggest-losers?
+  customer-id=137307
+Accepts: application/json
+
+###

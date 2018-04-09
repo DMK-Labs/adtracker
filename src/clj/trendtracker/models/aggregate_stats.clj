@@ -52,9 +52,9 @@
   ;;   :i2c 0.0}]
   (by-adgroup
    (:db-spec config)
-   {:id "grp-a001-01-000000005994190"
-    :low "2018-02-26"
-    :high "2018-03-15"})
+   {:id "grp-a001-01-000000006315078"
+    :low "2018-03-26"
+    :high "2018-04-01"})
   (adgroups
    (:db-spec config)
    {:customer-id 137307

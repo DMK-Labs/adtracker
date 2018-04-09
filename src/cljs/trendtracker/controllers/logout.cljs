@@ -10,7 +10,7 @@
      (when (= "logout" (:page data))
        true))
    {:start (pipeline! [_ app-db]
-             (remove-item local-storage "lacuna-jwt-token")
+             (remove-item local-storage "trendtracker-jwt-token")
              (pl/commit! (-> app-db
                              (assoc-in [:kv :jwt] nil)
                              (remove-named-item :user :current)))

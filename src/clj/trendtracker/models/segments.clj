@@ -1,6 +1,5 @@
 (ns trendtracker.models.segments
   (:require [hugsql.core :as hugsql]
-            [huri.core :as h]
             [trendtracker.config :refer [config creds]]))
 
 (hugsql/def-db-fns "sql/segments.sql")

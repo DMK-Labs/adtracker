@@ -9,7 +9,7 @@
         subpage (:subpage route)
         client (:client route)
         capitalize {:style {:text-transform "capitalize"}}]
-    [ant/breadcrumb {:style {:margin-bottom 12}}
+    [ant/breadcrumb
      [ant/breadcrumb-item
       [:a {:href (ui/url ctx {:page "dashboard" :client client})} "Ad Tracker"]]
      [ant/breadcrumb-item capitalize

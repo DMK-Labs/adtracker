@@ -1,11 +1,12 @@
 (ns trendtracker.ui.pages.overview
   (:require [antizer.reagent :as ant]
-            [keechma.ui-component :as ui]))
+            [keechma.ui-component :as ui]
+            [trendtracker.ui.components.common :as common]))
 
 (defn render [ctx]
   [:div
-   [:div.content-header
-    [:h2 "Ad Tracker에 오신 것을 환영합니다."]]
+   [common/content-header
+    [:h2.page-title "Ad Tracker에 오신 것을 환영합니다."]]
    [:div.content
     [ant/card
      [:ol

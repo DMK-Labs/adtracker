@@ -19,7 +19,7 @@
   [df device]
   (->> @df
        (h/where {:device (.toUpperCase (name device))})
-       (h/col :key)
+       (h/col :keyword-id)
        set))
 
 (defn add-perfs [creds df device kws]

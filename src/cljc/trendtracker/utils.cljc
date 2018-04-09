@@ -42,7 +42,7 @@
 
 (defn krw [num]
   #?(:cljs (.toLocaleString (js/Math.round num) js/undefined #js {:style "currency" :currency "KRW"})
-     :clj (str "₩" (int-fmt (Math/round num)))))
+     :clj  (str "₩" (int-fmt (Math/round num)))))
 
 (defn dec-fmt [decimals num]
   #?(:cljs (goog.string.format (str "%." decimals "f") num)))
@@ -72,3 +72,12 @@
   (->> dates
        (map fmt-dt)
        (zipmap [:low :high])))
+
+#?(:clj
+   (defn doseq-interval
+     "Works like `map`, but takes an additional arg INTERVAL which is the number of
+     milliseconds to sleep in between function calls."
+     [f coll interval]
+     (doseq [x coll]
+       (Thread/sleep interval)
+       (f x))))

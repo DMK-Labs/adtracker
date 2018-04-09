@@ -19,7 +19,6 @@
    "cmp-a001-01-000000001015620" :pc
    "cmp-a001-01-000000001015651" :mobile})
 
-
 (comment
   (all (:db-spec config) {:customer-id 137307}))
 

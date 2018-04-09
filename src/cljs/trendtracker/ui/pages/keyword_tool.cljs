@@ -3,10 +3,10 @@
             [keechma.toolbox.forms.core :as forms-core]
             [keechma.toolbox.forms.helpers :as forms-helpers]
             [keechma.ui-component :as ui]
-            [trendtracker.ui.components.pure.form-inputs
-             :refer
-             [controlled-textarea controlled-switch]]
-            [keechma.toolbox.ui :refer [route> sub>]]))
+            [trendtracker.ui.components.pure.form-inputs :refer [controlled-textarea
+                                                                 controlled-switch]]
+            [keechma.toolbox.ui :refer [route> sub>]]
+            [trendtracker.ui.components.common :as common]))
 
 (def form-item-params
   {:wrapper-col {:xs {:span 24}
@@ -24,22 +24,23 @@
         subpage (:subpage (route> ctx))
         data (sub> ctx :keyword-tool)]
     [:div
-     [:div.content-header
+     [common/content-header
       [(ui/component ctx :breadcrumbs)]
-      [:h2 "키워드 관리"]
-      [:p "입력 키워드 리스트 기반으로 경쟁도, 예상 수치를 탐색할 수 있는
-      툴입니다. 새로운 블루오션 키워드를 발견하여 더 많은 잠재고객을 만나십시오."]
-      [ant/alert {:message "모든 지표는 네이버 전체 시스템 내의 과거 28일(4주)의 성과를 비롯해 산출되었습니다."
-                  :banner true
-                  :closable true}]]
-
+      [:h2.page-title "키워드 관리"]
+      [:div.page-description "입력 키워드 리스트 기반으로 경쟁도, 예상 수치를 탐색할 수 있는
+      툴입니다. 새로운 블루오션 키워드를 발견하여 더 많은 잠재고객을 만나십시오."]]
      [:div.content
       (if subpage
         [(ui/component ctx :keyword-tool-results-table)]
-        [:div 
+        [:div
          [ant/row
           [ant/spin {:spinning submitting?}
            [ant/card {:title "키워드 조사"}
+            [ant/alert
+             {:message "모든 지표는 네이버 전체 시스템 내의 과거 28일(4주)의 성과를 비롯해 산출되었습니다."
+              :banner true
+              :closable true
+              :style {:margin-bottom 16}}]
             [ant/form {:on-submit (:submit helpers)}
 
              [controlled-textarea
@@ -62,20 +63,20 @@
                :label "연관어 포함"}]
 
              [ant/form-item (assoc form-item-params
-                                   :wrapper-col {:xs {:span 24}
-                                                 :sm {:span 18 :offset 6}}
-                                   :style {:margin-bottom 0})
+                              :wrapper-col {:xs {:span 24}
+                                            :sm {:span 18 :offset 6}}
+                              :style {:margin-bottom 0})
               [ant/button {:htmlType "submit"
                            :type "primary"}
-               "키워드 검토"]]]]]]
-         [ant/row [(ui/component ctx :keywords-list)]]])]]))
+               "키워드 검토"]]]]]]])]]))
+;; [ant/row [(ui/component ctx :keywords-list)]]])]]))
 
 (def component
   (ui/constructor
-    {:renderer render
-     :component-deps [:breadcrumbs
-                      :keyword-tool-results-table
-                      :keywords-list]
-     :topic forms-core/id-key
-     :subscription-deps [:form-state
-                         :keyword-tool]}))
+   {:renderer render
+    :component-deps [:breadcrumbs
+                     :keyword-tool-results-table
+                     :keywords-list]
+    :topic forms-core/id-key
+    :subscription-deps [:form-state
+                        :keyword-tool]}))

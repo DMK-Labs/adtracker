@@ -16,9 +16,9 @@
 
 (defn render-optimizing-status
   [status]
-  (r/as-element [ant/switch {:defaultChecked (= "ELIGIBLE" status)}])
+  (r/as-element [ant/switch {:defaultChecked (= "ELIGIBLE" status)}]))
   ;; (r/as-element status)
-  )
+
 
 (def columns
   [{:title "On/Off"

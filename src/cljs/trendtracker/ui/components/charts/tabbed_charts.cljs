@@ -26,17 +26,15 @@
                         u/int-fmt))]
     [recharts/responsive-container {:height 211}
      [recharts/composed-chart {:data data}
-      [recharts/cartesian-grid {:strokeDasharray "2 4"
-                                :vertical false}]
+      [recharts/cartesian-grid {:strokeDasharray "2 4" :vertical false}]
       [recharts/x-axis {:dataKey :during
-                        :minTickGap 15}]
+                        :minTickGap 15
+                        :tickFormatter #(.format (js/moment %) "ddd M/D")}]
       [recharts/y-axis {:tickFormatter y-formatter}]
       [recharts/line (merge line-opts {:dataKey (keyword (str "prev-" (name data-key)))
                                        :name (str "이전 기간 " nm)
                                        :strokeDasharray "4 6"})]
-      [(if (< 14 (count data))
-         recharts/line
-         recharts/bar)
+      [(if (< 14 (count data)) recharts/line recharts/bar)
        (merge line-opts {:dataKey data-key :name nm})]
       [recharts/tooltip {:formatter y-formatter}]]]))
 
@@ -70,23 +68,23 @@
               [chart joined :impressions "노출수"]]
              [ant/tabs-tab-pane
               {:key "3" :tab (title "클릭수" clicks (u/delta pclicks clicks))}
-              [chart joined :clicks "클릭수"]]
-             ;[ant/tabs-tab-pane
-             ; {:key "2" :tab (title "클릭률 (CTR)" ctr (u/delta pctr ctr))}
-             ; [chart joined :ctr "클릭률"]]
-             ]
+              [chart joined :clicks "클릭수"]]]
+            ;[ant/tabs-tab-pane
+            ; {:key "2" :tab (title "클릭률 (CTR)" ctr (u/delta pctr ctr))}
+            ; [chart joined :ctr "클릭률"]]
+
             (when (or (some (comp pos? :conversions) data)
                       (some (comp pos? :conversions) prev-data))
               [[ant/tabs-tab-pane
                 {:key "5" :tab (title "전환수" conversions (u/delta pconversions conversions))}
-                [chart joined :conversions "전환수"]]
-               ;[ant/tabs-tab-pane
-               ; {:key "4" :tab (title "전환률 (CVR)" cvr (u/delta pcvr cvr))}
-               ; [chart joined :cvr "전환률"]]
-               ;[ant/tabs-tab-pane
-               ; {:key "6" :tab (title "총 전환률 (I2C)" i2c (u/delta pi2c i2c))}
-               ; [chart joined :i2c "총 전환률"]]
-               ]))]]))
+                [chart joined :conversions "전환수"]]]))]]))
+;[ant/tabs-tab-pane
+; {:key "4" :tab (title "전환률 (CVR)" cvr (u/delta pcvr cvr))}
+; [chart joined :cvr "전환률"]]
+;[ant/tabs-tab-pane
+; {:key "6" :tab (title "총 전환률 (I2C)" i2c (u/delta pi2c i2c))}
+; [chart joined :i2c "총 전환률"]]
+
 
 (def component
   (ui/constructor

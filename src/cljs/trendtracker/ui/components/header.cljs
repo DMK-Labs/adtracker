@@ -62,7 +62,7 @@
      [ant/icon {:type "bell" :style {:font-size 16}}]]]])
 
 (defn render [ctx]
-  [ant/affix {:style {:height "56px"}}
+  [ant/affix {:style {:height "56px" :z-index 99}}
    [ant/layout-header
     [:a {:href "http://trendtracker.co.kr"}
      [:img {:src "/img/logo/tt-logo.png"

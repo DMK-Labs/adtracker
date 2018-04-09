@@ -95,12 +95,12 @@
 
 (defn save-settings [settings]
   (ajax/PUT "/api/optimize/settings"
-            (req-params :data settings
+            (req-params :data settings)))
                         ;; {:customer-id 777309
                         ;;  :budget 99
                         ;;  :objective :clicks
                         ;;  :targets (js/JSON.stringify (clj->js ["test" "foo"]))}
-                        )))
+
 
 (defn dataloader-req [req-params]
   (let [headers (:headers req-params)

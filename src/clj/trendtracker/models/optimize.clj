@@ -73,7 +73,7 @@
   (current-settings (:db-spec config) {:customer-id 1334028})
   (count (fetch-marginals 137307))
   ;; => 128353
-  (settings 137307)
+  (settings 137307))
   ;; =>
   ;; {:customer-id 137307,
   ;;  :budget 1724100,
@@ -81,4 +81,4 @@
   ;;  :targets ["cmp-a001-01-000000001015651"
   ;;            "cmp-a001-01-000000001015620"],
   ;;  :bid-limit 3000}
-  )
+

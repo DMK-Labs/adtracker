@@ -33,3 +33,12 @@
          :height "16"
          :style {:margin-right "6px"}}])
 
+(def beta
+  [:span {:style {:background-color "gainsboro" :font-size 14
+                  :margin-left 8}}
+   "BETA"])
+
+(defn content-header
+  [& children]
+  [ant/affix {:style {:z-index -1} :offset-top 56}
+   (vec (concat [:div.content-header] children))])

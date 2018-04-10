@@ -27,6 +27,7 @@
                 (reports.stat/fetch-job c id))]
     (try
       (loop [job (fetch)]
+        (timbre/info "Job status:" (:status job))
         (case (:status job)
           ("REGIST" "RUNNING" "WAITING") (recur (fetch))
           ("BUILT" "NONE") (reports.common/download c job)
@@ -111,6 +112,7 @@
                 (reports.master/fetch-job c id))]
     (try
       (loop [job (fetch)]
+        (timbre/info "Job status:" (:status job))
         (case (:status job)
           ("REGIST" "RUNNING" "WAITING") (recur (fetch))
           "BUILT" (reports.common/as-csv c job)

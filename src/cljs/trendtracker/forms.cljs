@@ -8,7 +8,7 @@
    :optimize-objective (optimize-objective/constructor)
    :login (login/constructor)})
 
-(def forms-ids
+(def forms-automount-fns
   {:login (fn [{:keys [page]}]
             (when (= "login" page)
               :form))

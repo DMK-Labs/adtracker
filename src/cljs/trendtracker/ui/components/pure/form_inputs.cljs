@@ -1,12 +1,46 @@
 (ns trendtracker.ui.components.pure.form-inputs
   (:require [antizer.reagent :as ant]
             [keechma.toolbox.forms.helpers :as forms-helpers]
-            [trendtracker.forms.validators :as validators]))
+            [trendtracker.forms.validators :as validators]
+            [keechma.toolbox.forms.ui :as forms-ui]
+            [reagent.core :as r]))
 
-(defn controlled-input [{:keys [form-state helpers placeholder label attr input-type]}]
-  (let [{:keys [on-change on-blur]} helpers
-        errors (get-in (forms-helpers/attr-errors form-state attr)
-                       [:$errors$ :failed])]
+(defn make-input-with-composition-support
+  "This function implements input fields that handle composition based inputs correctly"
+  [tag]
+  (fn [props]
+    (let [el-ref-atom (atom nil)
+          composition-atom? (atom false)]
+      (r/create-class
+       {:reagent-render (fn [props]
+                          (let [props-ref  (or (:ref props) identity)
+                                props-on-change (or (:on-change props) identity)
+                                props-value (:value props)
+                                props-without-value (dissoc props :value)]
+                            [tag (merge props-without-value
+                                        {:on-change (fn [e]
+                                                      (when-not @composition-atom?
+                                                        (props-on-change e)))
+                                         :on-composition-start #(reset! composition-atom? true)
+                                         :on-composition-update #(reset! composition-atom? true)
+                                         :on-composition-end (fn [e]
+                                                               (reset! composition-atom? false)
+                                                               (props-on-change e))
+                                         :default-value props-value
+                                         :ref (fn [el]
+                                                (reset! el-ref-atom el)
+                                                (props-ref el))})]))
+        :component-will-update (fn [comp [_ new-props _]]
+                                 (let [el @el-ref-atom
+                                       composition? @composition-atom?]
+                                   (when (and el (not composition?))
+                                     (set! (.-value el) (or (:value new-props) "")))))}))))
+
+(def input-with-composition-support (make-input-with-composition-support ant/input))
+(def textarea-with-composition-support (make-input-with-composition-support ant/input-text-area))
+
+(defn controlled-input [ctx form-props attr {:keys [placeholder label input-type]}]
+  (let [errors (get-in (forms-ui/errors-in> ctx form-props attr) [:$errors$ :failed])]
     [ant/form-item {:label label
                     :validateStatus (when (not-empty errors) "error")
                     :help (validators/get-validator-message (first errors))
@@ -14,46 +48,42 @@
                                :sm {:span 6}}
                     :wrapperCol {:xs {:span 24}
                                  :sm {:span 18}}}
-     [ant/input
+     [input-with-composition-support
       {:placeholder placeholder
-       :onChange (on-change attr)
-       :onBlur (on-blur attr)
+       :on-change #(forms-ui/<on-change ctx form-props attr %)
+       :on-blur #(forms-ui/<on-blur ctx form-props attr %)
        :type (or input-type :text)
-       :value (forms-helpers/attr-get-in form-state attr)}]]))
+       :value (forms-ui/value-in> ctx form-props attr)}]]))
 
-(defn controlled-textarea [{:keys [form-state helpers placeholder label attr rows default-value]}]
-  (let [{:keys [on-change on-blur]} helpers
-        errors (get-in (forms-helpers/attr-errors form-state attr)
-                       [:$errors$ :failed])]
+(defn controlled-textarea [ctx form-props attr {:keys [placeholder label rows default-value]}]
+  (let [errors (get-in (forms-ui/errors-in> ctx form-props attr) [:$errors$ :failed])]
     [ant/form-item {:label label
-                    ;; :has-feedback true
                     :validateStatus (when (not-empty errors) "error")
                     :help (validators/get-validator-message (first errors))
                     :labelCol {:xs {:span 24}
                                :sm {:span 6}}
                     :wrapperCol {:xs {:span 24}
                                  :sm {:span 18}}}
-     [ant/input-text-area
+     [textarea-with-composition-support
       {:placeholder placeholder
-       :rows (or rows 8)
-       :onChange (on-change attr)
-       :onBlur (on-blur attr)
-       ;; :value (forms-helpers/attr-get-in form-state attr)
-       :defaultValue default-value
-       :style {:max-width 400}}]]))
+       :rows (or rows 10)
+       :on-change #(forms-ui/<on-change ctx form-props attr %)
+       :on-blur #(forms-ui/<on-blur ctx form-props attr %)
+       :value (forms-ui/value-in> ctx form-props attr)
+       :default-value default-value
+       :style {:max-width 420}}]]))
 
-(defn controlled-switch [{:keys [form-state helpers label attr default-checked]}]
-  (let [{:keys [set-value set-value-without-immediate-validation]} helpers
-        errors (get-in (forms-helpers/attr-errors form-state attr)
-                       [:$errors$ :failed])]
+(defn controlled-switch [ctx form-props attr {:keys [label default-checked]}]
+  (let [errors (get-in (forms-ui/errors-in> ctx form-props attr) [:$errors$ :failed])]
     [ant/form-item {:label label
-                    :labelCol {:xs {:span 24}
-                               :sm {:span 6}}
-                    :wrapperCol {:xs {:span 24}
-                                 :sm {:span 18}}
+                    :label-col {:xs {:span 24}
+                                :sm {:span 6}}
+                    :wrapper-col {:xs {:span 24}
+                                  :sm {:span 18}}
                     :help (validators/get-validator-message (first errors))}
-     [ant/switch {:checked (forms-helpers/attr-get-in form-state attr)
-                  :onChange #(set-value attr %)}]]))
+     [ant/switch {:checked (forms-ui/value-in> ctx form-props attr)
+                  :default-checked default-checked
+                  :on-change #(forms-ui/<set-value ctx form-props attr %)}]]))
 
 (defn controlled-tree-select [{:keys [form-state helpers label attr treeCheckable
                                       treeDefaultExpandAll treeData placeholder]}]
@@ -77,10 +107,8 @@
                       (set-value attr %))
        :style {:max-width 400}}]]))
 
-(defn controlled-radio-group [{:keys [form-state helpers label attr options]}]
-  (let [{:keys [on-change]} helpers
-        errors (get-in (forms-helpers/attr-errors form-state attr)
-                       [:$errors$ :failed])]
+(defn controlled-radio-group [ctx form-props attr {:keys [label options]}]
+  (let [errors (get-in (forms-ui/errors-in> ctx form-props attr) [:$errors$ :failed])]
     [ant/form-item {:label label
                     :labelCol {:xs {:span 24}
                                :sm {:span 6}}
@@ -89,5 +117,5 @@
                     :help (validators/get-validator-message (first errors))}
      [ant/radio-group
       {:options options
-       :onChange (on-change attr)
-       :value (forms-helpers/attr-get-in form-state attr)}]]))
+       :on-change #(forms-ui/<on-change ctx form-props attr %)
+       :value (forms-ui/value-in> ctx form-props attr)}]]))

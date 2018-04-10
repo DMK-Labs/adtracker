@@ -1,12 +1,12 @@
 (ns trendtracker.ui.pages.keyword-tool
   (:require [antizer.reagent :as ant]
             [keechma.toolbox.forms.core :as forms-core]
-            [keechma.toolbox.forms.helpers :as forms-helpers]
             [keechma.ui-component :as ui]
             [trendtracker.ui.components.pure.form-inputs :refer [controlled-textarea
                                                                  controlled-switch]]
             [keechma.toolbox.ui :refer [route> sub>]]
-            [trendtracker.ui.components.common :as common]))
+            [trendtracker.ui.components.common :as common]
+            [keechma.toolbox.forms.ui :as forms-ui]))
 
 (def form-item-params
   {:wrapper-col {:xs {:span 24}
@@ -16,11 +16,9 @@
                :sm {:span 6}}})
 
 (defn render [ctx]
-  (let [form-id [:keyword-tool :form]
-        form-state @(forms-helpers/form-state ctx form-id)
-        helpers (forms-helpers/make-component-helpers ctx form-id)
+  (let [form-props [:keyword-tool :form]
+        form-state (forms-ui/form-state> ctx form-props)
         submitting? (= (get-in form-state [:state :type]) :submitting)
-
         subpage (:subpage (route> ctx))
         data (sub> ctx :keyword-tool)]
     [:div
@@ -41,26 +39,16 @@
               :banner true
               :closable true
               :style {:margin-bottom 16}}]
-            [ant/form {:on-submit (:submit helpers)}
-
-             [controlled-textarea
-              {:form-state form-state
-               :helpers helpers
-               :placeholder "1줄에 1개씩, 키워드 내에는 빈 칸 또는 특수문자 없이."
-               :attr :keywords
-               :label "키워드 목록"
-               :rows 4
-               :default-value (:query data)}]
-
+            [ant/form {:on-submit #(forms-ui/<submit ctx form-props %)}
+             [controlled-textarea ctx form-props :keywords {:placeholder "1줄에 1개씩, 키워드 내에는 빈 칸 또는 특수문자 없이."
+                                                            :label "키워드 목록"
+                                                            :rows 4
+                                                            :default-value (:query data)}]
              [ant/form-item (assoc form-item-params :label "Excel 업로드")
               [ant/upload-dragger {:disabled true}
                [ant/icon {:type "upload" :style {:font-size 24}}]]]
 
-             [controlled-switch
-              {:form-state form-state
-               :helpers helpers
-               :attr :include-related?
-               :label "연관어 포함"}]
+             [controlled-switch ctx form-props :include-related? {:label "연관어 포함"}]
 
              [ant/form-item (assoc form-item-params
                               :wrapper-col {:xs {:span 24}

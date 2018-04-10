@@ -16,9 +16,7 @@
 (defrecord LoginForm [validator])
 
 (defmethod forms-core/submit-data LoginForm [_ _ _ data]
-  (pipeline! [value app-db]
-    (print "sending form..." data)
-    (api/login data)))
+  (api/login data))
 
 (defmethod forms-core/on-submit-success LoginForm [this app-db form-id user]
   (let [jwt (:token user)]

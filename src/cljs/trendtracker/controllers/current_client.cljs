@@ -2,7 +2,7 @@
   (:require [keechma.toolbox.dataloader.controller :as dataloader-controller]
             [keechma.toolbox.pipeline.controller :as pl-controller]
             [keechma.toolbox.pipeline.core :as pl :refer-macros [pipeline!]]
-            [trendtracker.edb :refer [get-item-by-i]]
+            [trendtracker.edb :refer [get-item-by-id]]
             [antizer.reagent :as ant]))
 
 (def controller

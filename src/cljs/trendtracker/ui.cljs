@@ -31,7 +31,8 @@
    [trendtracker.ui.pages.settings :as settings]
    [trendtracker.ui.root :as root]
    [trendtracker.ui.components.keyword-tool.keywords-list :as keywords-list]
-   [trendtracker.ui.components.cards.smart-todo :as smart-todo]))
+   [trendtracker.ui.components.cards.smart-todo :as smart-todo]
+   [trendtracker.ui.pages.insights.best-ads :as best-ads]))
 
 (def ui
   {
@@ -77,4 +78,5 @@
    :optimize-page optimize/component
    :optimize-new-page optimize-new/component
    :overview-page overview/component
-   :manage-page manage/component})
+   :manage-page manage/component
+   :best-ads best-ads/component})

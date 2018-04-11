@@ -5,7 +5,7 @@
 
 (defn render [ctx]
   (let [current-page (:page (route> ctx))
-        subpage      (:subpage (route> ctx))]
+        subpage (:subpage (route> ctx))]
     (if (= "login" current-page)
       [(ui/component ctx :login-page)]
 
@@ -16,20 +16,23 @@
         [ant/layout
          [ant/layout-content
           (case current-page
-            "settings"     [(ui/component ctx :settings-page)]
-            "dashboard"    [(ui/component ctx :dashboard-page)]
-            "optimize"     (if subpage
-                             [(ui/component ctx :optimize-new-page)]
-                             [(ui/component ctx :optimize-page)])
+            "settings" [(ui/component ctx :settings-page)]
+            "dashboard" [(ui/component ctx :dashboard-page)]
+            "optimize" (if-not subpage
+                         [(ui/component ctx :optimize-page)]
+                         [(ui/component ctx :optimize-new-page)])
             "keyword-tool" [(ui/component ctx :keyword-tool-page)]
-            "overview"     [(ui/component ctx :overview-page)]
-            "manage"       [(ui/component ctx :manage-page)]
+            "overview" [(ui/component ctx :overview-page)]
+            "manage" (if-not subpage
+                       [(ui/component ctx :manage-page)]
+                       (case subpage
+                         "best-ads" [(ui/component ctx :best-ads)]))
             [:div.content "404: page not found"])]
          [(ui/component ctx :footer)]]]])))
 
 (def component
   (ui/constructor
-   {:renderer       render
+   {:renderer render
     :component-deps [:header
                      :sider
                      :footer
@@ -40,4 +43,7 @@
                      :settings-page
                      :keyword-tool-page
                      :overview-page
-                     :manage-page]}))
+
+                     ;;Insights
+                     :manage-page
+                     :best-ads]}))

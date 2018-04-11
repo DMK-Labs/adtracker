@@ -21,11 +21,8 @@
    :api-middleware [wrap-restful-format]
    :db-spec {:classname "org.postgresql.Driver"
              :subprotocol "postgresql"
-             :subname (str "//"
-                           (env :db-host)
-                           ":"
-                           (or (env :db-port) "5432")
-                           "/"
+             :subname (str "//" (env :db-host) ":"
+                           (or (env :db-port) "5432") "/"
                            (env :db-name))
              :user (env :db-user)
              :password (env :db-password)}

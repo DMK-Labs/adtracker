@@ -6,17 +6,17 @@
 
 (hugsql/def-db-fns "sql/daily_stats.sql")
 
-(defn conn []
-  (jdbc/get-connection (:db-spec config)))
-
-(defn manager []
-  (CopyManager. (conn)))
+(defn copy-manager
+  "Instantiates a connection to the DB and returns a Postgres CopyManager."
+  []
+  (CopyManager. (jdbc/get-connection (:db-spec config))))
 
 (defn append-copy-to!
   [table-name buf]
-  (.copyIn (manager)
-           (str "COPY " table-name " FROM stdin WITH NULL AS '' DELIMITER '\t'")
-           buf))
+  (.copyIn
+   (copy-manager)
+   (str "COPY " table-name " FROM stdin WITH NULL AS '' DELIMITER '\t'")
+   buf))
 
 (defn append [table buf]
   (append-copy-to! table buf))

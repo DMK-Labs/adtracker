@@ -21,11 +21,9 @@
        [:br]
        [ant/form {:on-submit #(forms-ui/<submit ctx form-props %)}
         [controlled-input ctx form-props :email {:form-state form-state
-                                                 :helpers helpers
                                                  :label "이메일"
                                                  :placeholder "hong@gildong.co.kr"}]
         [controlled-input ctx form-props :password {:form-state form-state
-                                                    :helpers helpers
                                                     :label "비밀번호"
                                                     :input-type :password}]
         [ant/form-item {:wrapperCol {:xs {:span 24} :sm {:span 18 :offset 6}}}

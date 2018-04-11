@@ -26,17 +26,30 @@
   (fn [text record _]
     (r/as-element
      [:a {:href (ui/url ctx (assoc (route> ctx)
-                              :adgrp (-> record
-                                         (js->clj :keywordize-keys true)
-                                         :adgroup-id)
-                              :seg "keyword"))}
+                                   :adgrp (-> record
+                                              (js->clj :keywordize-keys true)
+                                              :adgroup-id)
+                                   :seg "keyword"))}
       text])))
 
-(def kw-columns
-  (cons {:title "구분" :dataIndex :keyword_id :fixed true}
+(defn kw-title-renderer [customer-id]
+  (fn [text record _]
+    (r/as-element
+     [:a {:href (str "https://manage.searchad.naver.com/customers/"
+                     customer-id "/searchs?q="
+                     (-> record
+                         (js->clj :keywordize-keys true)
+                         :keyword_id)
+                     "&exact=false")
+          :target "_blank"}
+      text])))
+
+(defn kw-columns [customer-id]
+  (cons {:title "구분" :dataIndex :keyword_id :fixed true
+         :render (kw-title-renderer customer-id)}
         (map #(assoc %
-                :className "numbers"
-                :sorter (u/sorter-by (:dataIndex %)))
+                     :className "numbers"
+                     :sorter (u/sorter-by (:dataIndex %)))
              [{:title "노출순위"
                :dataIndex :avg-rank
                :render #(if (nil? %)
@@ -58,12 +71,12 @@
   [ctx customer-id]
   (let [stats (sub> ctx :segment-stats)]
     (if (= "keyword" (:seg (route> ctx)))
-      kw-columns
+      (kw-columns customer-id)
       (cons {:title "구분"
              :dataIndex :name
              :fixed true
              :render (adgroup-title-renderer ctx)}
-            (rest kw-columns)))))
+            (rest (kw-columns customer-id))))))
 
 (defn render [ctx]
   (let [stats (sub> ctx :segment-stats)
@@ -77,18 +90,6 @@
                     :pagination opts/pagination}]
     [ant/card
      {:title "광고그룹 성과 지표"
-      #_(r/as-element
-         [:div
-          [ant/select {:value (or (:seg route) "adgroup")
-                       :onSelect #(ui/redirect
-                                   ctx
-                                   (-> route
-                                       (assoc :seg %)
-                                       (dissoc :adgrp)))
-                       :style {:font-size 16}}
-           ;; [ant/select-option {:value "campaign"} "캠페인 성과 지표"]
-           [ant/select-option {:value "adgroup"} "광고그룹 성과 지표"]
-           [ant/select-option {:value "keyword"} "키워드 성과 지표"]]])
       :extra (r/as-element
               [:a
                {:onClick #(download/download-csv

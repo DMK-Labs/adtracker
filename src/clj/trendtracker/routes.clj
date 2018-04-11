@@ -269,9 +269,22 @@
        :query-params [customer-id :- s/Int]
        (respond/ok (optimize/fetch-marginals customer-id)))
 
-     (sweet/GET "/optimize/ridgeline" []
+     ;; Insights
+     (sweet/GET "/insights/keywords/no-clicks" []
        :query-params [customer-id :- s/Int]
-       (respond/ok (landscape/ridgeline (optimize/fetch-marginals customer-id))))
+       (respond/ok (insights/no-clicks db {:customer customer-id})))
+
+     (sweet/GET "/insights/keywords/biggest-losers" []
+       :query-params [customer-id :- s/Int]
+       (respond/ok (insights/biggest-losers db {:customer customer-id})))
+
+     (sweet/GET "/insights/ads/best" []
+       :query-params [customer-id :- s/Int]
+       (respond/ok (insights/best-powerlink-ads db {:customer customer-id})))
+
+     #_(sweet/GET "/optimize/ridgeline" []
+         :query-params [customer-id :- s/Int]
+         (respond/ok (landscape/ridgeline (optimize/fetch-marginals customer-id))))
 
      #_(sweet/GET "/optimize/detail" []
          :query-params [customer-id :- s/Int

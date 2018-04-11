@@ -22,14 +22,17 @@
        [ant/card {:title "광고그룹별 성과"} [scatter-chart]]]
       [ant/row {:gutter 16}
        [ant/col {:md 12}
+        (todo-card {:title "성공적인 광고 소재 검토"
+                    :color "#13c2c2"
+                    :description "역사적으로 가장 클릭률이 좋았던 광고, 키워드 콤보를 검토해 보세요."
+                    :url-params {:subpage "best-ads"}})
         (todo-card {:title "이윤이 남지 않는 광고"
                     :color "#ff4d4f"
                     :description "발생 매출 - 비용이 음수인 경우. 버는 것 보다 소진되는 것이 많다는
                                   것입니다. 광고 전반적으로 비효율이 있을 가능성이 높습니다."
                     :todos [:ul
                             [:li [:a "의심되는 키워드 연관성 검토하기"]]
-                            [:li [:a "효력 낮은 광고소재 검토하기"]]]
-                    :page ""})
+                            [:li [:a "효력 낮은 광고소재 검토하기"]]]})
         (todo-card {:title "전환 비용 효율의 검토가 필요한 그룹"
                     :color "#1890ff"
                     :description "평균보다 클릭률, 노출이 모두 높으나 Profit이 적은 경우는, 구매 전환에

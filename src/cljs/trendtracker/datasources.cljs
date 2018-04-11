@@ -166,6 +166,15 @@
                 :budget (:budget optimize-settings)}))
    :loader api-loader})
 
+(def best-ads-datasource
+  {:target [:kv :best-ads]
+   :deps [:current-client]
+   :params (fn [_ route {:keys [current-client]}]
+             (when (= (:subpage route) "best-ads")
+               {:url "/insights/ads/best"
+                :customer-id (:customer_id current-client)}))
+   :loader api-loader})
+
 (def pc-mobile-split-datasource
   {:target [:kv :segments :pc-mobile]
    :deps [:date-range :current-client]
@@ -226,4 +235,5 @@
    :with-minimum-exposure-bids with-minimum-exposure-bids-datasource
    :with-min-70-bids with-min-70-bids-datasource
    :segment-stats segment-stats-datasource
-   :pc-mobile-split pc-mobile-split-datasource})
+   :pc-mobile-split pc-mobile-split-datasource
+   :best-ads best-ads-datasource})

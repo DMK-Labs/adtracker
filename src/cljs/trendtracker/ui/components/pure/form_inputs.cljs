@@ -8,12 +8,12 @@
 (defn make-input-with-composition-support
   "This function implements input fields that handle composition based inputs correctly"
   [tag]
-  (fn [props]
+  (fn [_]
     (let [el-ref-atom (atom nil)
           composition-atom? (atom false)]
       (r/create-class
        {:reagent-render (fn [props]
-                          (let [props-ref  (or (:ref props) identity)
+                          (let [props-ref (or (:ref props) identity)
                                 props-on-change (or (:on-change props) identity)
                                 props-value (:value props)
                                 props-without-value (dissoc props :value)]
@@ -85,10 +85,9 @@
                   :default-checked default-checked
                   :on-change #(forms-ui/<set-value ctx form-props attr %)}]]))
 
-(defn controlled-tree-select [{:keys [form-state helpers label attr treeCheckable
-                                      treeDefaultExpandAll treeData placeholder]}]
-  (let [{:keys [set-value]} helpers
-        errors (get-in (forms-helpers/attr-errors form-state attr)
+(defn controlled-tree-select [ctx form-props attr {:keys [label treeCheckable
+                                                          treeDefaultExpandAll treeData placeholder]}]
+  (let [errors (get-in (forms-ui/errors-in> ctx form-props attr)
                        [:$errors$ :failed])]
     [ant/form-item {:label label
                     :labelCol {:xs {:span 24}
@@ -102,9 +101,8 @@
        :treeDefaultExpandAll treeDefaultExpandAll
        :treeData treeData
        :placeholder placeholder
-       :value (forms-helpers/attr-get-in form-state attr)
-       :onChange #(do (print %)
-                      (set-value attr %))
+       :value (forms-ui/value-in> ctx form-props attr)
+       :onChange #(forms-ui/<set-value ctx form-props attr %)
        :style {:max-width 400}}]]))
 
 (defn controlled-radio-group [ctx form-props attr {:keys [label options]}]

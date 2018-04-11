@@ -4,7 +4,7 @@
             [keechma.toolbox.ui :refer [route>]]
             [keechma.ui-component :as ui]))
 
-(defn todo-card [ctx {:keys [title color description todos page]}]
+(defn todo-card [ctx {:keys [title color description todos url-params]}]
   (let [current-route (route> ctx)]
     [ant/card {:title
                (r/as-element
@@ -12,7 +12,7 @@
                :extra (r/as-element [ant/icon {:type "info-circle-o"}])}
      [:p description]
      todos
-     [:a {:href (ui/url ctx (assoc current-route :page page))}
+     [:a {:href (ui/url ctx (merge current-route url-params))}
       [ant/button "확인하기"]]]))
 
 (def component

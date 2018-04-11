@@ -39,3 +39,9 @@ GET http://localhost:10555/api/insights/keywords/biggest-losers?
 Accepts: application/json
 
 ###
+
+GET http://localhost:10555/api/insights/ads/best?
+  customer-id=137307
+Accepts: application/json
+
+###

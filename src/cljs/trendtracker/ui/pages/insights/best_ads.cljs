@@ -20,8 +20,20 @@
          (:subject record-map)]
         [:div (:description record-map)]]))))
 
+(defn adgroup-render [customer-id]
+  (fn [text record _]
+    (let [record-map (js->clj record :keywordize-keys true)]
+      (r/as-element
+       [:a {:href (str "https://manage.searchad.naver.com/customers/"
+                       customer-id "/adgroups/"
+                       (:adgroup-id record-map))
+            :target "_blank"}
+        text]))))
+
+
 (defn columns [customer-id]
-  [{:title "Ad ID" :dataIndex :ad-id :render (ad-render customer-id)}
+  [{:title "Adgroup" :dataIndex :adgroup :render (adgroup-render customer-id)}
+   {:title "Ad ID" :dataIndex :ad-id :render (ad-render customer-id)}
    {:title "Cost" :dataIndex :cost :sorter (u/sorter-by :cost)
     :render #(r/as-element (u/krw %))}
    {:title "Clicks" :dataIndex :clicks :sorter (u/sorter-by :clicks)}

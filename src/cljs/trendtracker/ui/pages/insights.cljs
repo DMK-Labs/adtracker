@@ -1,4 +1,4 @@
-(ns trendtracker.ui.pages.manage
+(ns trendtracker.ui.pages.insights
   (:require [antizer.reagent :as ant]
             [keechma.toolbox.ui :refer [sub>]]
             [keechma.ui-component :as ui]

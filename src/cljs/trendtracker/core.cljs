@@ -16,8 +16,7 @@
        :html-element (.getElementById js/document "app")
        :routes [["" {:page "login"}]
                 ":page"
-                ":page/:subpage"]
-       :router :history}
+                ":page/:subpage"]}
       (dataloader/install datasources edb-schema)
       (forms/install tt-forms/forms tt-forms/forms-automount-fns)))
 

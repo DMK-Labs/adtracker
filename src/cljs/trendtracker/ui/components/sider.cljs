@@ -36,7 +36,7 @@
         [ant/icon {:type "dashboard"}]
         [:span "대쉬보드"]]
 
-       [ant/menu-item {:key "manage"}
+       [ant/menu-item {:key "insights"}
         [ant/icon {:type "bulb"}]
         [:span "광고 개선"]]
 

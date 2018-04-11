@@ -34,9 +34,10 @@
 (defn columns [customer-id]
   [{:title "Adgroup" :dataIndex :adgroup :render (adgroup-render customer-id)}
    {:title "Ad ID" :dataIndex :ad-id :render (ad-render customer-id)}
-   {:title "Cost" :dataIndex :cost :sorter (u/sorter-by :cost)
+   {:title "비용" :dataIndex :cost :sorter (u/sorter-by :cost)
     :render #(r/as-element (u/krw %))}
-   {:title "Clicks" :dataIndex :clicks :sorter (u/sorter-by :clicks)}
+   {:title "노출수" :dataIndex :impressions :sorter (u/sorter-by :impressions)}
+   {:title "클릭수" :dataIndex :clicks :sorter (u/sorter-by :clicks)}
    {:title "CTR" :dataIndex :ctr :sorter (u/sorter-by :ctr)
     :render #(r/as-element (u/pct-fmt %))}])
 
@@ -47,7 +48,8 @@
     [:div
      [common/content-header
       [breadcrumbs]
-      [:h2.page-title "Ad Creative Greatest Hits"]]
+      [:h2.page-title "Ad Creative Greatest Hits"]
+      [:div "현 계정에서 가장 좋은 성과를 보인 광고소재들입니다."]]
      [ant/spin {:spinning (empty? best-ads)}
       [:div.content
        [ant/card
@@ -58,7 +60,7 @@
           :size "small"
           :columns (columns customer-id)
           :rowKey :adgroup-id
-          :pagination (assoc opts/pagination :defaultPageSize 20)}]]]]]))
+          :pagination opts/pagination}]]]]]))
 
 (def component
   (ui/constructor

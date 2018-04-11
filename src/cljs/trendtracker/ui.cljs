@@ -24,7 +24,7 @@
    [trendtracker.ui.pages.dashboard :as dashboard]
    [trendtracker.ui.pages.keyword-tool :as keyword-tool]
    [trendtracker.ui.pages.login :as login]
-   [trendtracker.ui.pages.manage :as manage]
+   [trendtracker.ui.pages.insights :as insights]
    [trendtracker.ui.pages.optimize :as optimize]
    [trendtracker.ui.pages.optimize-new :as optimize-new]
    [trendtracker.ui.pages.overview :as overview]
@@ -78,5 +78,7 @@
    :optimize-page optimize/component
    :optimize-new-page optimize-new/component
    :overview-page overview/component
-   :manage-page manage/component
+
+   ;; Insights
+   :insights-page insights/component
    :best-ads best-ads/component})

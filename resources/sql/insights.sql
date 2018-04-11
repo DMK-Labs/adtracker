@@ -12,7 +12,7 @@ FROM
    GROUP BY keyword_id, keyword) AS recent_two_months
 WHERE clicks = 0
 ORDER BY impressions DESC
-LIMIT 15;
+LIMIT 30;
 
 -- :name biggest-losers :? :*
 SELECT *
@@ -43,6 +43,7 @@ SELECT
   ag.id                                    AS "adgroup-id",
   ag.name                                  AS adgroup,
   cost,
+  impressions,
   clicks,
   clicks :: DOUBLE PRECISION / impressions AS ctr
 FROM

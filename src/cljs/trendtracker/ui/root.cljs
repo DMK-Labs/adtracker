@@ -23,10 +23,10 @@
                          [(ui/component ctx :optimize-new-page)])
             "keyword-tool" [(ui/component ctx :keyword-tool-page)]
             "overview" [(ui/component ctx :overview-page)]
-            "manage" (if-not subpage
-                       [(ui/component ctx :manage-page)]
-                       (case subpage
-                         "best-ads" [(ui/component ctx :best-ads)]))
+            "insights" (if-not subpage
+                         [(ui/component ctx :insights-page)]
+                         (case subpage
+                           "best-ads" [(ui/component ctx :best-ads)]))
             [:div.content "404: page not found"])]
          [(ui/component ctx :footer)]]]])))
 
@@ -45,5 +45,5 @@
                      :overview-page
 
                      ;;Insights
-                     :manage-page
+                     :insights-page
                      :best-ads]}))

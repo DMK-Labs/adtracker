@@ -170,7 +170,7 @@
   {:target [:kv :best-ads]
    :deps [:current-client]
    :params (fn [_ route {:keys [current-client]}]
-             (when (= (:subpage route) "best-ads")
+             (when (= (:page route) "insights")
                {:url "/insights/ads/best"
                 :customer-id (:customer_id current-client)}))
    :loader api-loader})

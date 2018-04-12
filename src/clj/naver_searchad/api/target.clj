@@ -1,0 +1,22 @@
+(ns naver-searchad.api.target)
+
+(def ->region
+  {"-1" :all
+   "00" :foreign
+   "01" :gangwon
+   "02" :gyeonggi
+   "03" :gyeongnam
+   "04" :gyeongbuk
+   "05" :gwangju
+   "06" :daegu
+   "07" :daejeon
+   "08" :busan
+   "09" :seoul
+   "10" :ulsan
+   "11" :incheon
+   "12" :jeonnam
+   "13" :jeonbuk
+   "14" :jeju
+   "15" :chungnam
+   "16" :chungbuk
+   "17" :sejong})

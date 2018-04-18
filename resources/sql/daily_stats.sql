@@ -140,3 +140,10 @@ FROM :i:table
 WHERE customer_id = :customer-id
 ORDER BY during DESC
 LIMIT 1;
+
+-- :name first-recorded-performance :? :1
+SELECT during
+FROM naver.daily_keyword_stats
+WHERE customer_id = :customer-id
+ORDER BY during ASC
+LIMIT 1;

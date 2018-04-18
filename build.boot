@@ -39,7 +39,6 @@
                  [ring-middleware-format "0.7.2"]
                  [clojure.java-time "0.3.1"]
                  [naver-searchad "0.1.0-SNAPSHOT"]
-                 [com.taoensso/nippy "2.14.0"]
                  [buddy "2.0.0"]
 
                  ;; data science

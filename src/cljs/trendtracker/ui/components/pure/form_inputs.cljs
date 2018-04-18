@@ -43,11 +43,7 @@
   (let [errors (get-in (forms-ui/errors-in> ctx form-props attr) [:$errors$ :failed])]
     [ant/form-item {:label label
                     :validateStatus (when (not-empty errors) "error")
-                    :help (validators/get-validator-message (first errors))
-                    :labelCol {:xs {:span 24}
-                               :sm {:span 6}}
-                    :wrapperCol {:xs {:span 24}
-                                 :sm {:span 18}}}
+                    :help (validators/get-validator-message (first errors))}
      [input-with-composition-support
       {:placeholder placeholder
        :on-change #(forms-ui/<on-change ctx form-props attr %)
@@ -59,11 +55,7 @@
   (let [errors (get-in (forms-ui/errors-in> ctx form-props attr) [:$errors$ :failed])]
     [ant/form-item {:label label
                     :validateStatus (when (not-empty errors) "error")
-                    :help (validators/get-validator-message (first errors))
-                    :labelCol {:xs {:span 24}
-                               :sm {:span 6}}
-                    :wrapperCol {:xs {:span 24}
-                                 :sm {:span 18}}}
+                    :help (validators/get-validator-message (first errors))}
      [textarea-with-composition-support
       {:placeholder placeholder
        :rows (or rows 10)
@@ -76,10 +68,6 @@
 (defn controlled-switch [ctx form-props attr {:keys [label default-checked]}]
   (let [errors (get-in (forms-ui/errors-in> ctx form-props attr) [:$errors$ :failed])]
     [ant/form-item {:label label
-                    :label-col {:xs {:span 24}
-                                :sm {:span 6}}
-                    :wrapper-col {:xs {:span 24}
-                                  :sm {:span 18}}
                     :help (validators/get-validator-message (first errors))}
      [ant/switch {:checked (forms-ui/value-in> ctx form-props attr)
                   :default-checked default-checked
@@ -90,10 +78,6 @@
   (let [errors (get-in (forms-ui/errors-in> ctx form-props attr)
                        [:$errors$ :failed])]
     [ant/form-item {:label label
-                    :labelCol {:xs {:span 24}
-                               :sm {:span 6}}
-                    :wrapperCol {:xs {:span 24}
-                                 :sm {:span 18}}
                     :validateStatus (when (not-empty errors) "error")
                     :help (validators/get-validator-message (first errors))}
      [ant/tree-select
@@ -108,10 +92,6 @@
 (defn controlled-radio-group [ctx form-props attr {:keys [label options]}]
   (let [errors (get-in (forms-ui/errors-in> ctx form-props attr) [:$errors$ :failed])]
     [ant/form-item {:label label
-                    :labelCol {:xs {:span 24}
-                               :sm {:span 6}}
-                    :wrapperCol {:xs {:span 24}
-                                 :sm {:span 18}}
                     :help (validators/get-validator-message (first errors))}
      [ant/radio-group
       {:options options

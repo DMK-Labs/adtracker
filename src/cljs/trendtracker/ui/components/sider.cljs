@@ -8,9 +8,10 @@
   (let [kws (sub> ctx :keyword-tool)
         {:keys [page client]} (route> ctx)]
     [ant/layout-sider {:collapsible true
-                       :breakpoint "xl"
+                       :breakpoint "lg"
                        :collapsed-width 64
-                       :trigger nil}
+                       ;; :trigger nil
+                       :width 180}
      [ant/affix {:offset 56}
       [ant/menu {:theme :dark
                  :style {:border-right 0}
@@ -23,14 +24,7 @@
                                        :client client}
                                       (when (and (= "keyword-tool" page)
                                                  (:result kws))
-                                        {:subpage "result"}))))
-                 :defaultOpenKeys [:ad]}
-
-       #_[ant/menu-sub-menu {:key :ad
-                             :title (r/as-element
-                                     [:span
-                                      [ant/icon {:type "line-chart"}]
-                                      [:span "Ad Tracker"]])}]
+                                        {:subpage "result"}))))}
 
        [ant/menu-item {:key "dashboard"}
         [ant/icon {:type "dashboard"}]
@@ -38,15 +32,19 @@
 
        [ant/menu-item {:key "insights"}
         [ant/icon {:type "bulb"}]
-        [:span "광고 개선"]]
+        [:span "추천 사항"]]
 
-       [ant/menu-item {:key "optimize"}
-        [ant/icon {:type "rocket"}]
-        [:span "최적화 전략"]]
+       #_[ant/menu-item {:key "optimize"}
+          [ant/icon {:type "rocket"}]
+          [:span "최적화 전략"]]
 
-       [ant/menu-item {:key "keyword-tool"}
+       [ant/menu-item {:key "keywords"}
         [ant/icon {:type "profile"}]
-        [:span "키워드 관리"]]
+        [:span "키워드"]]
+
+       [ant/menu-item {:key "creatives"}
+        [ant/icon {:type "appstore-o"}]
+        [:span "광고 소재"]]
 
        (when (= "settings" page)
          [ant/menu-item {:key "settings"}

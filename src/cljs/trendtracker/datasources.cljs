@@ -131,7 +131,8 @@
    :deps [:current-client :date-range]
    :params (fn [_ route {:keys [current-client date-range]}]
              (let [segment (:seg route)]
-               (when (and current-client date-range)
+               (when (and current-client date-range
+                          (#{"dashboard" "insights"} (:page route)))
                  (merge (case segment
                           "keyword" (if-let [id (:adgrp route)]
                                       {:url "/stats/aggregate/by-adgroup"
@@ -166,23 +167,34 @@
                 :budget (:budget optimize-settings)}))
    :loader api-loader})
 
-(def best-ads-datasource
-  {:target [:kv :best-ads]
-   :deps [:current-client]
-   :params (fn [_ route {:keys [current-client]}]
-             (when (= (:page route) "insights")
-               {:url "/insights/ads/best"
-                :customer-id (:customer_id current-client)}))
+(def creatives-datasource
+  {:target [:kv :creatives]
+   :deps [:current-client :date-range]
+   :params (fn [_ {page :page} {:keys [current-client date-range]}]
+             (when (and current-client date-range (= "creatives" page))
+               (merge {:url "/stats/ad-creatives"
+                       :customer-id (:customer_id current-client)}
+                      (u/parse-date-range (:curr date-range)))))
+   :loader api-loader})
+
+(def keywords-datasource
+  {:target [:kv :keywords]
+   :deps [:current-client :date-range]
+   :params (fn [_ {page :page} {:keys [current-client date-range]}]
+             (when (and current-client date-range (= "keywords" page))
+               (merge {:url "/stats/keywords"
+                       :customer-id (:customer_id current-client)}
+                      (u/parse-date-range (:curr date-range)))))
    :loader api-loader})
 
 (def pc-mobile-split-datasource
   {:target [:kv :segments :pc-mobile]
    :deps [:date-range :current-client]
-   :params (fn [_ {:keys [page]} {:keys [date-range current-client]}]
+   :params (fn [_ {page :page} {:keys [date-range current-client]}]
              (when (and (= "dashboard" page) (seq date-range))
                (let [r (assoc (u/parse-date-range (:curr date-range))
-                              :url "/segments/pc-mobile"
-                              :customer-id (:customer_id current-client))]
+                         :url "/segments/pc-mobile"
+                         :customer-id (:customer_id current-client))]
                  r)))
    :loader api-loader})
 
@@ -191,8 +203,8 @@
   changes."
   {:target [:kv :daily-stats]
    :deps [:jwt :date-range :cascader :current-client]
-   :params (fn [_ {:keys [page]} deps]
-             (when page                                          ;; (= "dashboard" page)
+   :params (fn [_ {page :page} deps]
+             (when (= "dashboard" page)
                (select-keys deps [:date-range :cascader :current-client :jwt])))
    :loader (map-loader
             (fn [req]
@@ -202,15 +214,24 @@
                     customer-id (get-in req [:params :current-client :customer_id])]
                 (when (and (seq range) (seq casc) jwt)
                   (match casc
-                    ["total"] (api/total-perf jwt customer-id range)
-                    [type] (api/campaign-type-perf jwt customer-id type range)
-                    [_ cmp-id] (api/campaign-perf jwt customer-id cmp-id range)
-                    [_ _ adgrp-id] (api/adgroup-perf jwt customer-id adgrp-id range))))))})
+                         ["total"] (api/total-perf jwt customer-id range)
+                         [type] (api/campaign-type-perf jwt customer-id type range)
+                         [_ cmp-id] (api/campaign-perf jwt customer-id cmp-id range)
+                         [_ _ adgrp-id] (api/adgroup-perf jwt customer-id adgrp-id range))))))})
 
 (def date-range-datasource
   {:target [:kv :date-range]
    :params (fn [prev _ _] (:data prev))
    :loader pass-through-params})
+
+(def first-recorded-performance-datasource
+  {:target [:kv :first-recorded-performance]
+   :deps [:current-client]
+   :params (fn [_ _ {:keys [current-client]}]
+             (when current-client
+               {:url "/performance/first"
+                :customer-id (:customer_id current-client)}))
+   :loader api-loader})
 
 (def cascader-datasource
   {:target [:kv :cascader]
@@ -236,4 +257,6 @@
    :with-min-70-bids with-min-70-bids-datasource
    :segment-stats segment-stats-datasource
    :pc-mobile-split pc-mobile-split-datasource
-   :best-ads best-ads-datasource})
+   :creatives creatives-datasource
+   :keywords keywords-datasource
+   :first-recorded-performance first-recorded-performance-datasource})

@@ -91,10 +91,12 @@
 
 (defn render [ctx]
   (let [stats (sub> ctx :pc-mobile-split)
+        stats-meta (sub> ctx :pc-mobile-split-meta)
         [a b] (map @selected stats)
         r1    (/ a (+ a b))
         r2    (/ b (+ a b))]
-    [ant/card {:title (str "PC/Mobile 비교")}
+    [ant/card {:title (str "PC/Mobile 비교")
+               :loading (= :pending (:status stats-meta))}
      [ant/row {:type "flex"}
       [ant/col {:span 17}
        [ant/table
@@ -132,4 +134,4 @@
 (def component
   (ui/constructor
    {:renderer          render
-    :subscription-deps [:pc-mobile-split]}))
+    :subscription-deps [:pc-mobile-split :pc-mobile-split-meta]}))

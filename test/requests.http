@@ -45,3 +45,22 @@ GET http://localhost:10555/api/insights/ads/best?
 Accepts: application/json
 
 ###
+
+POST https://api.naver.com/ncc/keywords/nkw-a001-01-000001165435118?
+  fields=bidAmt
+Content-Type: application/x-www-form-urlencoded
+
+bidAmt=80
+
+###
+
+GET http://localhost:10555/api/performance/first?customer-id=137307
+Accepts: application/json
+
+###
+
+GET http://localhost:10555/api/stats/keywords
+  ?customer-id=137307&low=2018-04-11&high=2018-04-17
+Accepts: application/json
+
+###

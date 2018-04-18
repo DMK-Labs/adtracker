@@ -1,10 +1,12 @@
 (ns trendtracker.models.aggregate-stats
   (:require [hugsql.core :as hugsql]
-            [huri.core :as h]
             [trendtracker.config :refer [config creds]]))
 
 (hugsql/def-db-fns "sql/aggregate_stats.sql")
 (def db-fns (hugsql/map-of-db-fns "sql/aggregate_stats.sql"))
+(declare funnel-by-kwid
+         funnel-by-keyword
+         recent-keyword-performance)
 
 (defn kwid->funnel [customer-id]
   (transduce

@@ -11,11 +11,11 @@
  (pc-mobile
   (:db-spec config)
   {:customer-id 137307
-   :low         "2018-02-01"
-   :high        "2018-02-28"})
+   :low "2018-02-01"
+   :high "2018-02-28"})
 
  (keywords
   (:db-spec config)
-  {:customer-id 137307
-   :low         "2018-02-01"
-   :high        "2018-02-28"}))
+  {:customer-id 719425
+   :low "2018-02-01"
+   :high "2018-04-28"}))

@@ -18,7 +18,9 @@
         conversions (u/sum :conversions current)
         p-conversions (u/sum :conversions previous)
         col-opts {:xs 8 :md 12 :style {:margin-bottom 12}}]
-    [ant/card {:title "비용 & 효율"}
+    [ant/card {:title "비용 & 효율"
+               :loading (= :pending (:status (sub> ctx :daily-stats-meta)))
+               :style {:height 355}}
      (map
       #(into [ant/row {:gutter 16 :key (first %)}] %)
       (partition-all
@@ -66,4 +68,4 @@
 (def component
   (ui/constructor
    {:renderer render
-    :subscription-deps [:daily-stats]}))
+    :subscription-deps [:daily-stats :daily-stats-meta]}))

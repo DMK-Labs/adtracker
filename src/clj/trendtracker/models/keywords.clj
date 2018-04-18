@@ -13,9 +13,9 @@
    consideration for optimization."
   [customer-id]
   (h/where {:nccCampaignId (set (keys campaigns/target-device))}
-            ;; :status "ELIGIBLE"
+           ;; :status "ELIGIBLE"
 
-           (adkeyword/all (creds customer-id))))
+           (adkeyword/get-all (creds customer-id))))
 
 (defn eligible
   "Improved version of `eligible` which, rather than find all adkeywords and
@@ -25,11 +25,5 @@
   (let [c (creds customer-id)
         grps (h/where {:nccCampaignId (set (keys campaigns/target-device))}
                       (adgroup/all c))]
-    (transduce (comp
-                (map #(adkeyword/get-by-adgroup-id c %))
-                (map :body))
-               concat
-               (h/col :nccAdgroupId grps))))
-
-
-
+    (map #(adkeyword/get-by-adgroup c %)
+         (h/col :nccAdgroupIdgrps))))

@@ -7,7 +7,8 @@
             [trendtracker.config :refer [config creds]]
             [trendtracker.utils.dates :as utils.dates]
             [java-time :as time]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]
+            [trendtracker.models.master-reports :as master-reports]))
 
 
 ;;; -- Downloading Latest Stats -----
@@ -19,9 +20,9 @@
 
    Cleans up after itself by deleting requested job."
   [{:keys [customer-id report-type yyyymmdd]}]
-  (let [c     (creds customer-id)
-        id    (-> (reports.stat/create! c {:reportTp report-type :statDt yyyymmdd})
-                  :body :reportJobId)
+  (let [c (creds customer-id)
+        id (-> (reports.stat/create! c {:reportTp report-type :statDt yyyymmdd})
+               :body :reportJobId)
         fetch (fn []
                 (timbre/info "Checking job status..." id (Thread/sleep 500))
                 (reports.stat/fetch-job c id))]
@@ -30,7 +31,8 @@
         (timbre/info "Job status:" (:status job))
         (case (:status job)
           ("REGIST" "RUNNING" "WAITING") (recur (fetch))
-          ("BUILT" "NONE") (reports.common/download c job)
+          "BUILT" (reports.common/download c job)
+          "NONE" nil
           (throw
            (Exception.
             (str "Requested job returned unexpected status of: " (:status job))))))
@@ -44,8 +46,8 @@
   "For a given `customer-id` and `table`, check the persistent db for entry,
    and returns a list of "
   [{:keys [customer-id table]}]
-  (let [last (or (:during (ad-results/last-recorded {:customer-id customer-id
-                                                     :table       table}))
+  (let [last (or (:during
+                  (ad-results/last-recorded {:customer-id customer-id :table table}))
                  (utils.dates/ago (time/days 1)))]
     (->> last
          utils.dates/days-since
@@ -54,43 +56,39 @@
 (defn pull-stats
   "Downloads stats for recent days missing entries."
   [{:keys [customer-id report-type table]}]
-  (map #(download-stats {:customer-id customer-id
-                         :report-type report-type
-                         :yyyymmdd    %})
-       (days-since-last {:customer-id customer-id
-                         :table       table})))
+  (keep #(download-stats {:customer-id customer-id
+                          :report-type report-type
+                          :yyyymmdd %})
+        (days-since-last {:customer-id customer-id
+                          :table table})))
 
 (defn pull-and-append
   "Updates stats to latest."
-  [kind customer-id]
+  [customer-id kind]
   (let [[report-type table] (case kind
                               :ad ["AD" "naver.effectiveness"]
                               :ad-conversion ["AD_CONVERSION" "naver.conversion"])
         pulled (pull-stats {:customer-id customer-id
                             :report-type report-type
-                            :table       table})]
+                            :table table})]
     (when (not-empty pulled)
       (map #(ad-results/append table %) pulled))))
 
-(defn sync-stats [customer-id]
-  (do
-    (pull-and-append :ad customer-id)
-    (pull-and-append :ad-conversion customer-id)))
-
 (comment
  (byte-streams/to-string
-  (download-stats {:customer-id 137307
+  (download-stats {:customer-id 719425
                    :report-type "AD"
-                   :yyyymmdd    "20180328"}))
- (pull-stats {:customer-id 777309
+                   :yyyymmdd "20180403"}))
+ (days-since-last {:customer-id 719425 :table "naver.effectiveness"})
+ (pull-stats {:customer-id 719425
               :report-type "AD"
-              :table       "naver.effectiveness"})
- (pull-and-append :ad-conversion 137307)
- (pull-and-append :ad 137307)
- (pull-and-append :ad-conversion 719425)
- (pull-and-append :ad 719425)
- (pull-and-append :ad-conversion 777309)
- (pull-and-append :ad 777309))
+              :table "naver.effectiveness"})
+ (pull-and-append 137307 :ad-conversion)
+ (pull-and-append 137307 :ad)
+ (pull-and-append 719425 :ad-conversion)
+ (pull-and-append 719425 :ad)
+ (pull-and-append 777309 :ad-conversion)
+ (pull-and-append 777309 :ad))
 
 
 
@@ -104,8 +102,8 @@
 
    Cleans up after itself by deleting requested job."
   [{:keys [customer-id report-type yyyymmdd]}]
-  (let [c     (creds customer-id)
-        id    (:id (reports.master/create! c {:item report-type :fromTime yyyymmdd}))
+  (let [c (creds customer-id)
+        id (:id (reports.master/create! c {:item report-type :fromTime yyyymmdd}))
         fetch (fn []
                 (timbre/info "Checking job status..." id)
                 (Thread/sleep 250)
@@ -115,31 +113,43 @@
         (timbre/info "Job status:" (:status job))
         (case (:status job)
           ("REGIST" "RUNNING" "WAITING") (recur (fetch))
-          "BUILT" (reports.common/as-csv c job)
-          "NONE" nil
+          ("BUILT" "NONE") (reports.common/as-edn c job)
           (throw
            (Exception.
             (str "Requested job returned unexpected status of: " (:status job))))))
       (finally
         (timbre/info "Cleaning up" (:status (reports.master/delete! c id)) id)))))
 
-(defn masters [{:keys [customer-id]}]
-  (into
-   {}
-   (map #(vector % (download-master {:customer-id customer-id
-                                     :report-type %}))
-        ["Campaign"
-         "BusinessChannel"
-         "ContentsAd"
-         "Qi"
-         "CampaignBudget"
-         "Adgroup"
-         "AdExtension"
-         "Keyword"
-         "Ad"
-         "ShoppingProduct"
-         "AdgroupBudget"])))
+(defn masters [customer-id reports]
+  (->> (if (= :all reports)
+         ["Campaign"
+          "BusinessChannel"
+          "ContentsAd"
+          "Qi"
+          "CampaignBudget"
+          "Adgroup"
+          "AdExtension"
+          "Keyword"
+          "Ad"
+          "ShoppingProduct"
+          "AdgroupBudget"]
+         reports)
+       (map #(vector % (download-master {:customer-id customer-id :report-type %})))
+       (into {})))
+
+(def master-upserters
+  {"Campaign" master-reports/upsert-campaigns
+   "BusinessChannel" master-reports/upsert-business-channels
+   "Adgroup" master-reports/upsert-adgroups
+   "Keyword" master-reports/upsert-keywords
+   "Ad" master-reports/upsert-ads})
+
+(defn sync-client-masters [client-id reports]
+  (doseq [[report-type rel] (masters client-id reports)]
+    (timbre/info "Upserting:" report-type)
+    ((master-upserters report-type) rel)))
 
 (comment
- (download-master {:customer-id 137307 :report-type "Campaign"})
- (masters {:customer-id 137307}))
+ (masters 137307 :all)
+ (sync-client-masters 719425 ["Campaign" "BusinessChannel" "Adgroup"])
+ (sync-client-masters 719425 ["Keyword" "Ad"]))

@@ -12,3 +12,4 @@
 ;;  :foo/bar
 ;;  (specql/columns :foo/bar)
 ;;  {})
+

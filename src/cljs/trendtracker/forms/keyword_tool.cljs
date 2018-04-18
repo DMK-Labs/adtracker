@@ -30,8 +30,9 @@
 (defmethod forms-core/on-submit-success KeywordToolForm [this app-db form-id res]
   (pipeline! [value app-db]
     (pl/commit! (assoc-in app-db [:kv :keyword-tool :result] res))
-    (pl/redirect! {:page "keyword-tool"
-                   :subpage "result"
+    (pl/redirect! {:page "keywords"
+                   :subpage "add-new"
+                   :result true
                    :client (get-in app-db [:route :data :client])})))
 
 (defn constructor []

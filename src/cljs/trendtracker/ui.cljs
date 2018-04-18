@@ -22,7 +22,7 @@
    [trendtracker.ui.components.summary :as summary]
    [trendtracker.ui.components.tables.segment-stats :as segment-stats]
    [trendtracker.ui.pages.dashboard :as dashboard]
-   [trendtracker.ui.pages.keyword-tool :as keyword-tool]
+   [trendtracker.ui.components.keyword-tool.keyword-tool :as keyword-tool]
    [trendtracker.ui.pages.login :as login]
    [trendtracker.ui.pages.insights :as insights]
    [trendtracker.ui.pages.optimize :as optimize]
@@ -32,7 +32,8 @@
    [trendtracker.ui.root :as root]
    [trendtracker.ui.components.keyword-tool.keywords-list :as keywords-list]
    [trendtracker.ui.components.cards.smart-todo :as smart-todo]
-   [trendtracker.ui.pages.insights.best-ads :as best-ads]))
+   [trendtracker.ui.pages.creatives :as creatives]
+   [trendtracker.ui.pages.keywords :as keywords]))
 
 (def ui
   {
@@ -60,6 +61,7 @@
    :summary summary/component
    :device-pie device-pie/component
 
+   :keyword-tool keyword-tool/component
    :keywords-list keywords-list/component
 
    :todo-card smart-todo/component
@@ -74,11 +76,12 @@
    :login-page login/component
    :settings-page settings/component
    :dashboard-page dashboard/component
-   :keyword-tool-page keyword-tool/component
    :optimize-page optimize/component
    :optimize-new-page optimize-new/component
    :overview-page overview/component
+   :creatives creatives/component
+   :keywords keywords/component
 
    ;; Insights
-   :insights-page insights/component
-   :best-ads best-ads/component})
+   :insights-page insights/component})
+

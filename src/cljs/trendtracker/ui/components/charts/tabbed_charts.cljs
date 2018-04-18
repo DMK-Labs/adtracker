@@ -40,6 +40,7 @@
 
 (defn tabbed-charts [ctx]
   (let [stats (sub> ctx :daily-stats)
+        stats-meta (sub> ctx :daily-stats-meta)
         data (:curr stats)
         prev-data (:prev stats)
 
@@ -60,7 +61,7 @@
         joined (map merge
                     data
                     (map #(u/prefix-keys % "prev-") prev-data))]
-    [ant/spin {:spinning (empty? stats)}
+    [ant/spin {:spinning (= :pending (:status stats-meta))}
      [ant/card
       (into [ant/tabs
              [ant/tabs-tab-pane
@@ -89,4 +90,4 @@
 (def component
   (ui/constructor
    {:renderer tabbed-charts
-    :subscription-deps [:daily-stats]}))
+    :subscription-deps [:daily-stats :daily-stats-meta]}))

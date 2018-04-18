@@ -16,7 +16,7 @@
    ;;             (when (= "register" page)
    ;;               :form))
    :keyword-tool (fn [{:keys [page]}]
-                   (when (= "keyword-tool" page)
+                   (when (= "keywords" page)
                      :form))
    :optimize-objective (fn [{:keys [page subpage step]}]
                          (when (and (= "optimize" page)

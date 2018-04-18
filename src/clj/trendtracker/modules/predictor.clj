@@ -16,7 +16,7 @@
   data could exist for equivalent keywords in the past."
   [df]
   (let [kwid->funnel (aggregate/kwid->funnel 137307)
-        kw->funnel   (aggregate/kw->funnel 137307)]
+        kw->funnel (aggregate/kw->funnel 137307)]
     (transduce
      (map #(let [{imp :impressions bid :bid} %
                  {ctr :ctr cvr :cvr :or {ctr 0.001

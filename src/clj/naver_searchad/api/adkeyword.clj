@@ -35,4 +35,3 @@
                            :bidAmt bid
                            :useGroupBidAmt false}
                     :query-params {:fields "bidAmt"}}))
-

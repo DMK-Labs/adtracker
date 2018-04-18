@@ -26,10 +26,10 @@
   (fn [text record _]
     (r/as-element
      [:a {:href (ui/url ctx (assoc (route> ctx)
-                                   :adgrp (-> record
-                                              (js->clj :keywordize-keys true)
-                                              :adgroup-id)
-                                   :seg "keyword"))}
+                              :adgrp (-> record
+                                         (js->clj :keywordize-keys true)
+                                         :adgroup-id)
+                              :seg "keyword"))}
       text])))
 
 (defn kw-title-renderer [customer-id]
@@ -48,8 +48,8 @@
   (cons {:title "구분" :dataIndex :keyword_id :fixed true
          :render (kw-title-renderer customer-id)}
         (map #(assoc %
-                     :className "numbers"
-                     :sorter (u/sorter-by (:dataIndex %)))
+                :className "numbers"
+                :sorter (u/sorter-by (:dataIndex %)))
              [{:title "노출순위"
                :dataIndex :avg-rank
                :render #(if (nil? %)
@@ -80,14 +80,16 @@
 
 (defn render [ctx]
   (let [stats (sub> ctx :segment-stats)
+        stats-meta (sub> ctx :segment-stats-meta)
         route (route> ctx)
         customer-id (:customer_id (sub> ctx :current-client))
         columns (columns ctx customer-id)
         table-opts {:columns columns
                     :dataSource stats
-                    :loading (nil? stats)
-                    :size :middle
-                    :pagination opts/pagination}]
+                    :loading (= :pending (:status stats-meta))
+                    :size :small
+                    :pagination opts/pagination
+                    :scroll {:x "1200px"}}]
     [ant/card
      {:title "광고그룹 성과 지표"
       :extra (r/as-element
@@ -101,19 +103,15 @@
                [ant/icon {:type "download"}]])}
      [ant/table
       (if (= "keyword" (:seg route))
-        (merge
-         table-opts
-         {:rowKey :keyword_id
-          :scroll {:x "1200px"}
-          :size :middle})
-        (merge
-         table-opts
-         {:scroll {:x "1200px"}
-          :rowKey :id}))]]))
+        (assoc table-opts
+          :rowKey :keyword_id)
+        (assoc table-opts
+          :rowKey :adgroup-id))]]))
+
 
 (def component
   (ui/constructor
    {:renderer render
     :subject :segment-stats
-    :subscription-deps [:segment-stats
+    :subscription-deps [:segment-stats :segment-stats-meta
                         :current-client]}))

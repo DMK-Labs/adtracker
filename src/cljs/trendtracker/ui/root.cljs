@@ -18,15 +18,13 @@
           (case current-page
             "settings" [(ui/component ctx :settings-page)]
             "dashboard" [(ui/component ctx :dashboard-page)]
-            "optimize" (if-not subpage
-                         [(ui/component ctx :optimize-page)]
-                         [(ui/component ctx :optimize-new-page)])
-            "keyword-tool" [(ui/component ctx :keyword-tool-page)]
             "overview" [(ui/component ctx :overview-page)]
-            "insights" (if-not subpage
-                         [(ui/component ctx :insights-page)]
-                         (case subpage
-                           "best-ads" [(ui/component ctx :best-ads)]))
+            "insights" [(ui/component ctx :insights-page)]
+            "creatives" [(ui/component ctx :creatives)]
+            "keywords" [(ui/component ctx :keywords)]
+            ;; "optimize" (if-not subpage
+            ;;              [(ui/component ctx :optimize-page)]
+            ;;              [(ui/component ctx :optimize-new-page)])
             [:div.content "404: page not found"])]
          [(ui/component ctx :footer)]]]])))
 
@@ -41,9 +39,9 @@
                      :optimize-page
                      :optimize-new-page
                      :settings-page
-                     :keyword-tool-page
                      :overview-page
 
                      ;;Insights
                      :insights-page
-                     :best-ads]}))
+                     :creatives
+                     :keywords]}))

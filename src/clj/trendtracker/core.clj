@@ -13,13 +13,12 @@
 
 (comment
  (def add-capharm (future (landscape/add-portfolio-estimates ca-df 137307)))
- (map count [(landscape/added ca-df :mobile)
+ (map count [(landscape/aded ca-df :mobile)
              (landscape/added ca-df :pc)])
 
  (def capharm-estimates (estimates/by-customer 137307))
  (def re-estimated (predictor/derive-estimated-conversions
-                    (h/where {:bid [< 1500]}
-                             @ca-df)))
+                    (h/where {:bid [< 1500]} capharm-estimates)))
  (def ca-marginals (mckp/marginal-landscape
                     :conversions
                     re-estimated))

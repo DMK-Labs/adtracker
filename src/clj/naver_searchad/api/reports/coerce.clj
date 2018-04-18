@@ -139,7 +139,7 @@
    :during #(date-utils/parse-yyyymmdd % true)})
 
 (def date-cols
-#{:period_starts_at :period_ends_at :del_at :reg_at :upd_at :contact_ends_at :contract_revoked_at})
+ #{:period_starts_at :period_ends_at :del_at :reg_at :upd_at :contact_ends_at :contract_revoked_at})
 
 (defn empty-strings-are-nil
   "For use when coercing return JSON of API calls. An empty string \"\" or filler

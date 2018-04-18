@@ -10,41 +10,39 @@
 (def ^:private height 64)
 
 (defn pure-draw [{:keys [title info sum-str delta data k color down-is-good?]}]
-  [ant/card
-   [:div
-    [:span
-     (common/title-w-info title info)
-     [ant/row {:type "flex" :align "bottom" :gutter 8}
-      [ant/col [:h2 {:style {:margin-bottom 0}} sum-str]]
-      [ant/col (common/delta-widget delta down-is-good?)]]]
-    [recharts/responsive-container {:height height}
-     [recharts/composed-chart {:data data}
-      [recharts/x-axis {:mirror true :tick false :dataKey :during :padding {:left 0 :right 0}}]
-      [recharts/tooltip {:formatter (if (= :roas k)
-                                      (fn [x] (u/pct-fmt x))
-                                      (comp u/krw int))}]
-      [(if (> (count data) 10) recharts/area recharts/bar)
-       {:type :monotone
-        :dataKey k
-        :dot nil
-        :fillOpacity 0.11
-        :stroke color
-        :name title
-        :fill color}]]]]])
+  [:div
+   [:span
+    (common/title-w-info title info)
+    [ant/row {:type "flex" :align "bottom" :gutter 8}
+     [ant/col [:h2 {:style {:margin-bottom 0}} sum-str]]
+     [ant/col (common/delta-widget delta down-is-good?)]]]
+   [recharts/responsive-container {:height height}
+    [recharts/composed-chart {:data data}
+     [recharts/x-axis {:mirror true :tick false :dataKey :during :padding {:left 0 :right 0}}]
+     [recharts/tooltip {:formatter (if (= :roas k)
+                                     (fn [x] (u/pct-fmt x))
+                                     (comp u/krw int))}]
+     [(if (> (count data) 10) recharts/area recharts/bar)
+      {:type :monotone
+       :dataKey k
+       :dot nil
+       :fillOpacity 0.11
+       :stroke color
+       :name title
+       :fill color}]]]])
 
 (defn budget-draw [{:keys [title info sum-str delta down-is-good?
                            sum budget]}]
-  [ant/card
-   [:div
-    [:span
-     (common/title-w-info title info)
-     [ant/row {:type "flex" :align "bottom" :gutter 8}
-      [ant/col [:h2 {:style {:margin-bottom 0}} sum-str]]
-      [ant/col (common/delta-widget delta down-is-good?)]]]
-    [:div {:style {:height height}}
-     [:div {:style {:padding-top 12}}
-      "예산: " (u/krw budget)]
-     [ant/progress {:percent (min 100 (int (* 100 (/ sum budget))))}]]]])
+  [:div
+   [:span
+    (common/title-w-info title info)
+    [ant/row {:type "flex" :align "bottom" :gutter 8}
+     [ant/col [:h2 {:style {:margin-bottom 0}} sum-str]]
+     [ant/col (common/delta-widget delta down-is-good?)]]]
+   [:div {:style {:height height}}
+    [:div {:style {:padding-top 12}}
+     "예산: " (u/krw budget)]
+    [ant/progress {:percent (min 100 (int (* 100 (/ sum budget))))}]]])
 
 (defmulti snapshot (fn [kpi _] kpi))
 
@@ -107,8 +105,8 @@
                 :sum-str (u/krw sum)
                 :delta delta
                 :data (map #(assoc % :profit
-                                   (- (:revenue %)
-                                      (:cost %)))
+                                     (- (:revenue %)
+                                        (:cost %)))
                            current)
                 :k kpi
                 :color color
@@ -199,13 +197,15 @@
 
 (defn render [ctx data-key]
   (let [stats (sub> ctx :daily-stats)
+        loading? (= :pending (:status (sub> ctx :daily-stats-meta)))
         budget (:budget (sub> ctx :optimize-settings))]
-    [ant/spin {:spinning (empty? stats)}
-     ;; TODO: turn this into a widget selectable by KPI (hence the ratom)
-     [snapshot data-key stats budget]]))
+    ;; TODO: turn this into a widget selectable by KPI (hence the ratom)
+    [ant/spin {:spinning loading?}
+     [ant/card
+      [snapshot data-key stats budget]]]))
 
 (def component
   (ui/constructor
    {:renderer render
-    :subscription-deps [:daily-stats
+    :subscription-deps [:daily-stats :daily-stats-meta
                         :optimize-settings]}))

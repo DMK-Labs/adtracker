@@ -21,11 +21,6 @@
 (defn append [table buf]
   (append-copy-to! table buf))
 
-(defn append-conversions [buf]
-  (append "naver.conversion" buf))
-
-(defn append-effectiveness [buf]
-  (append "naver.effectiveness" buf))
-
 (defn last-recorded [{:keys [customer-id table] :as q}]
   (last-recorded-foo (:db-spec config) q))
+

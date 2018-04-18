@@ -23,7 +23,9 @@
       :disabled-date today-or-after?
       :value current-range
       :on-change #(<cmd ctx :set %)
-      :ranges (date-range-ctrl/presets)}]
+      :ranges (assoc (date-range-ctrl/presets)
+                "전체" [(js/moment (:during (sub> ctx :first-recorded-performance)))
+                      (.subtract (js/moment) 1 "d")])}]
     [ant/button {:icon "right" :on-click #(<cmd ctx :set-next)
                  :disabled (near-end current-range)}]]))
 
@@ -31,4 +33,4 @@
   (ui/constructor
    {:renderer render
     :topic :date-range
-    :subscription-deps [:date-range]}))
+    :subscription-deps [:date-range :first-recorded-performance]}))

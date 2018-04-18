@@ -30,5 +30,8 @@
                  :access-key (env :x-api-key)
                  :private-key (env :x-private-key)}})
 
-(defn creds [customer-id]
-  (assoc (:naver-creds config) :customer-id customer-id))
+(defn creds
+  ([]
+   (:naver-creds config))
+  ([customer-id]
+   (assoc (:naver-creds config) :customer-id customer-id)))

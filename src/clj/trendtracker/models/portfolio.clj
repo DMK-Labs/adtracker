@@ -17,7 +17,7 @@
 (defn assoc-adgroup [campaign-map]
   (let [new-creds (assoc creds :customer-id (:customerId campaign-map))
         adgrps (->> (:nccCampaignId campaign-map)
-                    (adgroup/get-by-campaign-id new-creds)
+                    (adgroup/get-by-campaign new-creds)
                     :body
                     ;; filter-eligible
                     (map #(select-keys % [:nccAdgroupId :name])))]

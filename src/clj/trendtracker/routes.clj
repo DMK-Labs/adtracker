@@ -23,7 +23,9 @@
             [trendtracker.modules.keyword-tool :as keyword-tool]
    ;;[trendtracker.modules.landscape :as landscape]
             [trendtracker.utils :as u]
-            [trendtracker.models.insights :as insights]))
+            [trendtracker.models.insights :as insights]
+            [trendtracker.models.ads :as ads]
+            [trendtracker.models.keywords :as keywords]))
 
 (defn app-routes [endpoint]
   (sweet/routes
@@ -75,6 +77,11 @@
        :summary "adding two numbers"
        :query-params [x :- Long y :- Long]
        (respond/ok {:result (+ x y)}))
+
+     (sweet/GET "/performance/first" []
+       :query-params [customer-id :- s/Int]
+       (respond/ok
+        (daily-stats/first-recorded-performance db {:customer-id customer-id})))
 
      (sweet/GET "/performance" []
        :summary "Total performance"
@@ -202,6 +209,12 @@
         (map daily-stats/add-ratios2
              (segments/keywords db {:low low :high high :customer-id customer-id}))))
 
+     (sweet/GET "/stats/ad-creatives" []
+       :query-params [customer-id :- s/Int low :- s/Str high :- s/Str]
+       (respond/ok
+        (ads/powerlink-ads db {:customer customer-id
+                               :low low :high high})))
+
      (sweet/GET "/segments/pc-mobile" []
        :query-params [low :- s/Str high :- s/Str customer-id :- s/Int]
        (respond/ok
@@ -277,10 +290,6 @@
      (sweet/GET "/insights/keywords/biggest-losers" []
        :query-params [customer-id :- s/Int]
        (respond/ok (insights/biggest-losers db {:customer customer-id})))
-
-     (sweet/GET "/insights/ads/best" []
-       :query-params [customer-id :- s/Int]
-       (respond/ok (insights/best-powerlink-ads db {:customer customer-id})))
 
      #_(sweet/GET "/optimize/ridgeline" []
          :query-params [customer-id :- s/Int]

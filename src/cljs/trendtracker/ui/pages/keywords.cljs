@@ -75,14 +75,13 @@
          [keyword-tool-results]
          [:div
           (when (:q route)
-            [:div {:style {:margin-top 8
-                           :margin-bottom 8
-                           :padding-top 8
-                           :border-top "1px solid #e8e8e8"}}
-             "키워드 검색 필터: " [ant/tag
-                            {:closable true :color "blue" :onClose #(ui/redirect ctx (dissoc route :q))
-                             :onClick #(ui/redirect ctx (dissoc route :q))}
-                            (:q route)]])
+            [:div {:style {:margin-bottom 16}}
+             [ant/divider {:style {:margin "16px 0"}}]
+             [:div "키워드 검색 필터: "
+              [ant/tag
+               {:closable true :color "blue" :onClose #(ui/redirect ctx (dissoc route :q))
+                :onClick #(ui/redirect ctx (dissoc route :q))}
+               (:q route)]]])
           [ant/row
            [ant/col
             [keyword-performances (:by-kw route)]]]])]]]))

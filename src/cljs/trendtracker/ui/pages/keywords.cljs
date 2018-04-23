@@ -71,6 +71,15 @@
                         "키워드명 기준"]]
             [ant/col
              [ant/button {:icon "download"}]]]]])
+       (when (:q route)
+         [:div {:style {:margin-top 8
+                        :margin-bottom 8
+                        :padding-top 8
+                        :border-top "1px solid #e8e8e8"}}
+          "키워드 검색 필터: " [ant/tag
+                         {:closable true :color "blue" :onClose #(ui/redirect ctx (dissoc route :q))
+                          :onClick #(ui/redirect ctx (dissoc route :q))}
+                         (:q route)]])
        (if (:result route)
          [keyword-tool-results]
          [ant/row

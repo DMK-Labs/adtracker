@@ -4,46 +4,48 @@
             [keechma.toolbox.ui :refer [sub> route>]]
             [trendtracker.options :as opts]
             [trendtracker.utils :as u]
-            [reagent.core :as r]))
+            [reagent.core :as r]
+            [goog.string :as gstring]
+            [goog.string.format]))
 
 (def krw-render (comp u/krw int))
 
 (defn rank-render [rank]
   (if (nil? rank) "-" (u/dec-fmt 2 rank)))
 
-(defn keyword-renderer [customer-id]
+(defn title-renderer [customer-id url-fmt k]
   (fn [text record _]
     (r/as-element
      [:a {:href (str "https://manage.searchad.naver.com/customers/"
-                     customer-id "/searchs?q="
-                     (-> record
-                         (js->clj :keywordize-keys true)
-                         :keyword-id)
-                     "&exact=false")
+                     customer-id
+                     (gstring/format url-fmt
+                                     (-> record
+                                         (js->clj :keywordize-keys true)
+                                         k)))
           :target "_blank"}
       text])))
+
+(defn filters [data k]
+  (set (map (fn [datum]
+              {:text (k datum)
+               :value (k datum)})
+            data)))
+
+(defn on-filter [k]
+  (fn [value record]
+    (-> record
+        (js->clj :keywordize-keys true)
+        k
+        (= value))))
+
+(defn keyword-renderer [customer-id]
+  (title-renderer customer-id "/searchs?q=%s&exact=false" :keyword-id))
 
 (defn campaign-renderer [customer-id]
-  (fn [text record _]
-    (r/as-element
-     [:a {:href (str "https://manage.searchad.naver.com/customers/"
-                     customer-id "/campaigns/"
-                     (-> record
-                         (js->clj :keywordize-keys true)
-                         :campaign-id))
-          :target "_blank"}
-      text])))
+  (title-renderer customer-id "/campaigns/%s" :campaign-id))
 
 (defn adgroup-renderer [customer-id]
-  (fn [text record _]
-    (r/as-element
-     [:a {:href (str "https://manage.searchad.naver.com/customers/"
-                     customer-id "/adgroups/"
-                     (-> record
-                         (js->clj :keywordize-keys true)
-                         :adgroup-id))
-          :target "_blank"}
-      text])))
+  (title-renderer customer-id "/adgroups/%s" :adgroup-id))
 
 (defn kw-columns [customer-id data]
   (concat [{:title "키워드" :dataIndex :keyword
@@ -51,34 +53,15 @@
             :fixed "left"}
            {:title "캠페인" :dataIndex :campaign
             :render (campaign-renderer customer-id)
-            :filters (set (map (fn [datum]
-                                {:text (:campaign datum)
-                                 :value (:campaign datum)})
-                           data))
-            :onFilter (fn [value record]
-                        (-> record
-                            (js->clj :keywordize-keys true)
-                            :campaign
-                            (= value)))}
+            :filters (filters data :campaign)
+            :onFilter (on-filter :campaign)}
            {:title "광고그룹" :dataIndex :adgroup
             :render (adgroup-renderer customer-id)
-            :filters (set (map (fn [datum]
-                                 {:text (:adgroup datum)
-                                  :value (:adgroup datum)})
-                               data))
-            :onFilter (fn [value record]
-                        (-> record
-                            (js->clj :keywordize-keys true)
-                            :adgroup
-                            (= value)))}
+            :filters (filters data :adgroup)
+            :onFilter (on-filter :adgroup)}
            {:title "기기" :dataIndex :device
-            :filters [{:text "PC" :value "P"}
-                      {:text "Mobile" :value "M"}]
-            :onFilter (fn [value record]
-                        (-> record
-                            (js->clj :keywordize-keys true)
-                            :device
-                            (= value)))}]
+            :filters (filters data :device)
+            :onFilter (on-filter :device)}]
           (map #(assoc %
                   :className "numbers"
                   :sorter (u/sorter-by (:dataIndex %)))

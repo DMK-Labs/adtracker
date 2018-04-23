@@ -64,3 +64,9 @@ GET http://localhost:10555/api/stats/keywords
 Accepts: application/json
 
 ###
+
+POST http://localhost:10555/api/keyword-tool
+  ?keywords=친구&include-related=true
+Accepts: application/json
+
+###

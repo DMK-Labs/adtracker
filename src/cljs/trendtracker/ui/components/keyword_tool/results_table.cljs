@@ -138,53 +138,53 @@
                 :sorter (u/sorter-by :min-cost)}]}])
 
 (defn render [ctx]
-  (let [data (:result (sub> ctx :keyword-tool))
-        value (r/atom 1)]
+  (let [value (r/atom 1)]
     (fn []
-      [:div
-       [ant/alert
-        {:message "모든 지표는 네이버 전체 시스템 내의 과거 28일(4주)의 성과를 비롯해 산출되었습니다."
-         :banner true
-         :closable true
-         :style {:margin-bottom 16}}]
-       [ant/row {:type :flex :justify :space-between}
-        [:div [ant/select {:defaultValue @value
-                           :onChange #(reset! value %)}
-               [ant/select-option {:value 1} "1위"]
-               [ant/select-option {:value 2} "2위"]
-               [ant/select-option {:value 3} "3위"]
-               [ant/select-option {:value 4} "4위"]
-               [ant/select-option {:value 5} "5위"]]
-         [:ul
-          [:li "비용: " (u/krw (u/sum (keyword (str @value "-cost")) data))]
-          [:li "노출수: " (u/int-fmt (u/sum (keyword (str @value "-impressions")) data))]
-          [:li "클릭수: " (u/int-fmt (u/sum (keyword (str @value "-clicks")) data))]]]
+      (let [data (:result (sub> ctx :keyword-tool))]
+        [:div
+         [ant/alert
+          {:message "모든 지표는 네이버 전체 시스템 내의 과거 28일(4주)의 성과를 비롯해 산출되었습니다."
+           :banner true
+           :closable true
+           :style {:margin-bottom 16}}]
+         [ant/row {:type :flex :justify :space-between}
+          [:div [ant/select {:defaultValue @value
+                             :onChange #(reset! value %)}
+                 [ant/select-option {:value 1} "1위"]
+                 [ant/select-option {:value 2} "2위"]
+                 [ant/select-option {:value 3} "3위"]
+                 [ant/select-option {:value 4} "4위"]
+                 [ant/select-option {:value 5} "5위"]]
+           [:ul
+            [:li "비용: " (u/krw (u/sum (keyword (str @value "-cost")) data))]
+            [:li "노출수: " (u/int-fmt (u/sum (keyword (str @value "-impressions")) data))]
+            [:li "클릭수: " (u/int-fmt (u/sum (keyword (str @value "-clicks")) data))]]]
 
-        [ant/button {:on-click #(download/download-csv
-                                 {:filename "keyword_discovery.csv"
-                                  :header [:keyword :device :keywordplus
-                                           :1-bid :1-impressions :1-clicks :1-cost
-                                           :2-bid :2-impressions :2-clicks :2-cost
-                                           :3-bid :3-impressions :3-clicks :3-cost
-                                           :4-bid :4-impressions :4-clicks :4-cost
-                                           :5-bid :5-impressions :5-clicks :5-cost
-                                           :median-bid :median-impressions :median-clicks :median-cost
-                                           :min-bid :min-impressions :min-clicks :min-cost]
-                                  :content data
-                                  :prepend-header true})
-                     :icon "download"}
-         "CSV로 다운로드"]]
-       (if data
-         [ant/table
-          {:scroll {:x 2700}
-           :dataSource (map #(assoc % :key (str (:keyword %) (:device %)))
-                            data)
-           :columns columns
-           :size "small"
-           :bordered true
-           :pagination opts/pagination
-           :rowSelection {:fixed true}}]
-         (ui/redirect ctx (dissoc (route> ctx) :result)))])))
+          [ant/button {:on-click #(download/download-csv
+                                   {:filename "keyword_discovery.csv"
+                                    :header [:keyword :device :keywordplus
+                                             :1-bid :1-impressions :1-clicks :1-cost
+                                             :2-bid :2-impressions :2-clicks :2-cost
+                                             :3-bid :3-impressions :3-clicks :3-cost
+                                             :4-bid :4-impressions :4-clicks :4-cost
+                                             :5-bid :5-impressions :5-clicks :5-cost
+                                             :median-bid :median-impressions :median-clicks :median-cost
+                                             :min-bid :min-impressions :min-clicks :min-cost]
+                                    :content data
+                                    :prepend-header true})
+                       :icon "download"}
+           "CSV로 다운로드"]]
+         (if data
+           [ant/table
+            {:scroll {:x 2700}
+             :dataSource (map #(assoc % :key (str (:keyword %) (:device %)))
+                              data)
+             :columns columns
+             :size "small"
+             :bordered true
+             :pagination opts/pagination
+             :rowSelection {:fixed true}}]
+           (ui/redirect ctx (dissoc (route> ctx) :result)))]))))
 
 (def component
   (ui/constructor

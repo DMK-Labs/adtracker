@@ -98,7 +98,7 @@
                      (remove-clickless keywords)))
       :columns (kw-columns customer-id keywords)
       :loading (= :pending (:status keywords-meta))
-      :rowKey :keyword_id
+      :rowKey :keyword-id
       :size "small"
       :scroll {:x "1600px"}
       :rowSelection {:fixed true}

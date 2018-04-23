@@ -33,7 +33,8 @@
    [trendtracker.ui.components.keyword-tool.keywords-list :as keywords-list]
    [trendtracker.ui.components.cards.smart-todo :as smart-todo]
    [trendtracker.ui.pages.creatives :as creatives]
-   [trendtracker.ui.pages.keywords :as keywords]))
+   [trendtracker.ui.pages.keywords :as keywords]
+   [trendtracker.ui.components.tables.keyword-performances :as keyword-performances]))
 
 (def ui
   {
@@ -71,6 +72,7 @@
 
    ;; Tables
    :segment-stats segment-stats/component
+   :keyword-performances keyword-performances/component
 
    ;; Pages
    :login-page login/component

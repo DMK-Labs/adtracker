@@ -21,7 +21,7 @@
             [trendtracker.models.user :as user]
             [trendtracker.modules.auth :as auth]
             [trendtracker.modules.keyword-tool :as keyword-tool]
-   ;;[trendtracker.modules.landscape :as landscape]
+            [trendtracker.modules.landscape :as landscape]
             [trendtracker.utils :as u]
             [trendtracker.models.insights :as insights]
             [trendtracker.models.ads :as ads]
@@ -291,17 +291,17 @@
        :query-params [customer-id :- s/Int]
        (respond/ok (insights/biggest-losers db {:customer customer-id})))
 
-     #_(sweet/GET "/optimize/ridgeline" []
-         :query-params [customer-id :- s/Int]
-         (respond/ok (landscape/ridgeline (optimize/fetch-marginals customer-id))))
+     (sweet/GET "/optimize/ridgeline" []
+       :query-params [customer-id :- s/Int]
+       (respond/ok (landscape/ridgeline (optimize/fetch-marginals customer-id))))
 
-     #_(sweet/GET "/optimize/detail" []
-         :query-params [customer-id :- s/Int
-                        budget :- s/Int]
-         (respond/ok
-          (h/select-cols
-           [:keyword-id :bid :impressions :clicks :cost]
-           (landscape/detail (optimize/fetch-marginals customer-id) budget))))
+     (sweet/GET "/optimize/detail" []
+       :query-params [customer-id :- s/Int
+                      budget :- s/Int]
+       (respond/ok
+        (h/select-cols
+         [:keyword-id :bid :impressions :clicks :cost]
+         (landscape/detail (optimize/fetch-marginals customer-id) budget))))
 
      ;;** Bids according to Naver
      #_(sweet/GET "/bids/with-minimum-exposure" []

@@ -108,7 +108,6 @@
         (assoc table-opts
           :rowKey :adgroup-id))]]))
 
-
 (def component
   (ui/constructor
    {:renderer render

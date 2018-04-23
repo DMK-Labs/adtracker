@@ -22,9 +22,9 @@
             "insights" [(ui/component ctx :insights-page)]
             "creatives" [(ui/component ctx :creatives)]
             "keywords" [(ui/component ctx :keywords)]
-            ;; "optimize" (if-not subpage
-            ;;              [(ui/component ctx :optimize-page)]
-            ;;              [(ui/component ctx :optimize-new-page)])
+            "optimize" (if-not subpage
+                         [(ui/component ctx :optimize-page)]
+                         [(ui/component ctx :optimize-new-page)])
             [:div.content "404: page not found"])]
          [(ui/component ctx :footer)]]]])))
 

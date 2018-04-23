@@ -34,9 +34,9 @@
         [ant/icon {:type "bulb"}]
         [:span "추천 사항"]]
 
-       #_[ant/menu-item {:key "optimize"}
-          [ant/icon {:type "rocket"}]
-          [:span "최적화 전략"]]
+       [ant/menu-item {:key "optimize"}
+        [ant/icon {:type "rocket"}]
+        [:span "최적화"]]
 
        [ant/menu-item {:key "keywords"}
         [ant/icon {:type "profile"}]

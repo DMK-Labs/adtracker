@@ -107,15 +107,19 @@
 ;;   :args (s/cat :objective #{:clicks :revenue :conversions :impressions}
 ;;                :landscape ::estimate/performance-estimates))
 
+(defn keyword-or-id [landscape]
+  (juxt (if (:keyword-id (set (keys (first landscape))))
+          :keyword-id
+          :key)
+        :device))
+
+
 (defn marginal-landscape
   "Divides LANDSCAPE into marginals, then sorts the marginals in a way which
   maximizes OBJECTIVE."
   [objective landscape]
   (let [marginal-efficiency #(double (efficiency (u/marginal-kw objective) %))
-        identifier (juxt (if (:keyword-id (set (keys (first landscape))))
-                           :keyword-id
-                           :key)
-                         :device)
+        identifier (keyword-or-id landscape)
         res (->> landscape
                  (group-by identifier)
                  (map (fn [[k v]] [k (conv-hull/upper-left-hull objective v)]))

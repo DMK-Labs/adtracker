@@ -18,8 +18,8 @@
        [:div [date-range-picker]]]
       [:div.page-description "하루 20분이어도 OK! 가장 큰 효과를 기대할 수 있는 개선사항들을 찝어드립니다."]]
      [:div.content
-      #_[ant/row
-         [ant/card {:title "광고그룹별 성과"} [scatter-chart]]]
+      [ant/row
+       [ant/card {:title "광고그룹별 성과"} [scatter-chart]]]
       [ant/row {:type "flex" :justify :space-around}
        [ant/col {:style {:max-width 980}}
         [ant/row {:gutter 16 :style {:max-width 980}}

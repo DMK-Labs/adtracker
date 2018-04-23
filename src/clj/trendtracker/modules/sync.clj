@@ -32,7 +32,7 @@
         (case (:status job)
           ("REGIST" "RUNNING" "WAITING") (recur (fetch))
           "BUILT" (reports.common/download c job)
-          "NONE" nil
+          ("NONE" nil) nil
           (throw
            (Exception.
             (str "Requested job returned unexpected status of: " (:status job))))))
@@ -76,7 +76,7 @@
 
 (comment
  (byte-streams/to-string
-  (download-stats {:customer-id 719425
+  (download-stats {:customer-id 137307
                    :report-type "AD"
                    :yyyymmdd "20180403"}))
  (days-since-last {:customer-id 719425 :table "naver.effectiveness"})
@@ -89,8 +89,6 @@
  (pull-and-append 719425 :ad)
  (pull-and-append 777309 :ad-conversion)
  (pull-and-append 777309 :ad))
-
-
 
 
 ;;; --- Upserting Master Reports (campaign tree)
@@ -151,5 +149,6 @@
 
 (comment
  (masters 137307 :all)
+ (sync-client-masters 137307 ["Campaign" "BusinessChannel" "Adgroup"])
  (sync-client-masters 719425 ["Campaign" "BusinessChannel" "Adgroup"])
  (sync-client-masters 719425 ["Keyword" "Ad"]))

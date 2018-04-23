@@ -42,7 +42,7 @@
              :url (str "https://api.naver.com" uri)
              :headers (auth-header timestamp creds method uri)
              :content-type :json
-             :throw-exceptions? true}
+             :throw-exceptions? false}
             params))))
 
 (defn request

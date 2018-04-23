@@ -23,6 +23,10 @@
 (defrecord Bid
   [customer-id adgroup-id keyword-id bid])
 
+(defn round-bid [n]
+  (int (* (quot n 10)
+          10)))
+
 ;; Rules
 (defrule overpaid-keyword
   "Keywords which are bidding at a higher price than they can be expected to
@@ -32,7 +36,6 @@
    (> (/ cost clicks) (/ revenue clicks))
    (= ?k keyword-id)]
   =>
-  (println ?k)
   (insert! (->OverpaidKeyword ?k)))
 
 (defrule make-bid-at-expected-return
@@ -40,19 +43,20 @@
    (= ?c customer-id)
    (= ?a adgroup-id)
    (= ?k keyword-id)
-   (= ?b (max (/ revenue clicks) 80))]
+   (= ?b (max (round-bid (/ revenue clicks)) 80))]
   [OverpaidKeyword (= ?k keyword-id)]
  =>
  (insert! (->Bid ?c ?a ?k ?b)))
 
 (defquery bids [] [?bid <- Bid])
+(defquery overpaid-keywords [] [?ok <- OverpaidKeyword])
 
 ;; Run
 (comment
  (defonce data (map map->KeywordPerformance (perfs 137307 30)))
 
  (let [session (-> (mk-session) (insert-all data) (fire-rules))]
-   (query session bids)))
+   (query session overpaid-keywords)))
 
 ;;; Filters
 (defn filter-hopeless [kw-map]
@@ -67,34 +71,32 @@
   (assert (some? (:click-revenue kw-map)))
   (let [rpc (:click-revenue kw-map)]
     (assoc kw-map
-      :bid (if (zero? rpc) 80 rpc))))
+      :bid (if (zero? rpc) 80 (round-bid rpc)))))
 
 ;;; Stateful actions
-(defn update-bids!
+(defn update-bid!
   "KWS should be a list of keyword-maps containing [:keyword-id, :adgroup-id,
    :bid] keys."
-  [customer kws]
-  (map #(keyword-api/update-keyword-bid! (creds customer) %)
-       kws))
+  [customer kw]
+  (keyword-api/update-keyword-bid! (creds customer) kw))
 
-(defn lowball-low-performers
+(defn lowball-low-performers!
   "Selects keywords of past DAYS which performed the worst (worst mismatch
    between bid and click-revenue), and lowballs them."
   [customer days]
   (->> (perfs customer days)
        filter-hopeless
        (map recommend-bid)
-       (update-bids! customer)))
+       (map #(update-bid! customer %))))
 
 (comment
- (lowball-low-performers 137307 32)
- (no-clicks (perfs 137307 32))
- (/ (->> (perfs 137307 30)
-         filter-hopeless
-         (h/sum :cost))
-    (->> (perfs 137307 30)
-         (h/sum :cost)))
-
- (->> (perfs 137307 30)
+ (lowball-low-performers! 137307 30)
+ (float (#(/ (->> %
+                  filter-hopeless
+                  (h/sum :cost))
+             (->> %
+                  (h/sum :cost)))
+         (perfs 137307 14)))
+ (->> (perfs 137307 14)
       (h/where {:conversions [> 0]})
       (h/sum :cost)))

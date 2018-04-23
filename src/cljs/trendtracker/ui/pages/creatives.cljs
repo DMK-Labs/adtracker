@@ -75,7 +75,7 @@
          :columns (columns customer-id)
          :rowKey :ad-id
          :size "small"
-         :scroll {:x "1050px"}
+         :scroll {:x "1150px"}
          :pagination opts/pagination}]]]]))
 
 (def component

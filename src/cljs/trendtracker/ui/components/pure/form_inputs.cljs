@@ -39,32 +39,35 @@
 (def input-with-composition-support (make-input-with-composition-support ant/input))
 (def textarea-with-composition-support (make-input-with-composition-support ant/input-text-area))
 
-(defn controlled-input [ctx form-props attr {:keys [placeholder label input-type]}]
+(defn controlled-input [ctx form-props attr {:keys [placeholder label input-type item-opts input-opts]}]
   (let [errors (get-in (forms-ui/errors-in> ctx form-props attr) [:$errors$ :failed])]
-    [ant/form-item {:label label
-                    :validateStatus (when (not-empty errors) "error")
-                    :help (validators/get-validator-message (first errors))
-                    :style {:margin-bottom 0}}
+    [ant/form-item (merge {:label label
+                           :validateStatus (when (not-empty errors) "error")
+                           :help (validators/get-validator-message (first errors))}
+                          item-opts)
      [input-with-composition-support
-      {:placeholder placeholder
-       :on-change #(forms-ui/<on-change ctx form-props attr %)
-       :on-blur #(forms-ui/<on-blur ctx form-props attr %)
-       :type (or input-type :text)
-       :value (forms-ui/value-in> ctx form-props attr)}]]))
+      (merge {:placeholder placeholder
+              :on-change #(forms-ui/<on-change ctx form-props attr %)
+              :on-blur #(forms-ui/<on-blur ctx form-props attr %)
+              :type (or input-type :text)
+              :value (forms-ui/value-in> ctx form-props attr)}
+             input-opts)]]))
 
-(defn controlled-textarea [ctx form-props attr {:keys [placeholder label rows default-value]}]
+(defn controlled-textarea [ctx form-props attr {:keys [placeholder label rows default-value item-opts textarea-opts]}]
   (let [errors (get-in (forms-ui/errors-in> ctx form-props attr) [:$errors$ :failed])]
-    [ant/form-item {:label label
-                    :validateStatus (when (not-empty errors) "error")
-                    :help (validators/get-validator-message (first errors))}
+    [ant/form-item (merge {:label label
+                           :validateStatus (when (not-empty errors) "error")
+                           :help (validators/get-validator-message (first errors))}
+                          item-opts)
      [textarea-with-composition-support
-      {:placeholder placeholder
-       :rows (or rows 10)
-       :on-change #(forms-ui/<on-change ctx form-props attr %)
-       :on-blur #(forms-ui/<on-blur ctx form-props attr %)
-       :value (forms-ui/value-in> ctx form-props attr)
-       :default-value default-value
-       :style {:max-width 420}}]]))
+      (merge {:placeholder placeholder
+              :rows (or rows 10)
+              :on-change #(forms-ui/<on-change ctx form-props attr %)
+              :on-blur #(forms-ui/<on-blur ctx form-props attr %)
+              :value (forms-ui/value-in> ctx form-props attr)
+              :default-value default-value
+              :style {:max-width 420}}
+             textarea-opts)]]))
 
 (defn controlled-switch [ctx form-props attr {:keys [label default-checked]}]
   (let [errors (get-in (forms-ui/errors-in> ctx form-props attr) [:$errors$ :failed])]

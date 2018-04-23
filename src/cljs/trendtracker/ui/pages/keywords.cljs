@@ -22,10 +22,12 @@
   (let [form-props [:keyword-search :form]
         form-state (forms-ui/form-state> ctx form-props)]
     [ant/form {:on-submit #(forms-ui/<submit ctx form-props %)}
-     [controlled-input ctx form-props :keyword-search {:form-state form-state
-                                                       ;; :label "search"
-                                                       :placeholder "keyword search"}]]))
-
+     [controlled-input ctx form-props :keyword-search
+      {:form-state form-state
+       ;; :label "search"
+       :placeholder "키워드 검색"
+       :item-opts {:style {:margin-bottom 0}}
+       :input-opts {:prefix (r/as-element [ant/icon {:type "search"}])}}]]))
 
 (defn render [ctx]
   (let [breadcrumbs (ui/component ctx :breadcrumbs)
@@ -58,19 +60,15 @@
           [ant/col
            [ant/row {:type "flex" :justify "end" :gutter 8 :align "middle"}
             [ant/col
-             #_[ant/input
-                {:placeholder "키워드 검색" :prefix (r/as-element [ant/icon {:type "search"}])}]
              [keyword-search ctx]]
-            [ant/col
-             [ant/checkbox
-              {:onChange (toggle ctx :zero-clicks)
-               :checked (:zero-clicks route)}
-              "클릭 미발생 포함"]]
-            [ant/col
-             [ant/checkbox
-              {:onChange (toggle ctx :by-kw)
-               :checked (:by-kw route)}
-              "키워드명 기준"]]
+            [ant/col [ant/checkbox
+                      {:onChange (toggle ctx :zero-clicks)
+                       :checked (:zero-clicks route)}
+                      "클릭 미발생 포함"]]
+            #_[ant/col [ant/checkbox
+                        {:onChange (toggle ctx :by-kw)
+                         :checked (:by-kw route)}
+                        "키워드명 기준"]]
             [ant/col
              [ant/button {:icon "download"}]]]]])
        (if (:result route)

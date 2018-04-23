@@ -43,7 +43,8 @@
   (let [errors (get-in (forms-ui/errors-in> ctx form-props attr) [:$errors$ :failed])]
     [ant/form-item {:label label
                     :validateStatus (when (not-empty errors) "error")
-                    :help (validators/get-validator-message (first errors))}
+                    :help (validators/get-validator-message (first errors))
+                    :style {:margin-bottom 0}}
      [input-with-composition-support
       {:placeholder placeholder
        :on-change #(forms-ui/<on-change ctx form-props attr %)

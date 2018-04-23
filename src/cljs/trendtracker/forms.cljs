@@ -1,12 +1,14 @@
 (ns trendtracker.forms
   (:require [trendtracker.forms.keyword-tool :as keyword-tool]
             [trendtracker.forms.optimize-objective :as optimize-objective]
-            [trendtracker.forms.login :as login]))
+            [trendtracker.forms.login :as login]
+            [trendtracker.forms.keyword-search :as keyword-search]))
 
 (def forms
   {:keyword-tool (keyword-tool/constructor)
    :optimize-objective (optimize-objective/constructor)
-   :login (login/constructor)})
+   :login (login/constructor)
+   :keyword-search (keyword-search/constructor)})
 
 (def forms-automount-fns
   {:login (fn [{:keys [page]}]
@@ -22,4 +24,7 @@
                          (when (and (= "optimize" page)
                                     (= "settings" subpage)
                                     (= "1" step))
-                           :form))})
+                           :form))
+   :keyword-search (fn [{:keys [page]}]
+                     (when (= "keywords" page)
+                       :form))})

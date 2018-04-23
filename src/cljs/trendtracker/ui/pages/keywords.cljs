@@ -5,7 +5,9 @@
             [reagent.core :as r]
             [trendtracker.ui.components.common :as common]
             [trendtracker.options :as opts]
-            [trendtracker.utils :as u]))
+            [trendtracker.utils :as u]
+            [trendtracker.ui.components.pure.form-inputs :refer [controlled-input]]
+            [keechma.toolbox.forms.ui :as forms-ui]))
 
 (defn- toggle
   "Creates function to toggle inclusion of keywords with zero clicks in table."
@@ -15,6 +17,15 @@
                        (if (k route)
                          (dissoc route k)
                          (assoc route k true))))))
+
+(defn keyword-search [ctx]
+  (let [form-props [:keyword-search :form]
+        form-state (forms-ui/form-state> ctx form-props)]
+    [ant/form {:on-submit #(forms-ui/<submit ctx form-props %)}
+     [controlled-input ctx form-props :keyword-search {:form-state form-state
+                                                       ;; :label "search"
+                                                       :placeholder "keyword search"}]]))
+
 
 (defn render [ctx]
   (let [breadcrumbs (ui/component ctx :breadcrumbs)
@@ -47,8 +58,9 @@
           [ant/col
            [ant/row {:type "flex" :justify "end" :gutter 8 :align "middle"}
             [ant/col
-             [ant/input
-              {:placeholder "키워드 검색" :prefix (r/as-element [ant/icon {:type "search"}])}]]
+             #_[ant/input
+                {:placeholder "키워드 검색" :prefix (r/as-element [ant/icon {:type "search"}])}]
+             [keyword-search ctx]]
             [ant/col
              [ant/checkbox
               {:onChange (toggle ctx :zero-clicks)

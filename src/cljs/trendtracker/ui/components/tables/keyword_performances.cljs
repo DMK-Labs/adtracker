@@ -86,11 +86,16 @@
   (let [keywords (sub> ctx :keywords)
         keywords-meta (sub> ctx :keywords-meta)
         customer-id (:customer_id (sub> ctx :current-client))
-        route (route> ctx)]
+        route (route> ctx)
+        regex (if-let [q (:q route)]
+                (re-pattern q)
+                #"")]
     [ant/table
-     {:dataSource (if (:zero-clicks route)
-                    keywords
-                    (remove-clickless keywords))
+     {:dataSource (filter
+                   #(re-find regex (:keyword %))
+                   (if (:zero-clicks route)
+                     keywords
+                     (remove-clickless keywords)))
       :columns (kw-columns customer-id keywords)
       :loading (= :pending (:status keywords-meta))
       :rowKey :keyword_id

@@ -18,7 +18,7 @@
             [trendtracker.models.optimize :as optimize]
             [trendtracker.models.portfolio :as portfolio]
             [trendtracker.models.segments :as segments]
-            [trendtracker.models.user :as user]
+            [trendtracker.models.users :as users]
             [trendtracker.modules.auth :as auth]
             [trendtracker.modules.keyword-tool :as keyword-tool]
             [trendtracker.modules.landscape :as landscape]
@@ -250,7 +250,7 @@
        (respond/ok (auth/unsign-auth-header authorization)))
 
      (sweet/GET "/access-rights" []
-       (respond/ok (user/access-rights db {})))
+       (respond/ok (users/access-rights db {})))
 
      ;;** Portfolio
      (sweet/GET "/portfolio" []

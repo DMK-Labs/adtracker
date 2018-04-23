@@ -2,17 +2,17 @@
   (:require [buddy.sign.jwt :as jwt]
             [clojure.string :as string]
             [trendtracker.config :as config :refer [config]]
-            [trendtracker.models.user :as user]))
+            [trendtracker.models.users :as users]))
 
 (defn generate-signature [email password]
   (when-let [user (as-> {:email email :password password} $
-                    (user/user (:db-spec config) $)
+                    (users/user (:db-spec config) $)
                     (dissoc $ :password))]
     (jwt/sign (assoc user :email email) config/secret)))
 
 (defn logged-in-info [email password]
   (when-let [user (as-> {:email email :password password} $
-                      (user/user (:db-spec config) $)
+                      (users/user (:db-spec config) $)
                       (dissoc $ :password))]
     (assoc user :token (jwt/sign user config/secret))))
 

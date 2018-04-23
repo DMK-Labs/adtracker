@@ -70,3 +70,11 @@ POST http://localhost:10555/api/keyword-tool
 Accepts: application/json
 
 ###
+
+POST http://trendtracker.co.kr/rest/sessionApi/getValidSessionBySessionIdRest
+Content-Type: application/json
+Access-Control-Allow-Origin: *
+
+"297083E00F0D7DB4FEF328DB463EC95F"
+
+###

@@ -1,4 +1,4 @@
-(ns trendtracker.models.user
+(ns trendtracker.models.users
   (:require [hugsql.core :as hugsql]
             [trendtracker.config :refer [config]]))
 
@@ -8,3 +8,6 @@
   (hugsql/map-of-db-fns "sql/user.sql"))
 
 (hugsql/def-db-fns "sql/user.sql")
+
+(declare user
+         access-rights)

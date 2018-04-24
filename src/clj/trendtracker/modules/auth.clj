@@ -12,8 +12,8 @@
 
 (defn logged-in-info [email password]
   (when-let [user (as-> {:email email :password password} $
-                      (users/user (:db-spec config) $)
-                      (dissoc $ :password))]
+                    (users/user (:db-spec config) $)
+                    (dissoc $ :password))]
     (assoc user :token (jwt/sign user config/secret))))
 
 (defn unsign-token [token]

@@ -4,29 +4,27 @@
             [ajax.core :as aj]
             [trendtracker.utils :as u]))
 
-(defn session-logged-in? [session-id]
+(defn session-logged-in?
+  "Asks REST endpoint on TrendTracker server for confirmation of session
+   validity. Returns true or false."
+  [session-id]
   (ajax/POST "http://trendtracker.co.kr/rest/sessionApi/getValidSessionBySessionIdRest"
-           {:body session-id #_"DBF1D4F1F3E4167032C78776B1694D45"}))
+             {:body session-id}))
 
 (def default-request-config
   {:response-format :json
    :keywords? true
    :format :json})
 
-(defn add-auth-header [req-params jwt]
-  (if jwt
-    (assoc-in req-params [:headers :authorization] (str "Bearer " jwt))
-    req-params))
-
 (defn add-params [req-params params]
   (if params
     (assoc req-params :params params)
     req-params))
 
-(defn req-params [& {:keys [jwt data]}]
+(defn req-params [& {:keys [data]}]
   (-> default-request-config
-      (add-auth-header jwt)
       (add-params data)))
+
 
 ;; User Login
 
@@ -35,57 +33,55 @@
              (req-params :data user)))
 
 ;; Performance query apis
-(defn total-performance [jwt customer-id dates]
+(defn total-performance [customer-id dates]
   (ajax/GET "/api/performance"
             (req-params :data (assoc (u/parse-date-range dates)
-                                :customer-id customer-id)
-                        :jwt jwt)))
+                                :customer-id customer-id))))
 
 (defn total-perf
-  [jwt client-id range]
-  (-> [(total-performance jwt client-id (:curr range))
-       (total-performance jwt client-id (:prev range))]
+  [client-id range]
+  (-> [(total-performance client-id (:curr range))
+       (total-performance client-id (:prev range))]
       p/all
       (p/then
        #(zipmap [:curr :prev] %))))
 
-(defn adgroup-performance [jwt customer-id dates id]
+(defn adgroup-performance [customer-id dates id]
   (ajax/GET "/api/performance/adgroup"
             (req-params :data (assoc (u/parse-date-range dates)
                                 :id id
                                 :customer-id customer-id))))
 (defn adgroup-perf
-  [jwt client-id id range]
-  (-> [(adgroup-performance jwt client-id (:curr range) id)
-       (adgroup-performance jwt client-id (:prev range) id)]
+  [client-id id range]
+  (-> [(adgroup-performance client-id (:curr range) id)
+       (adgroup-performance client-id (:prev range) id)]
       p/all
       (p/then
        #(zipmap [:curr :prev] %))))
 
-(defn campaign-performance [jwt customer-id dates id]
+(defn campaign-performance [customer-id dates id]
   (ajax/GET "/api/performance/campaign"
             (req-params :data (assoc (u/parse-date-range dates)
                                 :campaign-id id
                                 :customer-id customer-id))))
 (defn campaign-perf
-  [jwt client-id id range]
-  (-> [(campaign-performance jwt client-id (:curr range) id)
-       (campaign-performance jwt client-id (:prev range) id)]
+  [client-id id range]
+  (-> [(campaign-performance client-id (:curr range) id)
+       (campaign-performance client-id (:prev range) id)]
       p/all
       (p/then
        #(zipmap [:curr :prev] %))))
 
-(defn campaign-type-performance [jwt customer-id type dates]
+(defn campaign-type-performance [customer-id type dates]
   (ajax/GET "/api/performance/type"
             (req-params :data (assoc (u/parse-date-range dates)
                                 :type type
-                                :customer-id customer-id)
-                        :jwt jwt)))
+                                :customer-id customer-id))))
 
 (defn campaign-type-perf
-  [jwt client-id type range]
-  (-> [(campaign-type-performance jwt client-id type (:curr range))
-       (campaign-type-performance jwt client-id type (:prev range))]
+  [client-id type range]
+  (-> [(campaign-type-performance client-id type (:curr range))
+       (campaign-type-performance client-id type (:prev range))]
       p/all
       (p/then
        #(zipmap [:curr :prev] %))))

@@ -18,18 +18,6 @@
   (map-loader
    (fn [req] (:params req))))
 
-(defn auth-header
-  ([jwt] (auth-header {} jwt))
-  ([headers jwt]
-   (if jwt
-     (assoc headers :authorization (str "Bearer " jwt))
-     headers)))
-
-(def jwt-datasource
-  {:target [:kv :jwt]
-   :loader (map-loader #(get-item local-storage "trendtracker-jwt-token"))
-   :params (fn [prev _ _] (when (:data prev) ignore-datasource-check))})
-
 (def session-id-datasource
   {:target [:kv :session-id]
    :loader (map-loader (fn [_] (.get goog.net.cookies "tracker_session_id")))
@@ -60,11 +48,10 @@
 
 (def managed-clients-datasource
   {:target [:edb/collection :managed-clients/list]
-   :deps [:jwt :current-user]
-   :params (fn [_ _ {:keys [jwt current-user]}]
+   :deps [:current-user]
+   :params (fn [_ _ {:keys [current-user]}]
              (when current-user
-               (-> {:url "/access-rights"}
-                   (assoc :headers (auth-header jwt)))))
+               {:url "/access-rights"}))
    :loader api-loader})
 
 (def current-client-datasource
@@ -220,22 +207,21 @@
   "Stats depend on the date-range, so it will be reloaded whenever date-range
   changes."
   {:target [:kv :daily-stats]
-   :deps [:jwt :date-range :cascader :current-client]
+   :deps [:date-range :cascader :current-client]
    :params (fn [_ {page :page} deps]
              (when (= "dashboard" page)
-               (select-keys deps [:date-range :cascader :current-client :jwt])))
+               (select-keys deps [:date-range :cascader :current-client])))
    :loader (map-loader
             (fn [req]
               (let [range (get-in req [:params :date-range])
                     casc (get-in req [:params :cascader])
-                    jwt (get-in req [:params :jwt])
                     customer-id (get-in req [:params :current-client :customer_id])]
-                (when (and (seq range) (seq casc) jwt)
+                (when (and (seq range) (seq casc))
                   (match casc
-                    ["total"] (api/total-perf jwt customer-id range)
-                    [type] (api/campaign-type-perf jwt customer-id type range)
-                    [_ cmp-id] (api/campaign-perf jwt customer-id cmp-id range)
-                    [_ _ adgrp-id] (api/adgroup-perf jwt customer-id adgrp-id range))))))})
+                    ["total"] (api/total-perf customer-id range)
+                    [type] (api/campaign-type-perf customer-id type range)
+                    [_ cmp-id] (api/campaign-perf customer-id cmp-id range)
+                    [_ _ adgrp-id] (api/adgroup-perf customer-id adgrp-id range))))))})
 
 (def date-range-datasource
   {:target [:kv :date-range]
@@ -257,8 +243,7 @@
    :loader pass-through-params})
 
 (def datasources
-  {:jwt jwt-datasource
-   :session-id session-id-datasource
+  {:session-id session-id-datasource
    :session-valid session-valid-datasource
    :current-user current-user-datasource
    :current-client current-client-datasource

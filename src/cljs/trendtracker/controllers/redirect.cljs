@@ -10,14 +10,16 @@
         just-logged-in (and (= "login" (:page route)) current-user)]
     (cond
       just-logged-in        {:page "dashboard"}
-      (not current-user)    {:page "login"}
+      (not current-user)    ::trendtracker
       (not (:client route)) (assoc route :client (:customer_id client))
       :else                 nil)))
 
 (defn redirect! [route app-db]
   (let [redirect-to (get-redirect route app-db)]
     (when redirect-to
-      (pl/redirect! redirect-to))))
+      (if (= redirect-to ::trendtracker)
+        (.assign js/window.location "http://trendtracker.co.kr")
+        (pl/redirect! redirect-to)))))
 
 (def controller
   (pl-controller/constructor

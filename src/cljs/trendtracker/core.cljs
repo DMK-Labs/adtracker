@@ -14,7 +14,7 @@
        :controllers controllers
        :subscriptions subscriptions
        :html-element (.getElementById js/document "app")
-       :routes [["" {:page "login"}]
+       :routes [["" {:page "dashboard"}]
                 ":page"
                 ":page/:subpage"]}
       (dataloader/install datasources edb-schema)

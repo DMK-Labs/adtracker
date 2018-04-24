@@ -1,7 +1,12 @@
 (ns trendtracker.api
   (:require [keechma.toolbox.ajax :as ajax]
             [promesa.core :as p]
+            [ajax.core :as aj]
             [trendtracker.utils :as u]))
+
+(defn session-logged-in? [session-id]
+  (ajax/POST "http://trendtracker.co.kr/rest/sessionApi/getValidSessionBySessionIdRest"
+           {:body session-id #_"DBF1D4F1F3E4167032C78776B1694D45"}))
 
 (def default-request-config
   {:response-format :json
@@ -33,7 +38,7 @@
 (defn total-performance [jwt customer-id dates]
   (ajax/GET "/api/performance"
             (req-params :data (assoc (u/parse-date-range dates)
-                                     :customer-id customer-id)
+                                :customer-id customer-id)
                         :jwt jwt)))
 
 (defn total-perf
@@ -47,8 +52,8 @@
 (defn adgroup-performance [jwt customer-id dates id]
   (ajax/GET "/api/performance/adgroup"
             (req-params :data (assoc (u/parse-date-range dates)
-                                     :id id
-                                     :customer-id customer-id))))
+                                :id id
+                                :customer-id customer-id))))
 (defn adgroup-perf
   [jwt client-id id range]
   (-> [(adgroup-performance jwt client-id (:curr range) id)
@@ -60,8 +65,8 @@
 (defn campaign-performance [jwt customer-id dates id]
   (ajax/GET "/api/performance/campaign"
             (req-params :data (assoc (u/parse-date-range dates)
-                                     :campaign-id id
-                                     :customer-id customer-id))))
+                                :campaign-id id
+                                :customer-id customer-id))))
 (defn campaign-perf
   [jwt client-id id range]
   (-> [(campaign-performance jwt client-id (:curr range) id)
@@ -73,8 +78,8 @@
 (defn campaign-type-performance [jwt customer-id type dates]
   (ajax/GET "/api/performance/type"
             (req-params :data (assoc (u/parse-date-range dates)
-                                     :type type
-                                     :customer-id customer-id)
+                                :type type
+                                :customer-id customer-id)
                         :jwt jwt)))
 
 (defn campaign-type-perf
@@ -96,10 +101,10 @@
 (defn save-settings [settings]
   (ajax/PUT "/api/optimize/settings"
             (req-params :data settings)))
-                        ;; {:customer-id 777309
-                        ;;  :budget 99
-                        ;;  :objective :clicks
-                        ;;  :targets (js/JSON.stringify (clj->js ["test" "foo"]))}
+;; {:customer-id 777309
+;;  :budget 99
+;;  :objective :clicks
+;;  :targets (js/JSON.stringify (clj->js ["test" "foo"]))}
 
 
 (defn dataloader-req [req-params]
@@ -108,5 +113,7 @@
         params (dissoc req-params :url :headers)]
     (ajax/GET (str "/api" url)
               (assoc default-request-config
-                     :params params
-                     :headers headers))))
+                :params params
+                :headers headers))))
+
+

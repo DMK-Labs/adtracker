@@ -3,7 +3,8 @@
             [hodgepodge.core :refer [get-item local-storage]]
             [cljs.core.match :refer-macros [match]]
             [trendtracker.api :as api]
-            [trendtracker.utils :as u]))
+            [trendtracker.utils :as u]
+            [goog.net.cookies :as cookies]))
 
 (def ignore-datasource-check :keechma.toolbox.dataloader.core/ignore)
 
@@ -29,16 +30,33 @@
    :loader (map-loader #(get-item local-storage "trendtracker-jwt-token"))
    :params (fn [prev _ _] (when (:data prev) ignore-datasource-check))})
 
+(def session-id-datasource
+  {:target [:kv :session-id]
+   :loader (map-loader (fn [_] (.get goog.net.cookies "tracker_session_id")))
+   :params (fn [prev _ _] (when (:data prev) ignore-datasource-check))})
+
+(def session-valid-datasource
+  {:target [:kv :session/current]
+   :deps [:session-id]
+   :params (fn [_ _ {:keys [session-id]}]
+             (when session-id
+               {:session-id session-id}))
+   :loader (map-loader
+            (fn [req]
+              (when-let [params (:params req)]
+               (api/session-logged-in? (:session-id params)))))})
+
 (def current-user-datasource
   {:target [:edb/named-item :user/current]
-   :loader api-loader
-   :deps [:jwt]
-   :params (fn [prev _ {:keys [jwt]}]
-             (when jwt
-               (if (:data prev)
-                 ignore-datasource-check
-                 {:url "/user"
-                  :headers (auth-header jwt)})))})
+   :deps [:session-valid]
+   :params (fn [_ _ {:keys [session-valid]}]
+             (when session-valid
+               {:valid-session true}))
+   :loader (map-loader
+            (fn [req]
+              (when (:valid-session (:params req))
+                {:id 3 :email "dmk@datamarketing.co.kr" :name "DMK" :tenant "Data Marketing Korea" :naver_id
+                 719425})))})
 
 (def managed-clients-datasource
   {:target [:edb/collection :managed-clients/list]
@@ -214,10 +232,10 @@
                     customer-id (get-in req [:params :current-client :customer_id])]
                 (when (and (seq range) (seq casc) jwt)
                   (match casc
-                         ["total"] (api/total-perf jwt customer-id range)
-                         [type] (api/campaign-type-perf jwt customer-id type range)
-                         [_ cmp-id] (api/campaign-perf jwt customer-id cmp-id range)
-                         [_ _ adgrp-id] (api/adgroup-perf jwt customer-id adgrp-id range))))))})
+                    ["total"] (api/total-perf jwt customer-id range)
+                    [type] (api/campaign-type-perf jwt customer-id type range)
+                    [_ cmp-id] (api/campaign-perf jwt customer-id cmp-id range)
+                    [_ _ adgrp-id] (api/adgroup-perf jwt customer-id adgrp-id range))))))})
 
 (def date-range-datasource
   {:target [:kv :date-range]
@@ -240,6 +258,8 @@
 
 (def datasources
   {:jwt jwt-datasource
+   :session-id session-id-datasource
+   :session-valid session-valid-datasource
    :current-user current-user-datasource
    :current-client current-client-datasource
    :managed-clients managed-clients-datasource

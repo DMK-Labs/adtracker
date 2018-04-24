@@ -72,9 +72,19 @@ Accepts: application/json
 ###
 
 POST http://trendtracker.co.kr/rest/sessionApi/getValidSessionBySessionIdRest
-Content-Type: application/json
-Access-Control-Allow-Origin: *
+Host: trendtracker.co.kr
+Accept: */*
+Origin: http://trendtracker.co.kr
+Content-Type: application/json; charset=UTF-8
+Cookie: div_addKeyword1=LG%20Fashion; div_addKeyword2=%uC11C%uBCD1%uC218; div_addKeyword3=LG%uC804%uC790; userid=sooheon.kim@datamarketing.co.kr; JSESSIONID=DBF1D4F1F3E4167032C78776B1694D45; tracker_session_id=DBF1D4F1F3E4167032C78776B1694D45
 
-"297083E00F0D7DB4FEF328DB463EC95F"
+"DBF1D4F1F3E4167032C78776B1694D45"
+
+###
+
+POST http://localhost:80/api/item
+Content-Type: application/json
+
+{}
 
 ###

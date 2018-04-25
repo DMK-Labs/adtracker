@@ -5,14 +5,15 @@
             [trendtracker.edb :refer [get-named-item]]))
 
 (defn get-redirect [route app-db]
-  (let [current-user   (get-named-item app-db :user :current)
-        client         (get-in app-db [:kv :current-client])
+  (let [current-user (get-named-item app-db :user :current)
+        client (get-in app-db [:kv :current-client])
         just-logged-in (and (nil? (:page route)) current-user)]
     (cond
-      just-logged-in        {:page "dashboard"}
-      (not current-user)    ::trendtracker
+      just-logged-in {:page "dashboard"}
+      (not current-user) ::trendtracker
       (not (:client route)) (assoc route :client (:customer_id client))
-      :else                 nil)))
+      (empty? (:client route)) (assoc route :client (:customer_id client))
+      :else nil)))
 
 (defn redirect! [route app-db]
   (let [redirect-to (get-redirect route app-db)]

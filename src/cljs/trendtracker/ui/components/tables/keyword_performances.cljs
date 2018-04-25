@@ -6,7 +6,8 @@
             [trendtracker.utils :as u]
             [reagent.core :as r]
             [goog.string :as gstring]
-            [goog.string.format]))
+            [goog.string.format]
+            [clojure.string :as string]))
 
 (def krw-render (comp u/krw int))
 
@@ -87,12 +88,13 @@
         keywords-meta (sub> ctx :keywords-meta)
         customer-id (:customer_id (sub> ctx :current-client))
         route (route> ctx)
-        regex (if-let [q (:q route)]
+        regex (if-let [q (:kq route)]
                 (re-pattern q)
                 #"")]
     [ant/table
      {:dataSource (filter
-                   #(re-find regex (:keyword %))
+                   #(or (re-find regex (str %))
+                        (re-find regex (string/lower-case (str %))))
                    (if (:zero-clicks route)
                      keywords
                      (remove-clickless keywords)))
@@ -100,7 +102,7 @@
       :loading (= :pending (:status keywords-meta))
       :rowKey :keyword-id
       :size "small"
-      :scroll {:x "1600px"}
+      :scroll {:x 1600}
       :rowSelection {:fixed true}
       :pagination (assoc opts/pagination :defaultPageSize 15)}]))
 

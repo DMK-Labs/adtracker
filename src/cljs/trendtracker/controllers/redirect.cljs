@@ -7,7 +7,7 @@
 (defn get-redirect [route app-db]
   (let [current-user   (get-named-item app-db :user :current)
         client         (get-in app-db [:kv :current-client])
-        just-logged-in (and (= "login" (:page route)) current-user)]
+        just-logged-in (and (nil? (:page route)) current-user)]
     (cond
       just-logged-in        {:page "dashboard"}
       (not current-user)    ::trendtracker

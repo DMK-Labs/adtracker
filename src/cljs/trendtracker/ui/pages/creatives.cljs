@@ -5,7 +5,10 @@
             [reagent.core :as r]
             [trendtracker.ui.components.common :as common]
             [trendtracker.options :as opts]
-            [trendtracker.utils :as u]))
+            [trendtracker.utils :as u]
+            [keechma.toolbox.forms.ui :as forms-ui]
+            [trendtracker.ui.components.pure.form-inputs :refer [controlled-input]]
+            [clojure.string :as string]))
 
 (defn ad-render [customer-id]
   (fn [_ record _]
@@ -36,6 +39,17 @@
         :target "_blank"}
     text]))
 
+(defn creative-search [ctx]
+  (let [form-props [:creative-search :form]
+        form-state (forms-ui/form-state> ctx form-props)]
+    [ant/form {:on-submit #(forms-ui/<submit ctx form-props %)}
+     [controlled-input ctx form-props :creative-search
+      {:form-state form-state
+       ;; :label "search"
+       :placeholder "광고 검색"
+       :item-opts {:style {:margin-bottom 0}}
+       :input-opts {:prefix (r/as-element [ant/icon {:type "search"}])}}]]))
+
 (defn columns [customer-id]
   [{:title "광고소재" :dataIndex :ad-id :render (ad-render customer-id)
     :width 500 :fixed true}
@@ -51,7 +65,11 @@
         date-range-picker (ui/component ctx :date-range-picker)
         best-ads (sub> ctx :creatives)
         creatives-meta (sub> ctx :creatives-meta)
-        customer-id (:customer_id (sub> ctx :current-client))]
+        customer-id (:customer_id (sub> ctx :current-client))
+        route (route> ctx)
+        regex (if-let [q (:cq route)]
+                (re-pattern q)
+                #"")]
     [:div
      [common/content-header
       [breadcrumbs]
@@ -62,15 +80,28 @@
       [:div "현 계정에서 가장 좋은 성과를 보인 광고소재들입니다."]]
      [:div.content
       [ant/card
-       [ant/row {:type "flex" :justify "space-between" :style {:margin-bottom 8}}
-        [ant/col]
-        [ant/col
-         [ant/row {:type "flex" :justify "end" :gutter 8 :align "middle"}
-          [ant/col [ant/input {:placeholder "광고소재 검색" :prefix (r/as-element [ant/icon {:type "search"}])}]]
-          [ant/col [ant/button {:icon "download"}]]]]]
+       [ant/row {:type "flex" :justify "end" :gutter 8 :align "middle" :style {:margin-bottom 8}}
+        [ant/col [creative-search ctx]]
+        #_[ant/col [ant/input {:placeholder "광고소재 검색" :prefix (r/as-element [ant/icon {:type "search"}])}]]
+        [ant/col [ant/button {:icon "download"}]]]
+       (when (:cq route)
+         [:div {:style {:margin-bottom 16}}
+          [ant/divider {:style {:margin "16px 0"}}]
+          [:div [ant/icon {:type "filter" :style {:margin-right 8}}] "검색 필터: "
+           [ant/tag
+            {:closable true :color "blue" :onClose #(ui/redirect ctx (dissoc route :cq))
+             :onClick #(ui/redirect ctx (dissoc route :cq))}
+            (:cq route)]]])
+       #_[:div {:style {:margin-bottom 16}}
+
+          [ant/divider {:style {:margin "16px 0"}}]]
+
        [ant/table
         {:bordered true
-         :dataSource best-ads
+         :dataSource (filter
+                      #(or (re-find regex (str %))
+                           (re-find regex (string/lower-case (str %))))
+                      best-ads)
          :loading (= :pending (:status creatives-meta))
          :columns (columns customer-id)
          :rowKey :ad-id

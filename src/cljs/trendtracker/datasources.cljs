@@ -4,7 +4,8 @@
             [cljs.core.match :refer-macros [match]]
             [trendtracker.api :as api]
             [trendtracker.utils :as u]
-            [goog.net.cookies :as cookies]))
+            [goog.net.cookies :as cookies]
+            [promesa.core :as p]))
 
 (def ignore-datasource-check :keechma.toolbox.dataloader.core/ignore)
 
@@ -32,7 +33,9 @@
    :loader (map-loader
             (fn [req]
               (when-let [params (:params req)]
-               (api/session-logged-in? (:session-id params)))))})
+                (if ^boolean js/goog.DEBUG
+                  (p/promise true)
+                  (api/session-logged-in? (:session-id params))))))})
 
 (def current-user-datasource
   {:target [:edb/named-item :user/current]

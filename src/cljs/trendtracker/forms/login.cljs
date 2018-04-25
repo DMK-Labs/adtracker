@@ -16,16 +16,16 @@
 (defrecord LoginForm [validator])
 
 (defmethod forms-core/submit-data LoginForm [_ _ _ data]
-  (api/login data))
+  #_(api/login data))
 
 (defmethod forms-core/on-submit-success LoginForm [this app-db form-id user]
-  (let [jwt (:token user)]
-    (pipeline! [value app-db]
-      (set-item local-storage "trendtracker-jwt-token" jwt)
-      (pl/commit! (-> app-db
-                      (assoc-in [:kv :jwt] jwt)
-                      (insert-named-item :user :current user)))
-      (pl/redirect! {:page "dashboard"}))))
+  #_(let [jwt (:token user)]
+      (pipeline! [value app-db]
+        (set-item local-storage "trendtracker-jwt-token" jwt)
+        (pl/commit! (-> app-db
+                        (assoc-in [:kv :jwt] jwt)
+                        (insert-named-item :user :current user)))
+        (pl/redirect! {:page "dashboard"}))))
 
 (defn constructor []
   (->LoginForm validator))

@@ -14,12 +14,12 @@
             [trendtracker.config :refer [creds]]
             [trendtracker.models.aggregate-stats :as aggregate]
             [trendtracker.models.daily-stats :as daily-stats]
-   ;;[trendtracker.models.keywords :as keywords]
+            #_[trendtracker.models.keywords :as keywords]
             [trendtracker.models.optimize :as optimize]
             [trendtracker.models.portfolio :as portfolio]
             [trendtracker.models.segments :as segments]
             [trendtracker.models.users :as users]
-            [trendtracker.modules.auth :as auth]
+            #_[trendtracker.modules.auth :as auth]
             [trendtracker.modules.keyword-tool :as keyword-tool]
             [trendtracker.modules.landscape :as landscape]
             [trendtracker.utils :as u]
@@ -238,16 +238,16 @@
         (keyword-tool/simple-process keywords include-related?)))
 
      ;;* Users
-     (sweet/POST "/login" []
-       :return s/Any
-       :body-params [email password]
-       (if-let [logged-in-info-map (auth/logged-in-info email password)]
-         (respond/ok logged-in-info-map)
-         (respond/unauthorized {})))
+     #_(sweet/POST "/login" []
+         :return s/Any
+         :body-params [email password]
+         (if-let [logged-in-info-map (auth/logged-in-info email password)]
+           (respond/ok logged-in-info-map)
+           (respond/unauthorized {})))
 
-     (sweet/GET "/user" []
-       :header-params [authorization :- String]
-       (respond/ok (auth/unsign-auth-header authorization)))
+     #_(sweet/GET "/user" []
+         :header-params [authorization :- String]
+         (respond/ok (auth/unsign-auth-header authorization)))
 
      (sweet/GET "/access-rights" []
        (respond/ok (users/access-rights db {})))

@@ -4,8 +4,6 @@
             [keechma.toolbox.ui :refer [sub> route>]]
             [reagent.core :as r]
             [trendtracker.ui.components.common :as common]
-            [trendtracker.options :as opts]
-            [trendtracker.utils :as u]
             [trendtracker.ui.components.pure.form-inputs :refer [controlled-input]]
             [keechma.toolbox.forms.ui :as forms-ui]))
 
@@ -74,14 +72,14 @@
        (if (:result route)
          [keyword-tool-results]
          [:div
-          (when (:q route)
+          (when (:kq route)
             [:div {:style {:margin-bottom 16}}
              [ant/divider {:style {:margin "16px 0"}}]
-             [:div "키워드 검색 필터: "
+             [:div [ant/icon {:type "filter" :style {:margin-right 8}}] "검색 필터: "
               [ant/tag
-               {:closable true :color "blue" :onClose #(ui/redirect ctx (dissoc route :q))
-                :onClick #(ui/redirect ctx (dissoc route :q))}
-               (:q route)]]])
+               {:closable true :color "blue" :onClose #(ui/redirect ctx (dissoc route :kq))
+                :onClick #(ui/redirect ctx (dissoc route :kq))}
+               (:kq route)]]])
           [ant/row
            [ant/col
             [keyword-performances (:by-kw route)]]]])]]]))

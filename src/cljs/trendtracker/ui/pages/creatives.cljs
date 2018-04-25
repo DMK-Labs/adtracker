@@ -8,7 +8,8 @@
             [trendtracker.utils :as u]
             [keechma.toolbox.forms.ui :as forms-ui]
             [trendtracker.ui.components.pure.form-inputs :refer [controlled-input]]
-            [clojure.string :as string]))
+            [clojure.string :as string]
+            [trendtracker.helpers.download :as download]))
 
 (defn ad-render [customer-id]
   (fn [_ record _]
@@ -63,7 +64,7 @@
 (defn render [ctx]
   (let [breadcrumbs (ui/component ctx :breadcrumbs)
         date-range-picker (ui/component ctx :date-range-picker)
-        best-ads (sub> ctx :creatives)
+        creatives (sub> ctx :creatives)
         creatives-meta (sub> ctx :creatives-meta)
         customer-id (:customer_id (sub> ctx :current-client))
         route (route> ctx)
@@ -83,7 +84,11 @@
        [ant/row {:type "flex" :justify "end" :gutter 8 :align "middle" :style {:margin-bottom 8}}
         [ant/col [creative-search ctx]]
         #_[ant/col [ant/input {:placeholder "광고소재 검색" :prefix (r/as-element [ant/icon {:type "search"}])}]]
-        [ant/col [ant/button {:icon "download"}]]]
+        [ant/col [ant/button {:icon "download"
+                              :on-click #(download/download-csv
+                                          {:filename "creatives.csv"
+                                           :header []
+                                           :content creatives})}]]]
        (when (:cq route)
          [:div {:style {:margin-bottom 16}}
           [ant/divider {:style {:margin "16px 0"}}]
@@ -101,7 +106,7 @@
          :dataSource (filter
                       #(or (re-find regex (apply str (vals %)))
                            (re-find regex (string/lower-case (apply str (vals %)))))
-                      best-ads)
+                      creatives)
          :loading (= :pending (:status creatives-meta))
          :columns (columns customer-id)
          :rowKey :ad-id

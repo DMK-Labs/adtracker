@@ -93,8 +93,8 @@
                 #"")]
     [ant/table
      {:dataSource (filter
-                   #(or (re-find regex (str %))
-                        (re-find regex (string/lower-case (str %))))
+                   #(or (re-find regex (apply str (vals %)))
+                        (re-find regex (string/lower-case (apply str (vals %)))))
                    (if (:zero-clicks route)
                      keywords
                      (remove-clickless keywords)))

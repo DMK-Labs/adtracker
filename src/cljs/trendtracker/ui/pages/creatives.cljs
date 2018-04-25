@@ -87,7 +87,7 @@
        (when (:cq route)
          [:div {:style {:margin-bottom 16}}
           [ant/divider {:style {:margin "16px 0"}}]
-          [:div [ant/icon {:type "filter" :style {:margin-right 8}}] "검색 필터: "
+          [:div [ant/icon {:type "filter" :style {:margin-right 4}}] "검색 필터: "
            [ant/tag
             {:closable true :color "blue" :onClose #(ui/redirect ctx (dissoc route :cq))
              :onClick #(ui/redirect ctx (dissoc route :cq))}
@@ -99,8 +99,8 @@
        [ant/table
         {:bordered true
          :dataSource (filter
-                      #(or (re-find regex (str %))
-                           (re-find regex (string/lower-case (str %))))
+                      #(or (re-find regex (apply str (vals %)))
+                           (re-find regex (string/lower-case (apply str (vals %)))))
                       best-ads)
          :loading (= :pending (:status creatives-meta))
          :columns (columns customer-id)

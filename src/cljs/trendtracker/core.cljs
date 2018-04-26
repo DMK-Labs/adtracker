@@ -14,7 +14,8 @@
        :controllers controllers
        :subscriptions subscriptions
        :html-element (.getElementById js/document "app")
-       :routes [":page"
+       :routes [["" {:page "dashboard"}]
+                ":page"
                 ":page/:subpage"]}
       (dataloader/install datasources edb-schema)
       (forms/install tt-forms/forms tt-forms/forms-automount-fns)))

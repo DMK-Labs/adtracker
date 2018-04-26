@@ -20,7 +20,6 @@
    [trendtracker.ui.components.sider :as sider]
    [trendtracker.ui.components.snapshot :as snapshot]
    [trendtracker.ui.components.summary :as summary]
-   [trendtracker.ui.components.tables.segment-stats :as segment-stats]
    [trendtracker.ui.pages.dashboard :as dashboard]
    [trendtracker.ui.components.keyword-tool.keyword-tool :as keyword-tool]
    [trendtracker.ui.pages.login :as login]
@@ -34,7 +33,9 @@
    [trendtracker.ui.components.cards.smart-todo :as smart-todo]
    [trendtracker.ui.pages.creatives :as creatives]
    [trendtracker.ui.pages.keywords :as keywords]
-   [trendtracker.ui.components.tables.keyword-performances :as keyword-performances]))
+   [trendtracker.ui.components.tables.keyword-performances :as keyword-performances]
+   [trendtracker.ui.pages.adgroups :as adgroups]
+   [trendtracker.ui.components.tables.adgroup-performances :as adgroup-performances]))
 
 (def ui
   {
@@ -71,8 +72,8 @@
    :cost-effectiveness cost-effectiveness/component
 
    ;; Tables
-   :segment-stats segment-stats/component
    :keyword-performances keyword-performances/component
+   :adgroup-performances adgroup-performances/component
 
    ;; Pages
    :login-page login/component
@@ -83,6 +84,8 @@
    :overview-page overview/component
    :creatives creatives/component
    :keywords keywords/component
+
+   :adgroups-page adgroups/component
 
    ;; Insights
    :insights-page insights/component})

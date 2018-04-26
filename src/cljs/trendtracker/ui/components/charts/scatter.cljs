@@ -6,7 +6,7 @@
             [antizer.reagent :as ant]))
 
 (defn scatter-chart [ctx]
-  (let [data (sub> ctx :segment-stats)
+  (let [data (sub> ctx :adgroups)
         {:keys [x y z x-label y-label z-label]} {:x :ctr
                                                  :y :impressions
                                                  :z :profit
@@ -14,8 +14,8 @@
                                                  :y-label "노출수"
                                                  :z-label "이윤"}]
     [ant/spin
-     {:spinning (= :pending (:status (sub> ctx :segment-stats-meta)))}
-     [recharts/responsive-container {:height 300}
+     {:spinning (= :pending (:status (sub> ctx :adgroups-meta)))}
+     [recharts/responsive-container {:height 220}
       (let [clicks (u/sum :clicks data)
             impressions (u/sum :impressions data)
             avg-ctr (/ clicks impressions)
@@ -62,4 +62,4 @@
 (def component
   (ui/constructor
    {:renderer scatter-chart
-    :subscription-deps [:segment-stats :segment-stats-meta]}))
+    :subscription-deps [:adgroups :adgroups-meta]}))

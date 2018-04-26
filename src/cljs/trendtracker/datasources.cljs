@@ -134,25 +134,6 @@
                 :budget (:budget optimize-settings)}))
    :loader api-loader})
 
-(def segment-stats-datasource
-  {:target [:kv :segment-stats]
-   :deps [:current-client :date-range]
-   :params (fn [_ route {:keys [current-client date-range]}]
-             (let [segment (:seg route)]
-               (when (and current-client date-range
-                          (#{"dashboard" "insights"} (:page route)))
-                 (merge (case segment
-                          "keyword" (if-let [id (:adgrp route)]
-                                      {:url "/stats/aggregate/by-adgroup"
-                                       :id id}
-                                      {:url "/stats/keywords"
-                                       :customer-id (:customer_id current-client)})
-                          {:url "/stats/aggregate/adgroups"
-                           :customer-id (:customer_id current-client)
-                           :type (or segment "adgroup")})
-                        (u/parse-date-range (:curr date-range))))))
-   :loader api-loader})
-
 (def with-min-70-bids-datasource
   {:target [:kv :naver :with-min-70-bids]
    :deps [:current-client :optimize-settings]
@@ -191,6 +172,16 @@
    :params (fn [_ {page :page} {:keys [current-client date-range]}]
              (when (and current-client date-range (= "keywords" page))
                (merge {:url "/stats/keywords"
+                       :customer-id (:customer_id current-client)}
+                      (u/parse-date-range (:curr date-range)))))
+   :loader api-loader})
+
+(def adgroups-datasource
+  {:target [:kv :adgroups]
+   :deps [:current-client :date-range]
+   :params (fn [_ {page :page} {:keys [current-client date-range]}]
+             (when (and current-client date-range (= "adgroups" page))
+               (merge {:url "/stats/adgroups"
                        :customer-id (:customer_id current-client)}
                       (u/parse-date-range (:curr date-range)))))
    :loader api-loader})
@@ -263,8 +254,8 @@
    :optimize-detail optimize-detail-datasource
    :with-minimum-exposure-bids with-minimum-exposure-bids-datasource
    :with-min-70-bids with-min-70-bids-datasource
-   :segment-stats segment-stats-datasource
    :pc-mobile-split pc-mobile-split-datasource
    :creatives creatives-datasource
    :keywords keywords-datasource
+   :adgroups adgroups-datasource
    :first-recorded-performance first-recorded-performance-datasource})

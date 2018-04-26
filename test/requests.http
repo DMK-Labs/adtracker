@@ -88,3 +88,8 @@ Content-Type: application/json
 {}
 
 ###
+
+GET http://localhost:10555/api/performance/type?low=2018-04-18&high=2018-04-24&type=powerlink&customer-id=137307
+Accept: application/json
+
+###

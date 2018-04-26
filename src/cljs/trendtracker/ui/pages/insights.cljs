@@ -8,7 +8,6 @@
 (defn render [ctx]
   (let [breadcrumbs (ui/component ctx :breadcrumbs)
         date-range-picker (ui/component ctx :date-range-picker)
-        scatter-chart (ui/component ctx :scatter-chart)
         todo-card (ui/component ctx :todo-card)]
     [:div
      [common/content-header
@@ -18,8 +17,6 @@
        [:div [date-range-picker]]]
       [:div.page-description "하루 20분이어도 OK! 가장 큰 효과를 기대할 수 있는 개선사항들을 찝어드립니다."]]
      [:div.content
-      [ant/row
-       [ant/card {:title "광고그룹별 성과"} [scatter-chart]]]
       [ant/row {:type "flex" :justify :space-around}
        [ant/col {:style {:max-width 980}}
         [ant/row {:gutter 16 :style {:max-width 980}}
@@ -66,7 +63,6 @@
 (def component
   (ui/constructor
    {:renderer render
-    :component-deps [:scatter-chart
-                     :breadcrumbs
+    :component-deps [:breadcrumbs
                      :date-range-picker
                      :todo-card]}))

@@ -203,6 +203,12 @@
          conj
          (aggregate/by-adgroup db {:id id :low low :high high}))))
 
+     (sweet/GET "/stats/adgroups" []
+       :query-params [low :- s/Str high :- s/Str customer-id :- s/Int]
+       (respond/ok
+        (map daily-stats/add-ratios2
+             (segments/adgroups db {:low low :high high :customer-id customer-id}))))
+
      (sweet/GET "/stats/keywords" []
        :query-params [low :- s/Str high :- s/Str customer-id :- s/Int]
        (respond/ok

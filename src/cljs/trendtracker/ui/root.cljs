@@ -20,8 +20,9 @@
             "dashboard" [(ui/component ctx :dashboard-page)]
             "overview" [(ui/component ctx :overview-page)]
             "insights" [(ui/component ctx :insights-page)]
-            "creatives" [(ui/component ctx :creatives)]
+            "adgroups" [(ui/component ctx :adgroups-page)]
             "keywords" [(ui/component ctx :keywords)]
+            "creatives" [(ui/component ctx :creatives)]
             "optimize" (if-not subpage
                          [(ui/component ctx :optimize-page)]
                          [(ui/component ctx :optimize-new-page)])
@@ -40,6 +41,8 @@
                      :optimize-new-page
                      :settings-page
                      :overview-page
+
+                     :adgroups-page
 
                      ;;Insights
                      :insights-page

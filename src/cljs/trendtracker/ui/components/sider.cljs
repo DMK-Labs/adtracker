@@ -38,6 +38,10 @@
           [ant/icon {:type "rocket"}]
           [:span "최적화"]]
 
+       [ant/menu-item {:key "adgroups"}
+        [ant/icon {:type "bars"}]
+        [:span "광고그룹"]]
+
        [ant/menu-item {:key "keywords"}
         [ant/icon {:type "profile"}]
         [:span "키워드"]]

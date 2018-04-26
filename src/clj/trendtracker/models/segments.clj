@@ -4,6 +4,8 @@
 
 (hugsql/def-db-fns "sql/segments.sql")
 
+(declare keywords pc-mobile adgroups)
+
 (comment
  (hugsql/map-of-db-fns "sql/segments.sql")
 
@@ -15,6 +17,12 @@
    :high "2018-02-28"})
 
  (keywords
+  (:db-spec config)
+  {:customer-id 719425
+   :low "2018-02-01"
+   :high "2018-04-28"})
+
+ (adgroups
   (:db-spec config)
   {:customer-id 719425
    :low "2018-02-01"

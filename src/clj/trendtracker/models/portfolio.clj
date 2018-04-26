@@ -28,19 +28,19 @@
 (defn rename [rel]
   (w/postwalk (fn [x]
                 (case x
-                  :nccAdgroupId    :value
-                  :name            :label
-                  :nccCampaignId   :value
-                  "SHOPPING"       "쇼핑"
-                  :SHOPPING        :shopping
-                  "WEB_SITE"       "파워링크"
-                  :WEB_SITE        :powerlink
-                  "BRAND_SEARCH"   "브랜드"
-                  :BRAND_SEARCH    :brand
+                  :nccAdgroupId :value
+                  :name :label
+                  :nccCampaignId :value
+                  "SHOPPING" "쇼핑"
+                  :SHOPPING :shopping
+                  "WEB_SITE" "파워링크"
+                  :WEB_SITE :powerlink
+                  "BRAND_SEARCH" "브랜드"
+                  :BRAND_SEARCH :brand
                   "POWER_CONTENTS" "파워컨텐츠"
-                  :POWER_CONTENTS  :power-contents
-                  :campaignTp      :campaign-type
-                  :expectCost      :expected-cost
+                  :POWER_CONTENTS :power-contents
+                  :campaignTp :campaign-type
+                  :expectCost :expected-cost
                   x))
               rel))
 
@@ -52,7 +52,7 @@
                         {:value (keyword k)
                          :label k
                          :children (map #(dissoc % :campaignTp) v)})
-                      (group-by :campaignTp (map assoc-adgroup eligible)))
+                      (group-by :campaignTp eligible #_(map assoc-adgroup eligible)))
         renamed-tree (rename raw-tree)]
     (conj renamed-tree {:value :total :label "모든 검색광고"})))
 
@@ -68,26 +68,25 @@
                       (sort-by :status))]
     children))
 
-
 (comment
-  (tree 1334028)
-  (optimizing 137307))
-  ;; =>
-  ;; [{:value "powerlink",
-  ;;   :name "ALL",
-  ;;   :status :on,
-  ;;   :campaign-type "파워링크",
-  ;;   :expected-cost 1485,
-  ;;   :children ({:value "cmp-a001-01-000000000243172",
-  ;;               :expected-cost 418,
-  ;;               :label "4.프라덤",
-  ;;               :campaign-type "파워링크"}
-  ;;              {:value "cmp-a001-01-000000000594116",
-  ;;               :expected-cost 990,
-  ;;               :label "1.프라젠트라Mobile",
-  ;;               :campaign-type "파워링크"}
-  ;;              {:value "cmp-m001-01-000000016892708",
-  ;;               :expected-cost 77,
-  ;;               :label "1.프라젠트라PC",
-  ;;               :campaign-type "파워링크"})}]
+ (time (tree 137307))
+ (optimizing 137307))
+;; =>
+;; [{:value "powerlink",
+;;   :name "ALL",
+;;   :status :on,
+;;   :campaign-type "파워링크",
+;;   :expected-cost 1485,
+;;   :children ({:value "cmp-a001-01-000000000243172",
+;;               :expected-cost 418,
+;;               :label "4.프라덤",
+;;               :campaign-type "파워링크"}
+;;              {:value "cmp-a001-01-000000000594116",
+;;               :expected-cost 990,
+;;               :label "1.프라젠트라Mobile",
+;;               :campaign-type "파워링크"}
+;;              {:value "cmp-m001-01-000000016892708",
+;;               :expected-cost 77,
+;;               :label "1.프라젠트라PC",
+;;               :campaign-type "파워링크"})}]
 

@@ -76,7 +76,7 @@
       [breadcrumbs]
       [ant/row {:type "flex" :justify "space-between"}
        [ant/col {:md 7 :xs 24}
-        [:h2.page-title "광고소재 Ranking"]]
+        [:h2.page-title "광고소재"]]
        [ant/col [ant/col [date-range-picker]]]]
       [:div "현 계정에서 가장 좋은 성과를 보인 광고소재들입니다."]]
      [:div.content

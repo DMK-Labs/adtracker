@@ -13,7 +13,6 @@
             snapshot (ui/component ctx :snapshot)
             tabbed-charts (ui/component ctx :tabbed-charts)
             cascader (ui/component ctx :cascader)
-            segment-stats (ui/component ctx :segment-stats)
             daily-stats (sub> ctx :daily-stats)
             no-conversions? (every? zero? (map :conversions (concat (:curr daily-stats) (:prev daily-stats))))]
        [:div
@@ -50,8 +49,7 @@
           [ant/col {:md 16} [tabbed-charts]]
           [ant/col {:md 8} [(ui/component ctx :cost-effectiveness)]]]
          [ant/row {:gutter 16}
-          [ant/col {:lg 24} [(ui/component ctx :device-pie)]]]
-         [ant/row [ant/col [segment-stats]]]]]))))
+          [ant/col {:lg 24} [(ui/component ctx :device-pie)]]]]]))))
 
 (def component
   (ui/constructor
@@ -60,7 +58,6 @@
                      :breadcrumbs
                      :snapshot
                      :tabbed-charts
-                     :segment-stats
                      :cascader
                      :device-pie
                      :cost-effectiveness]

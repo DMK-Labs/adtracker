@@ -3,6 +3,7 @@
             [trendtracker.forms.optimize-objective :as optimize-objective]
             [trendtracker.forms.login :as login]
             [trendtracker.forms.keyword-search :as keyword-search]
+            [trendtracker.forms.adgroup-search :as adgroup-search]
             [trendtracker.forms.creative-search :as creative-search]))
 
 (def forms
@@ -10,7 +11,8 @@
    :optimize-objective (optimize-objective/constructor)
    :login (login/constructor)
    :creative-search (creative-search/constructor)
-   :keyword-search (keyword-search/constructor)})
+   :keyword-search (keyword-search/constructor)
+   :adgroup-search (adgroup-search/constructor)})
 
 (def forms-automount-fns
   {:login (fn [{:keys [page]}]
@@ -29,6 +31,9 @@
                            :form))
    :keyword-search (fn [{:keys [page]}]
                      (when (= "keywords" page)
+                       :form))
+   :adgroup-search (fn [{:keys [page]}]
+                     (when (= "adgroups" page)
                        :form))
    :creative-search (fn [{:keys [page]}]
                       (when (= "creatives" page)

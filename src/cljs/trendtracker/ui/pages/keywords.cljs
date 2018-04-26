@@ -43,8 +43,8 @@
       [breadcrumbs]
       [ant/row {:type "flex" :justify "space-between"}
        [ant/col {:md 7 :xs 24}
-        [:h2.page-title "키워드 Ranking"]]
-       [ant/col [ant/col [date-range-picker]]]]]
+        [:h2.page-title "키워드"]]
+       [ant/col [date-range-picker]]]]
      [:div.content
       [ant/card
        (if adding-new?

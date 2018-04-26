@@ -10,8 +10,8 @@
      (when (= "logout" (:page data))
        true))
    {:start (pipeline! [_ app-db]
-             (remove-item local-storage "trendtracker-jwt-token")
+             #_(remove-item local-storage "trendtracker-jwt-token")
              (pl/commit! (-> app-db
                              (assoc-in [:kv :jwt] nil)
                              (remove-named-item :user :current)))
-             (pl/redirect! {:page "login"}))}))
+             (.assign js/window.location "http://trendtracker.co.kr"))}))

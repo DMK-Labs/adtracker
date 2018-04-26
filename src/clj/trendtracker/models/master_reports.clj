@@ -3,7 +3,8 @@
             [huri.core :as h]
             [plumbing.core :refer [defnk fnk sum]]
             [trendtracker.config :refer [config creds]]
-            [clojure.java.jdbc :as jdbc]))
+            [clojure.java.jdbc :as jdbc]
+            [taoensso.timbre :as timbre]))
 
 (hugsql/def-db-fns "sql/master_reports.sql")
 (def db-fns (hugsql/map-of-db-fns "sql/master_reports.sql"))
@@ -33,9 +34,11 @@
 (defn upsert-keywords [rel]
   (jdbc/with-db-connection [conn (:db-spec config)]
     (doseq [keyword rel]
+      (timbre/info "upserting keyword")
       (upsert-keyword conn keyword))))
 
 (defn upsert-ads [rel]
   (jdbc/with-db-connection [conn (:db-spec config)]
     (doseq [ad rel]
+      (timbre/info "upserting ad")
       (upsert-ad conn ad))))

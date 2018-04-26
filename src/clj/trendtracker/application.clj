@@ -9,7 +9,8 @@
             [system.components.repl-server :refer [new-repl-server]]
             [system.repl :refer [set-init! start]]
             [trendtracker.config :refer [config]]
-            [trendtracker.routes :as routes]))
+            [trendtracker.routes :as routes]
+            [trendtracker.modules.scheduler :as scheduler]))
 
 (defn base-system []
   (component/system-map
@@ -25,7 +26,8 @@
   (merge
    (base-system)
    (component/system-map
-    :repl-server (new-repl-server 5602))))
+    :repl-server (new-repl-server 5602)
+    :schedule (scheduler/new-scheduler))))
 
 (defn -main
   [& _]

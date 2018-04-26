@@ -8,8 +8,13 @@
             [trendtracker.utils.dates :as utils.dates]
             [java-time :as time]
             [taoensso.timbre :as timbre]
-            [trendtracker.models.master-reports :as master-reports]))
+            [trendtracker.models.master-reports :as master-reports]
+            [clojure.java.jdbc :as jdbc]))
 
+
+(defn refresh-keyword-stats-view []
+  (jdbc/execute! (:db-spec config)
+    ["REFRESH MATERIALIZED VIEW naver.daily_keyword_stats;"]))
 
 ;;; -- Downloading Latest Stats -----
 
@@ -104,7 +109,7 @@
         id (:id (reports.master/create! c {:item report-type :fromTime yyyymmdd}))
         fetch (fn []
                 (timbre/info "Checking job status..." id)
-                (Thread/sleep 250)
+                (Thread/sleep 500)
                 (reports.master/fetch-job c id))]
     (try
       (loop [job (fetch)]
@@ -144,11 +149,23 @@
 
 (defn sync-client-masters [client-id reports]
   (doseq [[report-type rel] (masters client-id reports)]
-    (timbre/info "Upserting:" report-type)
-    ((master-upserters report-type) rel)))
+    (timbre/info "Upserting:" report-type "to" client-id)
+    ((master-upserters report-type) rel)
+    (timbre/info "Finished upserting" report-type "to" client-id)))
+
+(defn sync-keywords [client-id]
+  (->> (get (masters client-id ["Keyword"]) "Keyword")
+       (map #(-> % (assoc :mobile_landing_url nil) (assoc-in :pc_landing_url nil)))
+       master-reports/upsert-keywords))
 
 (comment
- (masters 137307 :all)
+ (def m (masters 137307 ["Keyword" "Ad"]))
+ (def k (map #(-> %
+                  (assoc :mobile_landing_url nil)
+                  (assoc :pc_landing_url nil))
+             (m "Keyword")))
+ (master-reports/upsert-keywords k)
  (sync-client-masters 137307 ["Campaign" "BusinessChannel" "Adgroup"])
- (sync-client-masters 719425 ["Campaign" "BusinessChannel" "Adgroup"])
- (sync-client-masters 719425 ["Keyword" "Ad"]))
+ (sync-client-masters 777309 ["Campaign" "BusinessChannel" "Adgroup"])
+ (sync-client-masters 137307 ["Keyword" "Ad"])
+ (sync-client-masters 719425 ["Campaign" "BusinessChannel" "Adgroup"]))
